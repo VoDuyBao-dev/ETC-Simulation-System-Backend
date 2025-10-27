@@ -15,7 +15,7 @@ public enum ErrorCode {
     INVALID_OTP(1008, "invalid otp"),
     EMAIL_SEND_FAILED(1009, "email send failed"),
     OTP_SAVE_FAILED(1010, "otp save failed"),
-
+    OTP_EXPIRED(1011, "otp expired")
 
     ;
     private int code;
