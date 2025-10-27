@@ -1,9 +1,10 @@
 package com.example.ETCSystem.entities;
 
-import com.example.ETCSystem.enums.VehicleType;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.example.ETCSystem.enums.VehicleType;
 
 import java.time.LocalDateTime;
 import java.util.List;

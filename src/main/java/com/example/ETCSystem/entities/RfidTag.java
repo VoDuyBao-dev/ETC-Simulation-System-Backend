@@ -1,9 +1,10 @@
 package com.example.ETCSystem.entities;
 
-import com.example.ETCSystem.enums.TagStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+
+import com.example.ETCSystem.enums.TagStatus;
 
 @Entity
 @Table(name = "rfid_tags")

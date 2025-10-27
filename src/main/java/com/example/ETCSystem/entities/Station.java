@@ -1,10 +1,11 @@
 package com.example.ETCSystem.entities;
 
-import com.example.ETCSystem.enums.StationStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.example.ETCSystem.enums.StationStatus;
 
 @Entity
 @Table(name = "stations")

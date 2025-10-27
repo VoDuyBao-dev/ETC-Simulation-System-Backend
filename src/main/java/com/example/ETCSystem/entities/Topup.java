@@ -1,9 +1,10 @@
 package com.example.ETCSystem.entities;
 
-import com.example.ETCSystem.enums.TopupMethod;
-import com.example.ETCSystem.enums.TopupStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+
+import com.example.ETCSystem.enums.TopupMethod;
+import com.example.ETCSystem.enums.TopupStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

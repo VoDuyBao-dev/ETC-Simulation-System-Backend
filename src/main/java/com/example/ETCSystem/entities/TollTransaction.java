@@ -1,10 +1,11 @@
 package com.example.ETCSystem.entities;
 
-import com.example.ETCSystem.enums.TollStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.example.ETCSystem.enums.TollStatus;
 
 @Entity
 @Table(name = "toll_transactions")
