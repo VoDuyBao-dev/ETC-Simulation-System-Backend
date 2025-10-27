@@ -1,9 +1,14 @@
 package com.example.ETCSystem.entities;
 
+import com.example.ETCSystem.enums.AccountStatus;
 import com.example.ETCSystem.enums.Role;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +17,8 @@ import java.util.List;
 @Table(name = "users")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,21 +28,29 @@ public class User {
     private String username;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
     private String fullName;
     private String email;
     private String phone;
     private String address;
 
     @Enumerated(EnumType.STRING)
-    private Role role; // ADMIN, CUSTOMER
+    private Role role = Role.CUSTOMER; // ADMIN, CUSTOMER
 
-    private Boolean isActive = true;
+    // Dùng để xác định tài khoản có được phép đăng nhập không
+    private Boolean enabled = false;
 
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    // Dùng để phân biệt các trạng thái khác (bị khóa do admin chẳng hạn)
+    @Enumerated(EnumType.STRING)
+    private AccountStatus status = AccountStatus.PENDING;
+
+    @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+//    Kiểm tra nếu đã quá tgian nhưng chưa kích hoạt tài khoản thì xóa tài khoản đó
+    private LocalDateTime activationExpiryTime;
+
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     // 1 User có 1 Wallet
@@ -49,4 +64,20 @@ public class User {
     // 1 User có thể thực hiện nhiều topup
     @OneToMany(mappedBy = "user")
     private List<Topup> topups;
+
+    @PrePersist
+    public void onCreate() {
+        if (this.role == null) {
+            this.role = Role.CUSTOMER;
+        }
+        if (this.enabled == null) {
+            this.enabled = false;
+        }
+        if (this.status == null) {
+            this.status = AccountStatus.PENDING;
+        }
+        if (this.activationExpiryTime == null) {
+            this.activationExpiryTime = LocalDateTime.now().plusMinutes(3);
+        }
+    }
 }
