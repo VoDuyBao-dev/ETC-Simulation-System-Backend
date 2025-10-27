@@ -3,6 +3,8 @@ package com.example.ETCSystem.services;
 
 import com.example.ETCSystem.dto.response.OtpResponse;
 import com.example.ETCSystem.entities.OtpVerification;
+import com.example.ETCSystem.entities.User;
+import com.example.ETCSystem.enums.AccountStatus;
 import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.exceptions.ErrorCode;
 import com.example.ETCSystem.repositories.OtpVerificationRepository;
@@ -22,10 +24,19 @@ public class OtpService {
     private OtpVerificationRepository otpVerificationRepository;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
+
+
+    private String generateOtp() {
+        return String.format("%06d", new Random().nextInt(999999));
+    }
 
     // Tạo và gửi OTP
-    public OtpResponse generateAndSendOtp(String email) {
-        String otp = String.format("%06d", new Random().nextInt(999999));
+    public void generateAndSendOtp(String email) {
+        String otp = generateOtp();
 
         OtpVerification otpVerification = OtpVerification.builder()
                 .email(email)
@@ -47,19 +58,17 @@ public class OtpService {
             throw new AppException(ErrorCode.EMAIL_SEND_FAILED, e);
         }
 
-        OtpResponse otpResponse = OtpResponse.builder()
-                .email(email)
-                .status(true)
-                .otp(otp)
-                .build();
-
-        return otpResponse;
-
     }
 
 //    ktra otp
     public OtpResponse verifyOtp(String email, String otp) {
-        OtpVerification otpVerification = otpVerificationRepository.findTopByEmailOrderByCreatedAtDesc(email);
+        OtpVerification otpVerification;
+
+        try{
+            otpVerification = otpVerificationRepository.findTopByEmailOrderByCreatedAtDesc(email);
+        }catch (Exception e){
+            throw new AppException(ErrorCode.OTP_NOT_FOUND);
+        }
 
         if(otpVerification == null){
             throw new AppException(ErrorCode.USER_NOT_FOUND);
