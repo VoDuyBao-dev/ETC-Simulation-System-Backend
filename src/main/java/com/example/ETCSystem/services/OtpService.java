@@ -63,8 +63,9 @@ public class OtpService {
 
         if(otpVerification == null){
             throw new AppException(ErrorCode.USER_NOT_FOUND);
-        }
-        if (otpVerification.isUsed() || otpVerification.getExpiresAt().isBefore(LocalDateTime.now()) || !otpVerification.getOtpCode().equals(otp)) {
+        }else if (otpVerification.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new AppException(ErrorCode.OTP_EXPIRED);
+        } else if (otpVerification.isUsed() || !otpVerification.getOtpCode().equals(otp)) {
             throw new AppException(ErrorCode.INVALID_OTP);
         }
 

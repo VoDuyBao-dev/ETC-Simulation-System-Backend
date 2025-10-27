@@ -1,8 +1,10 @@
 package com.example.ETCSystem.controller.auth;
 
 import com.example.ETCSystem.dto.ApiResponse;
+import com.example.ETCSystem.dto.request.OtpRequest;
 import com.example.ETCSystem.dto.request.UserCreationRequest;
 import com.example.ETCSystem.dto.response.OtpResponse;
+import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.services.OtpService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OtpController {
     OtpService otpService;
 
-    @PostMapping
+    @PostMapping("/generate")
     public ApiResponse<OtpResponse> generateAndSendOtp(@RequestBody UserCreationRequest userCreationRequest) {
         log.info("userCreationRequest: {}", userCreationRequest);
         ApiResponse<OtpResponse> apiResponse = new ApiResponse<>();
@@ -31,10 +33,27 @@ public class OtpController {
             apiResponse.setCode(1000);
             apiResponse.setMessage("OTP sent successfully");
             apiResponse.setResult(otpResponse);
-        }catch (Exception e){
-            apiResponse.setCode(5000);
-            apiResponse.setMessage(e.getMessage());
+        }catch (AppException e){
+            apiResponse.setCode(e.getErrorCode().getCode());
+            apiResponse.setMessage(e.getErrorCode().getMessage());
         }
         return apiResponse;
+    }
+
+    @PostMapping("/verify")
+    public ApiResponse<OtpResponse> verifyOTP(@RequestBody OtpRequest otpRequest) {
+        log.info("otpRequest: {}", otpRequest);
+        ApiResponse<OtpResponse> apiResponse = new ApiResponse<>();
+        try{
+            OtpResponse otpResponse = otpService.verifyOtp(otpRequest.getEmail(), otpRequest.getOtpCode());
+            apiResponse.setCode(1000);
+            apiResponse.setMessage("OTP verified successfully");
+            apiResponse.setResult(otpResponse);
+        }catch (AppException e){
+            apiResponse.setCode(e.getErrorCode().getCode());
+            apiResponse.setMessage(e.getErrorCode().getMessage());
+        }
+        return apiResponse;
+
     }
 }
