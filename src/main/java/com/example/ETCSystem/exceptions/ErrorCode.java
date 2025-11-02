@@ -4,7 +4,7 @@ package com.example.ETCSystem.exceptions;
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "uncategorized error"), //exception chưa được đinhj nghĩa hoặc loại ex chưa bắt
     USER_EXISTED(1002, "user existed"),
-    USER_NOT_FOUND(1005, "user not found"),
+    USER_NOT_EXISTED(1005, "user not existed"),
     SAVE_USER_FAILED(1014, "save user failed"),
     UPDATE_USER_FAILED(1015, "update user failed"),
     //    lỗi invalid password

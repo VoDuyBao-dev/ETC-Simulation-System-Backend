@@ -5,6 +5,7 @@ import com.example.ETCSystem.dto.request.UserRequest;
 import com.example.ETCSystem.dto.response.UserResponse;
 import com.example.ETCSystem.entities.User;
 import com.example.ETCSystem.enums.AccountStatus;
+import com.example.ETCSystem.enums.Role;
 import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.exceptions.ErrorCode;
 import com.example.ETCSystem.mapper.UserMapper;
@@ -13,10 +14,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -26,6 +29,7 @@ import java.util.List;
 public class UserService {
     UserMapper userMapper;
     UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
 
     public UserResponse createUser(UserRequest userRequest) {
 
@@ -37,8 +41,11 @@ public class UserService {
         }
         User user = userMapper.toUser(userRequest);
         user.setEmail(userRequest.getUsername());
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.CUSTOMER.name());
+        user.setRoles(roles);
 
         log.info("user in createUser{}", user);
 
@@ -48,7 +55,7 @@ public class UserService {
 //    kích hoạt tài khoản
     public void activateUser(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         
         log.info("user in activateUser{}", user);
 
@@ -63,23 +70,15 @@ public class UserService {
     }
 
     public List<UserResponse> getAllUsers() {
+
         List<User> users = userRepository.findAll();
         return userMapper.toUserResponseList(users);
     }
 
     public void findByUsername(String username) {
         userRepository.findByUsername(username)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
 
-    public UserResponse userLogin(UserRequest userRequest) {
-        User user = userRepository.findByUsername(userRequest.getUsername())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        if(!passwordEncoder.matches(userRequest.getPassword(), user.getPassword())) {
-            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
-        }
-        return userMapper.toUserResponse(user);
-    }
 }
