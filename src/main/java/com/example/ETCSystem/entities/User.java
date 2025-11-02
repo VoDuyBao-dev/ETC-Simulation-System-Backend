@@ -12,6 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -33,8 +34,10 @@ public class User {
     private String phone;
     private String address;
 
-    @Enumerated(EnumType.STRING)
-    private Role role = Role.CUSTOMER; // ADMIN, CUSTOMER
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private Set<String> roles;
 
     // Dùng để xác định tài khoản có được phép đăng nhập không
     private Boolean enabled = false;
@@ -67,9 +70,6 @@ public class User {
 
     @PrePersist
     public void onCreate() {
-        if (this.role == null) {
-            this.role = Role.CUSTOMER;
-        }
         if (this.enabled == null) {
             this.enabled = false;
         }
