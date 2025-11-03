@@ -31,6 +31,11 @@ public enum ErrorCode {
     PASSWORDS_DO_NOT_MATCH(1013, "Password and confirm password do not match", HttpStatus.BAD_REQUEST),
 
 
+    SAVE_INVALIDATED_TOKEN_FAILED(1018, "save invalidated token failed", HttpStatus.INTERNAL_SERVER_ERROR),
+
+
+
+
 
     ;
     private int code;

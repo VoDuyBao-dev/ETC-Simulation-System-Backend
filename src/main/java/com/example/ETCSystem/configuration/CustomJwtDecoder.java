@@ -28,7 +28,7 @@ import java.util.Objects;
 @Slf4j
 public class CustomJwtDecoder implements JwtDecoder {
     @Value("${jwt.secret}")
-    private String jwtSecret;
+    private String JWT_SECRET;
 
     private final TokenValidator tokenValidator;
     private NimbusJwtDecoder nimbusJwtDecoder = null;
@@ -37,10 +37,10 @@ public class CustomJwtDecoder implements JwtDecoder {
     public Jwt decode(String token) {
         try {
             // Xác minh token hợp lệ, chưa bị thu hồi, chưa hết hạn
-           tokenValidator.verifyToken(token);
+           tokenValidator.verifyToken(token, false);
 
             if (Objects.isNull(nimbusJwtDecoder)) {
-                SecretKeySpec secretKey = new SecretKeySpec(jwtSecret.getBytes(), "HmacSHA512");
+                SecretKeySpec secretKey = new SecretKeySpec(JWT_SECRET.getBytes(), "HmacSHA512");
                 nimbusJwtDecoder = NimbusJwtDecoder
                         .withSecretKey(secretKey)
                         .macAlgorithm(MacAlgorithm.HS512)

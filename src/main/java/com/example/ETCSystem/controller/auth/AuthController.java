@@ -1,10 +1,7 @@
 package com.example.ETCSystem.controller.auth;
 
 import com.example.ETCSystem.dto.ApiResponse;
-import com.example.ETCSystem.dto.request.AuthenticationRequest;
-import com.example.ETCSystem.dto.request.IntrospectRequest;
-import com.example.ETCSystem.dto.request.LogoutRequest;
-import com.example.ETCSystem.dto.request.UserRequest;
+import com.example.ETCSystem.dto.request.*;
 import com.example.ETCSystem.dto.response.AuthenticationResponse;
 import com.example.ETCSystem.dto.response.IntrospectResponse;
 import com.example.ETCSystem.dto.response.OtpResponse;
@@ -77,6 +74,16 @@ public class AuthController {
         return ApiResponse.<IntrospectResponse>builder()
                 .code(200)
                 .result(introspectResponse)
+                .build();
+    }
+
+    @PostMapping("/refresh-token")
+    public ApiResponse<AuthenticationResponse> refreshToken(@RequestBody RefreshTokenRequest request) throws ParseException, JOSEException {
+        AuthenticationResponse authenticationResponse = authenticationService.refreshToken(request);
+        return ApiResponse.<AuthenticationResponse>builder()
+                .code(200)
+                .message("Làm mới token thành công")
+                .result(authenticationResponse)
                 .build();
     }
 

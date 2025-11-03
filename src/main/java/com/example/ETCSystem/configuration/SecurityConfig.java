@@ -34,6 +34,7 @@ public class SecurityConfig {
             "/auth/login",
             "/auth/logout",
             "/auth/introspect",
+            "/auth/refresh-token",
             "/auth/otp/verify",
             "/auth/otp/resend",
 
