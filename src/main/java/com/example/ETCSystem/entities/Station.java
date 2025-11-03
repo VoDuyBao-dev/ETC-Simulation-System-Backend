@@ -33,4 +33,9 @@ public class Station {
 
     @OneToMany(mappedBy = "station")
     private List<RfidReader> readers;
+
+    public static Object builder() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'builder'");
+    }
 }

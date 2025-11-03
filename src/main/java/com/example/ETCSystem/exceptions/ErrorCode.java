@@ -36,7 +36,12 @@ public enum ErrorCode {
     USER_NOT_FOUND(1019, "user not found", HttpStatus.NOT_FOUND), 
     INVALID_STATUS(1020, "invalid account status", HttpStatus.BAD_REQUEST),
     CANNOT_DELETE_ADMIN(1021, "cannot block admin user", HttpStatus.FORBIDDEN),
-            
+                    
+    STATION_NOT_FOUND(2001, "station not found", HttpStatus.NOT_FOUND),
+    STATION_CODE_EXISTS(2002, "station code already exists", HttpStatus.BAD_REQUEST),
+    STATION_HAS_DEPENDENCIES(2003, "station has dependencies and cannot be deleted", HttpStatus.BAD_REQUEST),
+
+    
     ;
 
     private int code;
