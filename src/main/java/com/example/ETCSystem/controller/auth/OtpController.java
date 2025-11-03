@@ -34,7 +34,7 @@ public class OtpController {
             OtpResponse otpResponse = otpService.verifyOtp(otpRequest.getEmail(), otpRequest.getOtpCode());
             userService.activateUser(otpRequest.getEmail());
 
-            apiResponse.setCode(1000);
+            apiResponse.setCode(200);
             apiResponse.setMessage("Xác thực thành công. Tài khoản của bạn đã được kích hoạt.");
             apiResponse.setResult(otpResponse);
         }catch (AppException e){

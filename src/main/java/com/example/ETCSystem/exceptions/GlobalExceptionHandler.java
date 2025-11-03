@@ -1,6 +1,7 @@
 package com.example.ETCSystem.exceptions;
 import com.example.ETCSystem.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,7 +37,21 @@ public class GlobalExceptionHandler {
             exception.printStackTrace();
         }
 
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity
+                .status(errorCode.getHttpStatusCode())
+                .body(response);
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    ResponseEntity<ApiResponse> handlingAccessDeniedException(AccessDeniedException exception){
+        ErrorCode error = ErrorCode. UNAUTHORIZED;
+        return ResponseEntity.status(error.getHttpStatusCode()).body(
+                ApiResponse.builder()
+                        .code(error.getCode())
+                        .message(error.getMessage())
+                        .build()
+        );
+
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)

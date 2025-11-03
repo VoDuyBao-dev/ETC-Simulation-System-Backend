@@ -31,7 +31,7 @@ public class AdminController {
         log.info("role {}", authenticatedUser.getAuthorities());
 
         return ApiResponse.<List<UserResponse>>builder()
-                .code(1000)
+                .code(200)
                 .message("Lấy danh sách người dùng thành công")
                 .result(userService.getAllUsers())
                 .build();
