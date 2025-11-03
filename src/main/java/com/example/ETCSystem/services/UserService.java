@@ -1,9 +1,11 @@
 package com.example.ETCSystem.services;
 
-import com.example.ETCSystem.dto.request.AdminUpdateUserRequest;
-import com.example.ETCSystem.dto.request.UserCreationRequest;
+
+import com.example.ETCSystem.dto.request.UserRequest;
 import com.example.ETCSystem.dto.response.UserResponse;
 import com.example.ETCSystem.entities.User;
+import com.example.ETCSystem.enums.AccountStatus;
+import com.example.ETCSystem.enums.Role;
 import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.exceptions.ErrorCode;
 import com.example.ETCSystem.mapper.UserMapper;
@@ -11,105 +13,84 @@ import com.example.ETCSystem.repositories.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import org.springframework.dao.DataIntegrityViolationException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
-import com.example.ETCSystem.enums.Role;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
     UserMapper userMapper;
     UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
 
-    public UserResponse createUser(UserCreationRequest userCreationRequest) {
-        if (userRepository.existsByUsername(userCreationRequest.getUsername())) {
+    public UserResponse createUser(UserRequest userRequest) {
+
+        if(!userRequest.getPassword().equals(userRequest.getConfirmPassword())) {
+            throw new AppException(ErrorCode.PASSWORDS_DO_NOT_MATCH);
+        }
+        if(userRepository.existsByUsername(userRequest.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
-        User user = userMapper.toUser(userCreationRequest);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User user = userMapper.toUser(userRequest);
+        user.setEmail(userRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.CUSTOMER.name());
+        user.setRoles(roles);
+
+        log.info("user in createUser{}", user);
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    // Lấy danh sách tất cả người dùng, sắp xếp theo ngày tạo mới nhất
-    public List<UserResponse> getAllUsers() {
-        List<User> users = userRepository.findAllByOrderByCreatedAtDesc();
+//    kích hoạt tài khoản
+    public void activateUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        
+        log.info("user in activateUser{}", user);
 
-        if (users == null || users.isEmpty()) {
-            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        user.setEnabled(true);
+        user.setStatus(AccountStatus.ACTIVE);
+        try{
+            userRepository.save(user);
+        }catch(Exception e){
+            throw new AppException(ErrorCode.UPDATE_USER_FAILED, e);
         }
+
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public List<UserResponse> getAllUsers() {
+
+        List<User> users = userRepository.findAll();
         return userMapper.toUserResponseList(users);
     }
 
-    // Lấy thông tin người dùng theo id
-    public UserResponse getUserById(Long id) {
-        if (id == null || id <= 0) {
-            throw new AppException(ErrorCode.INVALID_KEY);
-        }
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        return userMapper.toUserResponse(user);
-    }
+    public UserResponse getMyInfo() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
 
-    // Cập nhật trạng thái tài khoản của người dùng
-    public UserResponse updateUserStatus(Long id, boolean status) {
-        if (id == null || id <= 0) {
-            throw new AppException(ErrorCode.INVALID_KEY);
-        }
-
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
-        user.setIsActive(status); // hàm setter cho thuộc tính status của lớp user
-        userRepository.save(user);
+        User user = userRepository.findByUsername(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         return userMapper.toUserResponse(user);
     }
 
-
-    // Cập nhật thông tin người dùng (Admin)
-    public UserResponse updateUserInfo(Long id, AdminUpdateUserRequest request) {
-        if (id == null || id <= 0) {
-            throw new AppException(ErrorCode.INVALID_KEY);
-        }
-
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
-        // Kiểm tra trùng email (nếu thay đổi)
-        if (request.getEmail() != null && !request.getEmail().equalsIgnoreCase(user.getEmail())) {
-            boolean exists = userRepository.existsByEmail(request.getEmail());
-            if (exists) {
-                throw new AppException(ErrorCode.INVALID_KEY); // Có thể tạo mã lỗi riêng EMAIL_ALREADY_EXISTS
-            }
-        }
-
-        // Kiểm tra role hợp lệ
-        if (request.getRole() != null) {
-            try {
-                Role newRole = Role.valueOf(request.getRole().toUpperCase());
-                user.setRole(newRole);
-            } catch (IllegalArgumentException e) {
-                throw new AppException(ErrorCode.INVALID_KEY);
-            }
-        }
-
-        // Cập nhật các trường còn lại
-        if (request.getFullName() != null) user.setFullName(request.getFullName());
-        if (request.getEmail() != null) user.setEmail(request.getEmail());
-        if (request.getPhone() != null) user.setPhone(request.getPhone());
-        if (request.getAddress() != null) user.setAddress(request.getAddress());
-        if (request.getIsActive() != null) user.setIsActive(request.getIsActive());
-
-        userRepository.save(user);
-
-        return userMapper.toUserResponse(user);
+    public void findByUsername(String username) {
+        userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
+
+
 }

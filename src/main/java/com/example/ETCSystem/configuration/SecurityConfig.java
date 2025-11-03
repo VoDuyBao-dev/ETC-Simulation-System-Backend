@@ -1,32 +1,75 @@
 package com.example.ETCSystem.configuration;
 
+import com.example.ETCSystem.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+
+import static org.springframework.security.oauth2.jwt.JwtTypeValidator.jwt;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    // ✅ 0. Cho phép tất cả request (tạm thời khi dev/test)
+    private final String[] PUBLIC_URLS = {
+            "/auth/register",
+            "/auth/login",
+            "/auth/otp/verify",
+            "/auth/otp/resend",
+
+    };
+
+    private final String[] PRIVATE_URLS = {
+            "/admin/users",
+
+    };
+
+    @Value("${jwt.secret}")
+    String jwtSecret;
+
     @Bean
-    @Order(0)
-    public SecurityFilterChain openSecurity(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable()) // tắt CSRF để test dễ hơn
+    public SecurityFilterChain openSecurity(HttpSecurity httpSecurity, JwtDecoder jwtDecoder) throws Exception {
+        httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // cho phép tất cả
+                        .requestMatchers(HttpMethod.POST, PUBLIC_URLS).permitAll()
+                        .anyRequest().authenticated()
                 )
-                .formLogin(form -> form.disable()) // tắt form login
-                .httpBasic(httpBasic -> httpBasic.disable()); // tắt HTTP Basic Auth
-        return http.build();
+
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt.decoder(jwtDecoder))
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+                )
+                .csrf(csrf -> csrf.disable());
+
+        return httpSecurity.build();
+    }
+
+
+    @Bean
+    JwtDecoder jwtDecoder() {
+        SecretKeySpec secretKey = new SecretKeySpec(jwtSecret.getBytes(), "HS256");
+        return NimbusJwtDecoder
+                .withSecretKey(secretKey)
+                .macAlgorithm(MacAlgorithm.HS256)
+                .build();
+
     }
 
     // Cấu hình cho ADMIN
@@ -81,9 +124,8 @@ public class SecurityConfig {
 //        return http.build();
 //    }
 
-    // Dùng password trống hoặc tắt mã hoá tạm thời (chỉ để DEV)
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance(); // không mã hóa (chỉ dùng tạm)
+        return new BCryptPasswordEncoder(10);
     }
 }
