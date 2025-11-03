@@ -1,6 +1,7 @@
 package com.example.ETCSystem.configuration;
 
 import com.example.ETCSystem.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,8 @@ public class SecurityConfig {
     private final String[] PUBLIC_URLS = {
             "/auth/register",
             "/auth/login",
+            "/auth/logout",
+            "/auth/introspect",
             "/auth/otp/verify",
             "/auth/otp/resend",
 
@@ -41,11 +44,11 @@ public class SecurityConfig {
 
     };
 
-    @Value("${jwt.secret}")
-    String jwtSecret;
+    @Autowired
+    private CustomJwtDecoder customJwtDecoder;
 
     @Bean
-    public SecurityFilterChain openSecurity(HttpSecurity httpSecurity, JwtDecoder jwtDecoder) throws Exception {
+    public SecurityFilterChain openSecurity(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, PUBLIC_URLS).permitAll()
@@ -53,7 +56,7 @@ public class SecurityConfig {
                 )
 
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.decoder(jwtDecoder))
+                        .jwt(jwt -> jwt.decoder(customJwtDecoder))
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 )
                 .csrf(csrf -> csrf.disable());
@@ -62,15 +65,7 @@ public class SecurityConfig {
     }
 
 
-    @Bean
-    JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKey = new SecretKeySpec(jwtSecret.getBytes(), "HS512");
-        return NimbusJwtDecoder
-                .withSecretKey(secretKey)
-                .macAlgorithm(MacAlgorithm.HS512)
-                .build();
 
-    }
 
     // Cấu hình cho ADMIN
 //    @Bean

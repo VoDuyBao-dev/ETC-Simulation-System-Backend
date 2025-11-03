@@ -2,14 +2,18 @@ package com.example.ETCSystem.controller.auth;
 
 import com.example.ETCSystem.dto.ApiResponse;
 import com.example.ETCSystem.dto.request.AuthenticationRequest;
+import com.example.ETCSystem.dto.request.IntrospectRequest;
+import com.example.ETCSystem.dto.request.LogoutRequest;
 import com.example.ETCSystem.dto.request.UserRequest;
 import com.example.ETCSystem.dto.response.AuthenticationResponse;
+import com.example.ETCSystem.dto.response.IntrospectResponse;
 import com.example.ETCSystem.dto.response.OtpResponse;
 import com.example.ETCSystem.dto.response.UserResponse;
 import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.services.AuthenticationService;
 import com.example.ETCSystem.services.OtpService;
 import com.example.ETCSystem.services.UserService;
+import com.nimbusds.jose.JOSEException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,6 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.text.ParseException;
 
 @RestController
 @RequestMapping("/auth")
@@ -55,4 +61,24 @@ public class AuthController {
                 .build();
 
     }
+
+    @PostMapping("/logout")
+    public  ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        authenticationService.logout(request);
+        return ApiResponse.<Void>builder()
+                .code(200)
+                .message("Đăng xuất thành công")
+                .build();
+    }
+
+    @PostMapping("/introspect")
+    public  ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request) throws ParseException, JOSEException {
+        IntrospectResponse introspectResponse = authenticationService.introspect(request);
+        return ApiResponse.<IntrospectResponse>builder()
+                .code(200)
+                .result(introspectResponse)
+                .build();
+    }
+
+
 }

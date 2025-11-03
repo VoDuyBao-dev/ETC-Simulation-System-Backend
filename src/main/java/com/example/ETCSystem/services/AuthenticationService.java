@@ -1,15 +1,24 @@
 package com.example.ETCSystem.services;
 
+import com.example.ETCSystem.configuration.TokenValidator;
+import com.example.ETCSystem.dto.ApiResponse;
 import com.example.ETCSystem.dto.request.AuthenticationRequest;
+import com.example.ETCSystem.dto.request.IntrospectRequest;
+import com.example.ETCSystem.dto.request.LogoutRequest;
 import com.example.ETCSystem.dto.request.UserRequest;
 import com.example.ETCSystem.dto.response.AuthenticationResponse;
+import com.example.ETCSystem.dto.response.IntrospectResponse;
+import com.example.ETCSystem.entities.InvalidatedToken;
 import com.example.ETCSystem.entities.User;
 import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.exceptions.ErrorCode;
+import com.example.ETCSystem.repositories.InvalidatedTokenRepository;
 import com.example.ETCSystem.repositories.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,10 +29,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +43,8 @@ import java.util.StringJoiner;
 public class AuthenticationService {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
+    InvalidatedTokenRepository invalidatedTokenRepository;
+    TokenValidator tokenValidator;
 
     @NonFinal
     @Value("${jwt.secret}")
@@ -63,6 +76,35 @@ public class AuthenticationService {
 
     }
 
+    public IntrospectResponse introspect(IntrospectRequest introspectRequest) throws ParseException, JOSEException {
+        String token = introspectRequest.getToken();
+        boolean isValid = true;
+
+        try{
+            tokenValidator.verifyToken(token);
+        }catch (AppException e){
+            isValid = false;
+        }
+
+        return IntrospectResponse.builder().valid(isValid).build();
+    }
+
+    public void logout (LogoutRequest logoutRequest) throws ParseException, JOSEException {
+        SignedJWT signToken = tokenValidator.verifyToken(logoutRequest.getToken());
+
+        String jti = signToken.getJWTClaimsSet().getJWTID();
+        Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
+
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(jti)
+                .expiryTime(expiryTime)
+                .build();
+
+        invalidatedTokenRepository.save(invalidatedToken);
+    }
+
+
+
     private String generateToken(User user) throws KeyLengthException {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
@@ -70,6 +112,8 @@ public class AuthenticationService {
                 .subject(user.getUsername())
                 .issueTime(new Date())
                 .expirationTime(new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
+//                ID của token để đánh dấu nó là duy nhất
+                .jwtID(UUID.randomUUID().toString())
                 .claim("scope", buildScopeClaim(user))
                 .build();
 
