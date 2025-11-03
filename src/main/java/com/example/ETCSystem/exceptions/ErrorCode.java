@@ -1,5 +1,7 @@
 package com.example.ETCSystem.exceptions;
 
+import org.springframework.http.HttpStatus;
+
 // Định nghĩa các mã lỗi và message của lỗi
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "uncategorized error"), //exception chưa được đinhj nghĩa hoặc loại ex chưa bắt
@@ -15,7 +17,10 @@ public enum ErrorCode {
     INVALID_OTP(1008, "invalid otp"),
     EMAIL_SEND_FAILED(1009, "email send failed"),
     OTP_SAVE_FAILED(1010, "otp save failed"),
-    OTP_EXPIRED(1011, "otp expired")
+    OTP_EXPIRED(1011, "otp expired"),
+            
+    CANNOT_DELETE_ADMIN(403, "Cannot delete admin account"),
+    CONSTRAINT_VIOLATION(3001, "Database constraint violation")
 
     ;
     private int code;
