@@ -32,16 +32,26 @@ public enum ErrorCode {
     INVALID_CREDENTIALS(1012, "invalid credentials", HttpStatus.UNAUTHORIZED),
     PASSWORDS_DO_NOT_MATCH(1013, "Password and confirm password do not match", HttpStatus.BAD_REQUEST),
 
+    // Admin manage users
     // CANNOT_DELETE_ADMIN(1018, "cannot delete admin user", HttpStatus.FORBIDDEN),
-    USER_NOT_FOUND(1019, "user not found", HttpStatus.NOT_FOUND), 
+    USER_NOT_FOUND(1019, "user not found", HttpStatus.NOT_FOUND),
     INVALID_STATUS(1020, "invalid account status", HttpStatus.BAD_REQUEST),
     CANNOT_DELETE_ADMIN(1021, "cannot block admin user", HttpStatus.FORBIDDEN),
-                    
+    EMAIL_ALREADY_EXISTS(1022, "email already exists", HttpStatus.BAD_REQUEST),
+    USER_STATUS_UNCHANGED(1023, "user status is unchanged", HttpStatus.BAD_REQUEST),
+
+    // Admin manage stations
     STATION_NOT_FOUND(2001, "station not found", HttpStatus.NOT_FOUND),
     STATION_CODE_EXISTS(2002, "station code already exists", HttpStatus.BAD_REQUEST),
     STATION_HAS_DEPENDENCIES(2003, "station has dependencies and cannot be deleted", HttpStatus.BAD_REQUEST),
+    STATION_STATUS_UNCHANGED(2004, "station status is unchanged", HttpStatus.BAD_REQUEST),
+                    
+    // Admin manage vehicles
+    VEHICLE_NOT_FOUND(3001, "vehicle not found", HttpStatus.NOT_FOUND),
+    VEHICLE_ALREADY_EXISTS(3002, "vehicle already exists", HttpStatus.BAD_REQUEST),
+    INVALID_VEHICLE_TYPE(3003, "invalid vehicle type", HttpStatus.BAD_REQUEST),
+            
 
-    
     ;
 
     private int code;

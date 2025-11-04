@@ -68,7 +68,7 @@ public class AdminUserService {
 
         // Nếu status không thay đổi thì bỏ qua
         if (user.getStatus() == statusEnum) {
-            throw new AppException(ErrorCode.INVALID_STATUS);
+            throw new AppException(ErrorCode.USER_STATUS_UNCHANGED);
         }
 
         // Cập nhật và lưu
@@ -91,7 +91,7 @@ public class AdminUserService {
         if (request.getEmail() != null && !request.getEmail().equalsIgnoreCase(user.getEmail())) {
             boolean exists = userRepository.existsByEmail(request.getEmail());
             if (exists) {
-                throw new AppException(ErrorCode.INVALID_KEY); // Có thể tạo mã lỗi riêng EMAIL_ALREADY_EXISTS
+                throw new AppException(ErrorCode.EMAIL_ALREADY_EXISTS);
             }
         }
 

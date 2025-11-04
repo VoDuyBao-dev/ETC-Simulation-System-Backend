@@ -1,15 +1,23 @@
 package com.example.ETCSystem.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+import lombok.*;
 import com.example.ETCSystem.enums.StationStatus;
 
 @Entity
 @Table(name = "stations")
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Station {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

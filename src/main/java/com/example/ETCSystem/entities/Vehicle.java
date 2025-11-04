@@ -8,10 +8,15 @@ import com.example.ETCSystem.enums.VehicleType;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.*;
 
 @Entity
 @Table(name = "vehicles")
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

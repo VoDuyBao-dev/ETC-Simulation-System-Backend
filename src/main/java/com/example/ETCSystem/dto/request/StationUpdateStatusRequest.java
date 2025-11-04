@@ -7,11 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StationUpdateRequest {
-
-    private String name;
-    private String address;
-    private Double latitude;
-    private Double longitude;
+public class StationUpdateStatusRequest {
     private String status;
 }

@@ -3,11 +3,13 @@ package com.example.ETCSystem.controller.admin;
 import com.example.ETCSystem.dto.ApiResponse;
 import com.example.ETCSystem.dto.request.StationCreateRequest;
 import com.example.ETCSystem.dto.request.StationUpdateRequest;
+import com.example.ETCSystem.dto.request.StationUpdateStatusRequest;
 import com.example.ETCSystem.dto.response.StationResponse;
+import com.example.ETCSystem.dto.response.StationUpdateStatusResponse;
 import com.example.ETCSystem.services.StationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+// import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/stations")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+// @PreAuthorize("hasRole('ADMIN')")
 public class AdminStationController {
 
     private final StationService stationService;
@@ -49,7 +51,8 @@ public class AdminStationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<StationResponse>> updateStation(@PathVariable Long id, @RequestBody StationUpdateRequest request) {
+    public ResponseEntity<ApiResponse<StationResponse>> updateStation(@PathVariable Long id,
+            @RequestBody StationUpdateRequest request) {
         return ResponseEntity.ok(ApiResponse.<StationResponse>builder()
                 .code(200)
                 .message("Cập nhật trạm thành công")
@@ -57,12 +60,14 @@ public class AdminStationController {
                 .build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteStation(@PathVariable Long id) {
-        stationService.deleteStation(id);
-        return ResponseEntity.ok(ApiResponse.<Void>builder()
+    @PutMapping("/{id}/status")
+    public ResponseEntity<ApiResponse<StationUpdateStatusResponse>> updateStationStatus(@PathVariable Long id,
+            @RequestBody StationUpdateStatusRequest status) {
+        StationUpdateStatusResponse updatedStation = stationService.updateStationStatus(id, status.getStatus());
+        return ResponseEntity.ok(ApiResponse.<StationUpdateStatusResponse>builder()
                 .code(200)
-                .message("Xóa trạm thành công")
+                .message("Cập nhật trạng thái trạm thành công")
+                .result(updatedStation)
                 .build());
     }
 }

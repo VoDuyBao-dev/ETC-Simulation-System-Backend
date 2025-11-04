@@ -51,7 +51,6 @@ public class AdminController {
     // }
 
     // Lấy danh sách tất cả người dùng
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -70,7 +69,6 @@ public class AdminController {
     }
 
     // Lấy thông tin của 1 người dùng theo id
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable Long id) {
         UserResponse user = adminUserService.getUserById(id); // ném AppException nếu không tồn tại
@@ -82,7 +80,6 @@ public class AdminController {
     }
 
     // Cập nhật trạng thái tài khoản của người dùng
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/users/{id}/status")
     public ResponseEntity<ApiResponse<UserResponse>> updateUserStatus(
             @PathVariable Long id,
@@ -99,7 +96,6 @@ public class AdminController {
     }
 
     // Cập nhật thông tin người dùng (Admin chỉnh sửa thông tin người dùng)
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/users/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> updateUserInfo(
             @PathVariable Long id,
