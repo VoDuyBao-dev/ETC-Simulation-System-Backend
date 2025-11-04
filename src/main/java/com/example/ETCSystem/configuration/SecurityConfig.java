@@ -47,78 +47,35 @@ public class SecurityConfig {
 
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
+    @Autowired
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain openSecurity(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, PUBLIC_URLS).permitAll()
+                        .requestMatchers("/admin/**").hasAuthority("SCOPE_ADMIN")
+                        .requestMatchers("/customer/**").hasAuthority("SCOPE_CUSTOMER")
                         .anyRequest().authenticated()
                 )
 
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.decoder(customJwtDecoder))
-                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                )
+
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .csrf(csrf -> csrf.disable());
 
         return httpSecurity.build();
     }
-
-
-
-
-    // Cấu hình cho ADMIN
-//    @Bean
-//    @Order(1)
-//    public SecurityFilterChain adminSecurity(HttpSecurity http) throws Exception {
-//        http
-//                .securityMatcher("/admin/**") // chỉ áp dụng cho đường dẫn bắt đầu /admin
-//                .csrf(csrf -> csrf.disable())
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/admin/login").permitAll()
-//                        .anyRequest().hasRole("ADMIN")
-//                )
-//                .formLogin(form -> form
-//                        .loginPage("/admin/login")
-//                        .loginProcessingUrl("/admin/login")
-//                        .defaultSuccessUrl("/admin/dashboard", true)
-//                        .failureUrl("/admin/login?error=true")
-//                        .permitAll()
-//                )
-//                .logout(logout -> logout
-//                        .logoutUrl("/admin/logout")
-//                        .logoutSuccessUrl("/admin/login?logout=true")
-//                        .permitAll()
-//                );
-//        return http.build();
-//    }
-//
-//    // Cấu hình cho CUSTOMER
-//    @Bean
-//    @Order(2)
-//    public SecurityFilterChain customerSecurity(HttpSecurity http) throws Exception {
-//        http
-//                .securityMatcher("/customer/**") // chỉ áp dụng cho /customer/**
-//                .csrf(csrf -> csrf.disable())
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/customer/login").permitAll()
-//                        .anyRequest().hasRole("CUSTOMER")
-//                )
-//                .formLogin(form -> form
-//                        .loginPage("/customer/login")
-//                        .loginProcessingUrl("/customer/login")
-//                        .defaultSuccessUrl("/customer/dashboard", true)
-//                        .failureUrl("/customer/login?error=true")
-//                        .permitAll()
-//                )
-//                .logout(logout -> logout
-//                        .logoutUrl("/customer/logout")
-//                        .logoutSuccessUrl("/customer/login?logout=true")
-//                        .permitAll()
-//                );
-//        return http.build();
-//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

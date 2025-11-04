@@ -70,7 +70,7 @@ public class UserService {
 
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+
     public List<UserResponse> getAllUsers() {
 
         List<User> users = userRepository.findAll();
@@ -85,6 +85,21 @@ public class UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         return userMapper.toUserResponse(user);
+    }
+
+    public UserResponse updateUserInfo(UserRequest userRequest) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+//        update user info
+        userMapper.updateUserFromRequest(userRequest, user);
+        try{
+            user = userRepository.save(user);
+        }catch(Exception e){
+            throw new AppException(ErrorCode.UPDATE_USER_FAILED, e);
+        }
+        return userMapper.toUserResponse(user);
+
     }
 
     public void findByUsername(String username) {
