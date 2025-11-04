@@ -29,4 +29,18 @@ public class UserController {
                 .build();
     }
 
+    @PatchMapping("/updateInfo")
+    public ApiResponse<UserResponse> updateUserInfo(@RequestBody UserRequest userRequest) {
+        log.info("userRequest {}:", userRequest.toString());
+        UserResponse userResponse = userService.updateUserInfo(userRequest);
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Cập nhật thông tin người dùng thành công")
+                .result(userResponse)
+                .build();
+    }
+
+
+
+
 }
