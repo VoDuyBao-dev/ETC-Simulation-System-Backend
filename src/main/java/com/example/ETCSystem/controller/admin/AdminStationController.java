@@ -1,73 +1,54 @@
 package com.example.ETCSystem.controller.admin;
 
-import com.example.ETCSystem.dto.ApiResponse;
-import com.example.ETCSystem.dto.request.StationCreateRequest;
-import com.example.ETCSystem.dto.request.StationUpdateRequest;
-import com.example.ETCSystem.dto.request.StationUpdateStatusRequest;
-import com.example.ETCSystem.dto.response.StationResponse;
-import com.example.ETCSystem.dto.response.StationUpdateStatusResponse;
-import com.example.ETCSystem.services.StationService;
+import com.example.ETCSystem.dto.request.AdminCreateStationRequest;
+import com.example.ETCSystem.dto.request.AdminUpdateStationRequest;
+import com.example.ETCSystem.dto.request.AdminUpdateVehicleRequest;
+import com.example.ETCSystem.dto.response.AdminStationResponse;
+import com.example.ETCSystem.dto.response.AdminVehicleResponse;
+import com.example.ETCSystem.services.AdminStationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-// import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/admin/stations")
 @RequiredArgsConstructor
-// @PreAuthorize("hasRole('ADMIN')")
 public class AdminStationController {
 
-    private final StationService stationService;
+    private final AdminStationService adminStationService;
 
+    // Hiển thị danh sách trạm
     @GetMapping
-    public ResponseEntity<ApiResponse<List<StationResponse>>> getAllStations() {
-        var response = ApiResponse.<List<StationResponse>>builder()
-                .code(200)
-                .message("Danh sách trạm thu phí")
-                .result(stationService.getAllStations())
-                .build();
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Page<AdminStationResponse>> getAllStations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return ResponseEntity.ok(adminStationService.getAllStations(page, size));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<StationResponse>> getStationById(@PathVariable Long id) {
-        return ResponseEntity.ok(ApiResponse.<StationResponse>builder()
-                .code(200)
-                .message("Thông tin trạm")
-                .result(stationService.getStationById(id))
-                .build());
-    }
-
+    // Thêm trạm mới
     @PostMapping
-    public ResponseEntity<ApiResponse<StationResponse>> createStation(@RequestBody StationCreateRequest request) {
-        return ResponseEntity.ok(ApiResponse.<StationResponse>builder()
-                .code(201)
-                .message("Tạo trạm thành công")
-                .result(stationService.createStation(request))
-                .build());
+    public ResponseEntity<AdminStationResponse> createStation(
+            @Valid @RequestBody AdminCreateStationRequest request) {
+        return ResponseEntity.ok(adminStationService.createStation(request));
     }
 
+    // Sửa thông tin
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<StationResponse>> updateStation(@PathVariable Long id,
-            @RequestBody StationUpdateRequest request) {
-        return ResponseEntity.ok(ApiResponse.<StationResponse>builder()
-                .code(200)
-                .message("Cập nhật trạm thành công")
-                .result(stationService.updateStation(id, request))
-                .build());
+    public ResponseEntity<AdminStationResponse> updateStation(
+            @Valid @PathVariable Long id,
+            @RequestBody AdminUpdateStationRequest request) {
+        return ResponseEntity.ok(adminStationService.updateStation(id, request));
     }
 
+    // Sửa trạng thái trạm
     @PutMapping("/{id}/status")
-    public ResponseEntity<ApiResponse<StationUpdateStatusResponse>> updateStationStatus(@PathVariable Long id,
-            @RequestBody StationUpdateStatusRequest status) {
-        StationUpdateStatusResponse updatedStation = stationService.updateStationStatus(id, status.getStatus());
-        return ResponseEntity.ok(ApiResponse.<StationUpdateStatusResponse>builder()
-                .code(200)
-                .message("Cập nhật trạng thái trạm thành công")
-                .result(updatedStation)
-                .build());
+    public ResponseEntity<AdminStationResponse> updateStationStatus(
+            @Valid @PathVariable Long id,
+            @RequestBody AdminUpdateStationRequest request) {
+        return ResponseEntity.ok(adminStationService.updateStationStatus(id, request));
     }
 }
+

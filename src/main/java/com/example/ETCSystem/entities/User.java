@@ -14,9 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-
-import com.example.ETCSystem.enums.Role;
-
 @Entity
 @Table(name = "users")
 @Data
@@ -32,7 +29,7 @@ public class User {
     private String username;
     @Column(nullable = false)
     private String password;
-    private String fullName;
+    private String fullname;
     private String email;
     private String phone;
     private String address;

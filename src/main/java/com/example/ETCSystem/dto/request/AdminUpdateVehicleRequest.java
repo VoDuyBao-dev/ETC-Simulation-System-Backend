@@ -1,6 +1,6 @@
 package com.example.ETCSystem.dto.request;
 
-// import com.example.ETCSystem.enums.AccountStatus;
+// import com.example.ETCSystem.enums.VehicleStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -9,10 +9,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AdminUpdateUserRequest {
+public class AdminUpdateVehicleRequest {
 
-    // @NotNull(message = "USER_REQUIRED")
-    // private Long userId;
+    // @NotNull(message = "VEHICLE_ID_REQUIRED")
+    // private Long vehicleId;
 
     @NotNull(message = "STATUS_REQUIRED")
     private String status;

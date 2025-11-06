@@ -57,14 +57,14 @@
 		</dependency>
 
 
-		<!-- ✅ MapStruct -->
+		<!-- MapStruct -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
 			<version>${mapstruct.version}</version>
 		</dependency>
 
-		<!-- ✅ MapStruct Processor -->
+		<!-- MapStruct Processor -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct-processor</artifactId>

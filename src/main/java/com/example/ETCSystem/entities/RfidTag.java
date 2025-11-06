@@ -5,9 +5,15 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 import com.example.ETCSystem.enums.TagStatus;
+import lombok.*;
 
 @Entity
 @Table(name = "rfid_tags")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 
 public class RfidTag {
     @Id

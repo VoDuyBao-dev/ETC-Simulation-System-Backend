@@ -34,23 +34,23 @@ public enum ErrorCode {
 
     // Admin manage users
     // CANNOT_DELETE_ADMIN(1018, "cannot delete admin user", HttpStatus.FORBIDDEN),
-    USER_NOT_FOUND(1019, "user not found", HttpStatus.NOT_FOUND),
-    INVALID_STATUS(1020, "invalid account status", HttpStatus.BAD_REQUEST),
-    CANNOT_DELETE_ADMIN(1021, "cannot block admin user", HttpStatus.FORBIDDEN),
-    EMAIL_ALREADY_EXISTS(1022, "email already exists", HttpStatus.BAD_REQUEST),
-    USER_STATUS_UNCHANGED(1023, "user status is unchanged", HttpStatus.BAD_REQUEST),
+    USER_NOT_FOUND(1019, "not found user in database", HttpStatus.NOT_FOUND),
+    USER_REUIRED(1020, "user id is required", HttpStatus.BAD_REQUEST),
+    STATUS_REQUIRED(1021, "status is required", HttpStatus.BAD_REQUEST),
+    INVALID_PAGINATION(1022, "invalid pagination parameters", HttpStatus.BAD_REQUEST),
+    CANNOT_CHANGE_ADMIN_STATUS(1023, "cannot change status of admin user", HttpStatus.FORBIDDEN),
+    INVALID_STATUS(1024, "Status not valid", HttpStatus.BAD_REQUEST),
 
     // Admin manage stations
-    STATION_NOT_FOUND(2001, "station not found", HttpStatus.NOT_FOUND),
-    STATION_CODE_EXISTS(2002, "station code already exists", HttpStatus.BAD_REQUEST),
-    STATION_HAS_DEPENDENCIES(2003, "station has dependencies and cannot be deleted", HttpStatus.BAD_REQUEST),
-    STATION_STATUS_UNCHANGED(2004, "station status is unchanged", HttpStatus.BAD_REQUEST),
-                    
+    STATION_NOT_FOUND(1300, "Station not found", HttpStatus.NOT_FOUND),
+    STATION_CODE_EXISTS(1301, "Station code already exists", HttpStatus.CONFLICT),
+
     // Admin manage vehicles
-    VEHICLE_NOT_FOUND(3001, "vehicle not found", HttpStatus.NOT_FOUND),
-    VEHICLE_ALREADY_EXISTS(3002, "vehicle already exists", HttpStatus.BAD_REQUEST),
-    INVALID_VEHICLE_TYPE(3003, "invalid vehicle type", HttpStatus.BAD_REQUEST),
-            
+    VEHICLE_NOT_FOUND(1200, "Vehicle not found", HttpStatus.NOT_FOUND),
+    INVALID_VEHICLE_STATUS(1201, "Invalid vehicle status", HttpStatus.BAD_REQUEST),
+    VEHICLE_ALREADY_ACTIVE(1202, "Vehicle is already active", HttpStatus.CONFLICT),
+    VEHICLE_ALREADY_INACTIVE(1203, "Vehicle is already inactive", HttpStatus.CONFLICT),
+    VEHICLE_ID_REQUIRED(1204, "vehicle id is required", HttpStatus.BAD_REQUEST),
 
     ;
 

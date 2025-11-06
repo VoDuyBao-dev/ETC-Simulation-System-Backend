@@ -1,5 +1,6 @@
 package com.example.ETCSystem.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -7,7 +8,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StationUpdateRequest {
+public class AdminUpdateStationRequest {
+
+    @NotNull(message = "STATION_REQUIED")
+    private Long id;
 
     private String name;
     private String address;
