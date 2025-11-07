@@ -3,6 +3,7 @@ package com.example.ETCSystem.enums;
 public enum TagStatus {
     ACTIVE,
     BLOCKED,
-    INACTIVE
+    INACTIVE,
+    LOST
 }
 // active, lost, blocked, inactive

@@ -2,12 +2,16 @@ package com.example.ETCSystem.services;
 
 import com.example.ETCSystem.dto.request.AdminUpdateVehicleRequest;
 import com.example.ETCSystem.dto.response.AdminVehicleResponse;
+import com.example.ETCSystem.entities.RfidTag;
 import com.example.ETCSystem.entities.Vehicle;
+import com.example.ETCSystem.enums.TagStatus;
 import com.example.ETCSystem.enums.VehicleStatus;
 import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.exceptions.ErrorCode;
 import com.example.ETCSystem.mapper.AdminVehicleMapper;
 import com.example.ETCSystem.repositories.AdminVehicleRepository;
+import com.example.ETCSystem.repositories.RfidTagRepository;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +28,7 @@ public class AdminVehicleService {
 
     private final AdminVehicleRepository adminVehicleRepository;
     private final AdminVehicleMapper adminVehicleMapper;
+    private final RfidTagRepository rfidTagRepository;
 
     public Page<AdminVehicleResponse> getAllVehicles(int page, int size) {
         if (page < 0 || size <= 0) {
@@ -41,14 +46,22 @@ public class AdminVehicleService {
         return new PageImpl<>(responses, pageRequest, vehiclePage.getTotalElements());
     }
 
-
     public AdminVehicleResponse updateVehicleStatus(Long id, AdminUpdateVehicleRequest request) {
         Vehicle vehicle = adminVehicleRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
-
+        RfidTag tag = rfidTagRepository.findByVehicle(vehicle);
         try {
             VehicleStatus newStatus = VehicleStatus.valueOf(request.getStatus().toUpperCase());
             vehicle.setStatus(newStatus);
+            if (tag != null) {
+                if (newStatus == VehicleStatus.INACTIVE) {
+                    tag.setStatus(TagStatus.INACTIVE);
+                } else if (newStatus == VehicleStatus.ACTIVE && tag.getStatus() == TagStatus.INACTIVE) {
+                    // Nếu xe được kích hoạt lại, cho phép mở tag hoạt động trở lại
+                    tag.setStatus(TagStatus.ACTIVE);
+                }
+                rfidTagRepository.save(tag);
+            }
         } catch (IllegalArgumentException e) {
             throw new AppException(ErrorCode.INVALID_STATUS);
         }
