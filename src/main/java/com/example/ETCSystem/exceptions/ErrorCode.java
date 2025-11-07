@@ -52,6 +52,12 @@ public enum ErrorCode {
     VEHICLE_ALREADY_INACTIVE(1203, "Vehicle is already inactive", HttpStatus.CONFLICT),
     VEHICLE_ID_REQUIRED(1204, "vehicle id is required", HttpStatus.BAD_REQUEST),
 
+    // RFID_Tag
+    RFID_TAG_NOT_FOUND(1210, "RFID not found", HttpStatus.BAD_REQUEST),
+    // RFID_Reader
+    READER_UID_EXISTS(1220, "rfid_reader is already exists", HttpStatus.CONFLICT),
+    READER_NOT_FOUND(1221, "rfid_reader not found", HttpStatus.BAD_REQUEST),
+
     ;
 
     private int code;

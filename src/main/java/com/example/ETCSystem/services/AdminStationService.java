@@ -2,13 +2,9 @@ package com.example.ETCSystem.services;
 
 import com.example.ETCSystem.dto.request.AdminCreateStationRequest;
 import com.example.ETCSystem.dto.request.AdminUpdateStationRequest;
-import com.example.ETCSystem.dto.request.AdminUpdateVehicleRequest;
 import com.example.ETCSystem.dto.response.AdminStationResponse;
-import com.example.ETCSystem.dto.response.AdminVehicleResponse;
 import com.example.ETCSystem.entities.Station;
-import com.example.ETCSystem.entities.Vehicle;
 import com.example.ETCSystem.enums.StationStatus;
-import com.example.ETCSystem.enums.VehicleStatus;
 import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.exceptions.ErrorCode;
 import com.example.ETCSystem.mapper.AdminStationMapper;

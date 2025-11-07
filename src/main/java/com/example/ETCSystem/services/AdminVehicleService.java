@@ -3,7 +3,6 @@ package com.example.ETCSystem.services;
 import com.example.ETCSystem.dto.request.AdminUpdateVehicleRequest;
 import com.example.ETCSystem.dto.response.AdminVehicleResponse;
 import com.example.ETCSystem.entities.Vehicle;
-import com.example.ETCSystem.enums.AccountStatus;
 import com.example.ETCSystem.enums.VehicleStatus;
 import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.exceptions.ErrorCode;
@@ -51,7 +50,7 @@ public class AdminVehicleService {
             VehicleStatus newStatus = VehicleStatus.valueOf(request.getStatus().toUpperCase());
             vehicle.setStatus(newStatus);
         } catch (IllegalArgumentException e) {
-            throw new AppException(ErrorCode.INVALID_STATUS); // tự định nghĩa thêm trong ErrorCode
+            throw new AppException(ErrorCode.INVALID_STATUS);
         }
         adminVehicleRepository.save(vehicle);
 
