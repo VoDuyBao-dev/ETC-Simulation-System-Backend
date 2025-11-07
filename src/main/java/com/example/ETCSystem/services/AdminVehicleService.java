@@ -49,7 +49,9 @@ public class AdminVehicleService {
     public AdminVehicleResponse updateVehicleStatus(Long id, AdminUpdateVehicleRequest request) {
         Vehicle vehicle = adminVehicleRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
-        RfidTag tag = rfidTagRepository.findByVehicle(vehicle);
+        RfidTag tag = rfidTagRepository.findByVehicleId(id)
+                .orElseThrow(() -> new AppException(ErrorCode.RFID_TAG_NOT_FOUND));
+            
         try {
             VehicleStatus newStatus = VehicleStatus.valueOf(request.getStatus().toUpperCase());
             vehicle.setStatus(newStatus);
