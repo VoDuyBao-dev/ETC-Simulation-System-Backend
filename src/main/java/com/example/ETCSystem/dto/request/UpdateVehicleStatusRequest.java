@@ -1,7 +1,5 @@
 package com.example.ETCSystem.dto.request;
 
-import com.example.ETCSystem.enums.VehicleStatus;
-
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 

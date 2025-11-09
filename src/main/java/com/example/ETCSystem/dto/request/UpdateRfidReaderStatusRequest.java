@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class UpdateRfidReaderStatusRequest {
 
-    @NotNull(message = "isActive must not be null")
+    @NotNull(message = "IS_ACTIVATE_REQUIRED")
     private Boolean isActive;
 }

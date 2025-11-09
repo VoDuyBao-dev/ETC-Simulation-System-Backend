@@ -57,7 +57,10 @@ public enum ErrorCode {
     // RFID_Reader
     READER_UID_EXISTS(1220, "rfid_reader is already exists", HttpStatus.CONFLICT),
     READER_NOT_FOUND(1221, "rfid_reader not found", HttpStatus.BAD_REQUEST),
-
+    READER_ID_REQUIRED(1222, "Reader UID cannot be blank", HttpStatus.BAD_REQUEST),
+    STATION_ID_REQUIRED(1223, "Station ID cannot be null", HttpStatus.BAD_REQUEST),
+    PLATE_NUMBER_REQUIRED(3002, "Plate number is required", HttpStatus.BAD_REQUEST),
+    VEHICLE_TYPE_REQUIRED(3003, "Vehicle type is required", HttpStatus.BAD_REQUEST),
     ;
 
     private int code;

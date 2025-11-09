@@ -7,11 +7,11 @@ import lombok.Data;
 @Data
 public class CreateRfidReaderRequest {
 
-    @NotBlank(message = "Reader UID cannot be blank")
+    @NotBlank(message = "READER_ID_REQUIRED")
     private String readerUid;
 
     private String description;
 
-    @NotNull(message = "Station ID cannot be null")
+    @NotNull(message = "STATION_ID_REQUIRED")
     private Long stationId;
 }

@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 import com.example.ETCSystem.dto.request.RegisterVehicleRequest;
 import com.example.ETCSystem.dto.request.UpdateVehicleStatusRequest;
+import com.example.ETCSystem.dto.response.PagedResponse;
 import com.example.ETCSystem.dto.response.VehicleResponse;
 import com.example.ETCSystem.entities.RfidTag;
 import com.example.ETCSystem.entities.User;
@@ -104,20 +105,24 @@ public class VehicleService {
         return vehicleMapper.toVehicleResponse(vehicle);
     }
 
-    public Page<VehicleResponse> getUserVehicles(Long userId, int page, int size) {
+    public PagedResponse<VehicleResponse> getUserVehicles(Long userId, int page, int size) {
         if (page < 0 || size <= 0) {
             throw new AppException(ErrorCode.INVALID_PAGINATION);
         }
         PageRequest pageable = PageRequest.of(page, size);
-        Page<Vehicle> vehicles = vehicleRepository.findByUserId(userId, pageable);
-        List<VehicleResponse> responses = vehicles.getContent().stream()
-                .map(vehicle -> {
-                    VehicleResponse res = vehicleMapper.toVehicleResponse(vehicle);
-                    return res;
-                })
-                .collect(Collectors.toList());
+        Page<Vehicle> vehicles = vehicleRepository.findByUserUserId(userId, pageable);
+        List<VehicleResponse> responses = vehicles.getContent()
+            .stream()
+            .map(vehicleMapper::toVehicleResponse)
+            .toList();
 
-        return new PageImpl<>(responses, pageable, vehicles.getTotalElements());
+    return PagedResponse.of(
+            responses,
+            vehicles.getNumber(),
+            vehicles.getSize(),
+            vehicles.getTotalElements(),
+            vehicles.getTotalPages()
+    );
     }
 
 }

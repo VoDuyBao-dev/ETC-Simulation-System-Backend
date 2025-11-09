@@ -2,17 +2,16 @@ package com.example.ETCSystem.controller.customer;
 
 import lombok.*;
 import com.example.ETCSystem.services.VehicleService;
+import com.example.ETCSystem.dto.response.PagedResponse;
 import com.example.ETCSystem.dto.response.VehicleResponse;
 import com.example.ETCSystem.dto.request.RegisterVehicleRequest;
 import com.example.ETCSystem.dto.request.UpdateVehicleStatusRequest;
 
-import org.springframework.data.domain.Page;
+// import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-
-
 
 @RestController
 @RequestMapping("/user/vehicles")
@@ -22,8 +21,9 @@ public class VehicleController {
     private final VehicleService vehicleService;
 
     @PostMapping("/register")
-    public ResponseEntity<VehicleResponse> register(@RequestBody RegisterVehicleRequest request,
-                                                 @RequestParam Long userId) {
+    public ResponseEntity<VehicleResponse> register(
+            @RequestBody RegisterVehicleRequest request,
+            @RequestParam Long userId) {
         return ResponseEntity.ok(vehicleService.registerVehicle(userId, request));
     }
 
@@ -40,13 +40,15 @@ public class VehicleController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<VehicleResponse> updateStatus(@PathVariable Long id,
-                                                     @RequestBody UpdateVehicleStatusRequest request) {
+    public ResponseEntity<VehicleResponse> updateStatus(
+            @Valid @PathVariable Long id, @RequestBody UpdateVehicleStatusRequest request) {
         return ResponseEntity.ok(vehicleService.updateVehicleStatus(id, request));
     }
 
     @GetMapping
-    public ResponseEntity<Page<VehicleResponse>> getUserVehicles(@RequestParam Long userId, @RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<PagedResponse<VehicleResponse>> getUserVehicles(
+            @RequestParam Long userId,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
         return ResponseEntity.ok(vehicleService.getUserVehicles(userId, page, size));
     }
