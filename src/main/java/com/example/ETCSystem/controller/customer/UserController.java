@@ -19,26 +19,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     UserService userService;
 
-    @GetMapping("/myInfo")
-    public ApiResponse<UserResponse> getMyInfo() {
-        UserResponse userResponse = userService.getMyInfo();
-        return ApiResponse.<UserResponse>builder()
-                .code(200)
-                .message("Lấy thông tin người dùng thành công")
-                .result(userResponse)
-                .build();
-    }
 
-    @PatchMapping("/updateInfo")
-    public ApiResponse<UserResponse> updateUserInfo(@RequestBody UserRequest userRequest) {
-        log.info("userRequest {}:", userRequest.toString());
-        UserResponse userResponse = userService.updateUserInfo(userRequest);
-        return ApiResponse.<UserResponse>builder()
-                .code(200)
-                .message("Cập nhật thông tin người dùng thành công")
-                .result(userResponse)
-                .build();
-    }
+
+
 
 
 
