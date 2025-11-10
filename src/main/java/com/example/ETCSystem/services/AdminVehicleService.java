@@ -17,7 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+// import org.springframework.data.domain.PageImpl;
+import com.example.ETCSystem.dto.response.PagedResponse;
 
 import java.util.stream.Collectors;
 import java.util.List;
@@ -30,20 +31,24 @@ public class AdminVehicleService {
     private final AdminVehicleMapper adminVehicleMapper;
     private final RfidTagRepository rfidTagRepository;
 
-    public Page<AdminVehicleResponse> getAllVehicles(int page, int size) {
+    public PagedResponse<AdminVehicleResponse> getAllVehicles(int page, int size) {
         if (page < 0 || size <= 0) {
             throw new AppException(ErrorCode.INVALID_PAGINATION);
         }
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Vehicle> vehiclePage = adminVehicleRepository.findAll(pageRequest);
 
-        List<AdminVehicleResponse> responses = vehiclePage.getContent().stream()
-                .map(vehicle -> {
-                    return adminVehicleMapper.toAdminVehicleResponse(vehicle);
-                })
-                .collect(Collectors.toList());
+        List<AdminVehicleResponse> responses = vehiclePage.getContent()
+            .stream()
+            .map(adminVehicleMapper::toAdminVehicleResponse)
+            .toList();
 
-        return new PageImpl<>(responses, pageRequest, vehiclePage.getTotalElements());
+        return PagedResponse.of(
+                responses,
+                vehiclePage.getNumber(),
+                vehiclePage.getSize(),
+                vehiclePage.getTotalElements(),
+                vehiclePage.getTotalPages());
     }
 
     public AdminVehicleResponse updateVehicleStatus(Long id, AdminUpdateVehicleRequest request) {

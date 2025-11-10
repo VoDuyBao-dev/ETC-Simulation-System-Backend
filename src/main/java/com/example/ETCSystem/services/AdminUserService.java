@@ -2,6 +2,7 @@ package com.example.ETCSystem.services;
 
 import com.example.ETCSystem.dto.request.AdminUpdateUserRequest;
 import com.example.ETCSystem.dto.response.AdminUserResponse;
+import com.example.ETCSystem.dto.response.PagedResponse;
 import com.example.ETCSystem.entities.User;
 import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.exceptions.ErrorCode;
@@ -25,19 +26,23 @@ public class AdminUserService {
     private final AdminUserMapper userMapper;
     private final AdminUserRepository userRepository;
 
-    public Page<AdminUserResponse> getAllUsers(int page, int size) {
+    public PagedResponse<AdminUserResponse> getAllUsers(int page, int size) {
         if (page < 0 || size <= 0) {
             throw new AppException(ErrorCode.INVALID_PAGINATION);
         }
         Page<User> userPage = userRepository.findAll(PageRequest.of(page, size));
 
-        List<AdminUserResponse> userResponses = userPage.getContent().stream()
-                .map(user -> {
-                    return userMapper.toAdminUserResponse(user);
-                })
-                .collect(Collectors.toList());
+        List<AdminUserResponse> responses = userPage.getContent()
+                .stream()
+                .map(userMapper::toAdminUserResponse)
+                .toList();
 
-        return new PageImpl<>(userResponses, userPage.getPageable(), userPage.getTotalElements());
+        return PagedResponse.of(
+                responses,
+                userPage.getNumber(),
+                userPage.getSize(),
+                userPage.getTotalElements(),
+                userPage.getTotalPages());
     }
 
     public AdminUserResponse updateUserStatus(Long id, AdminUpdateUserRequest request) {

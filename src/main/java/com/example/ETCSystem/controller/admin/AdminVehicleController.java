@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
+import com.example.ETCSystem.dto.response.PagedResponse;
 
 @RestController
 @RequestMapping("/admin/vehicles")
@@ -18,7 +19,7 @@ public class AdminVehicleController {
 
     // Lấy danh sách phương tiện
     @GetMapping
-    public ResponseEntity<Page<AdminVehicleResponse>> getAllVehicles(
+    public ResponseEntity<PagedResponse<AdminVehicleResponse>> getAllVehicles(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "5") int size) {
         return ResponseEntity.ok(adminVehicleService.getAllVehicles(page, size));

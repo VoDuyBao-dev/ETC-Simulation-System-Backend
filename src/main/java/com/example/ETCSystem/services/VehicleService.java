@@ -53,7 +53,7 @@ public class VehicleService {
         tag.setTagUid(UUID.randomUUID().toString().substring(0, 5));
         tag.setStatus(TagStatus.ACTIVE);
         rfidTagRepository.save(tag);
-
+        vehicle.setRfidTag(tag);
         return vehicleMapper.toVehicleResponse(vehicle);
     }
 
@@ -112,17 +112,16 @@ public class VehicleService {
         PageRequest pageable = PageRequest.of(page, size);
         Page<Vehicle> vehicles = vehicleRepository.findByUserUserId(userId, pageable);
         List<VehicleResponse> responses = vehicles.getContent()
-            .stream()
-            .map(vehicleMapper::toVehicleResponse)
-            .toList();
+                .stream()
+                .map(vehicleMapper::toVehicleResponse)
+                .toList();
 
-    return PagedResponse.of(
-            responses,
-            vehicles.getNumber(),
-            vehicles.getSize(),
-            vehicles.getTotalElements(),
-            vehicles.getTotalPages()
-    );
+        return PagedResponse.of(
+                responses,
+                vehicles.getNumber(),
+                vehicles.getSize(),
+                vehicles.getTotalElements(),
+                vehicles.getTotalPages());
     }
 
 }

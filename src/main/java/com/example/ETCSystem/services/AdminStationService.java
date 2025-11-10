@@ -3,6 +3,8 @@ package com.example.ETCSystem.services;
 import com.example.ETCSystem.dto.request.AdminCreateStationRequest;
 import com.example.ETCSystem.dto.request.AdminUpdateStationRequest;
 import com.example.ETCSystem.dto.response.AdminStationResponse;
+import com.example.ETCSystem.dto.response.AdminUserResponse;
+import com.example.ETCSystem.dto.response.PagedResponse;
 import com.example.ETCSystem.entities.Station;
 import com.example.ETCSystem.enums.StationStatus;
 import com.example.ETCSystem.exceptions.AppException;
@@ -14,7 +16,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,21 +30,40 @@ public class AdminStationService {
     private final AdminStationMapper adminStationMapper;
 
     // Hiển thị danh sách trạm
-    public Page<AdminStationResponse> getAllStations(int page, int size) {
+    public PagedResponse<AdminStationResponse> getAllStations(int page, int size) {
         if (page < 0 || size <= 0) {
             throw new AppException(ErrorCode.INVALID_PAGINATION);
         }
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Station> stationPage = stationRepository.findAll(pageRequest);
 
-        List<AdminStationResponse> responses = stationPage.getContent().stream()
-                .map(station -> {
-                    AdminStationResponse res = adminStationMapper.toAdminStationResponse(station);
-                    return res;
-                })
-                .collect(Collectors.toList());
+        List<AdminStationResponse> responses = stationPage.getContent()
+                .stream()
+                .map(adminStationMapper::toAdminStationResponse)
+                .toList();
 
-        return new PageImpl<>(responses, pageRequest, stationPage.getTotalElements());
+        return PagedResponse.of(
+                responses,
+                stationPage.getNumber(),
+                stationPage.getSize(),
+                stationPage.getTotalElements(),
+                stationPage.getTotalPages());
+    }
+
+    // Thống kê tổng quan trạm thu phí
+    public Map<String, Long> getStationStatistics() {
+        long total = stationRepository.count();
+        long active = stationRepository.countByStatus(StationStatus.ACTIVE);
+        long maintenance = stationRepository.countByStatus(StationStatus.MAINTENANCE);
+        long inactive = stationRepository.countByStatus(StationStatus.INACTIVE);
+
+        Map<String, Long> stats = new HashMap<>();
+        stats.put("totalStations", total);
+        stats.put("activeStations", active);
+        stats.put("maintenanceStations", maintenance);
+        stats.put("inactiveStations", inactive);
+
+        return stats;
     }
 
     // Thêm trạm
@@ -56,13 +80,12 @@ public class AdminStationService {
         station.setLongitude(req.getLongitude());
         station.setStatus(req.getStatus());
 
-
         Station saved = stationRepository.save(station);
         AdminStationResponse res = adminStationMapper.toAdminStationResponse(saved);
         return res;
     }
 
-    // Sửa thông tin 
+    // Sửa thông tin
     public AdminStationResponse updateStation(Long id, AdminUpdateStationRequest req) {
         Station station = stationRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.STATION_NOT_FOUND));
@@ -79,8 +102,9 @@ public class AdminStationService {
 
         return adminStationMapper.toAdminStationResponse(updated);
     }
+
     // Sửa trạng thái
-        public AdminStationResponse updateStationStatus(Long id, AdminUpdateStationRequest request) {
+    public AdminStationResponse updateStationStatus(Long id, AdminUpdateStationRequest request) {
         Station station = stationRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
 
@@ -95,4 +119,3 @@ public class AdminStationService {
         return adminStationMapper.toAdminStationResponse(update);
     }
 }
-

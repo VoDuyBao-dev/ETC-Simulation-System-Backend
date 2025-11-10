@@ -3,11 +3,15 @@ package com.example.ETCSystem.controller.admin;
 import com.example.ETCSystem.dto.request.AdminCreateStationRequest;
 import com.example.ETCSystem.dto.request.AdminUpdateStationRequest;
 import com.example.ETCSystem.dto.response.AdminStationResponse;
+import com.example.ETCSystem.dto.response.PagedResponse;
 import com.example.ETCSystem.services.AdminStationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 
 @RestController
@@ -19,10 +23,16 @@ public class AdminStationController {
 
     // Hiển thị danh sách trạm
     @GetMapping
-    public ResponseEntity<Page<AdminStationResponse>> getAllStations(
+    public ResponseEntity<PagedResponse<AdminStationResponse>> getAllStations(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
         return ResponseEntity.ok(adminStationService.getAllStations(page, size));
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<Map<String, Long>> getStationStatistics() {
+        Map<String, Long> stats = adminStationService.getStationStatistics();
+        return ResponseEntity.ok(stats);
     }
 
     // Thêm trạm mới
