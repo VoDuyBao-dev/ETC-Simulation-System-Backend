@@ -15,10 +15,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -84,6 +81,27 @@ public class AuthController {
                 .code(200)
                 .message("Làm mới token thành công")
                 .result(authenticationResponse)
+                .build();
+    }
+
+    @PatchMapping("/updateInfo")
+    public ApiResponse<UserResponse> updateUserInfo(@RequestBody UserRequest userRequest) {
+        log.info("userRequest {}:", userRequest.toString());
+        UserResponse userResponse = userService.updateUserInfo(userRequest);
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Cập nhật thông tin người dùng thành công")
+                .result(userResponse)
+                .build();
+    }
+
+    @GetMapping("/myInfo")
+    public ApiResponse<UserResponse> getMyInfo() {
+        UserResponse userResponse = userService.getMyInfo();
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Lấy thông tin người dùng thành công")
+                .result(userResponse)
                 .build();
     }
 

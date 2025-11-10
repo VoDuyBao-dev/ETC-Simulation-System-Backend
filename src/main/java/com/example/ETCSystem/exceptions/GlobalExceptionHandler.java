@@ -1,5 +1,6 @@
 package com.example.ETCSystem.exceptions;
 import com.example.ETCSystem.dto.ApiResponse;
+import jakarta.servlet.ServletException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,6 +46,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = AccessDeniedException.class)
     ResponseEntity<ApiResponse> handlingAccessDeniedException(AccessDeniedException exception){
         ErrorCode error = ErrorCode. UNAUTHORIZED;
+        return ResponseEntity.status(error.getHttpStatusCode()).body(
+                ApiResponse.builder()
+                        .code(error.getCode())
+                        .message(error.getMessage())
+                        .build()
+        );
+
+    }
+
+    @ExceptionHandler(value = ServletException.class)
+    ResponseEntity<ApiResponse> handlingServletException(ServletException exception){
+        ErrorCode error = ErrorCode. STACK_OVERFLOW;
+        exception.printStackTrace();
         return ResponseEntity.status(error.getHttpStatusCode()).body(
                 ApiResponse.builder()
                         .code(error.getCode())

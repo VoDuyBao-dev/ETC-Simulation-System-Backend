@@ -37,6 +37,7 @@ public class SecurityConfig {
             "/auth/refresh-token",
             "/auth/otp/verify",
             "/auth/otp/resend",
+            "device/toll-payment"
 
     };
 
@@ -44,6 +45,14 @@ public class SecurityConfig {
             "/admin/users",
 
     };
+
+    private final String[] COMMON_URLS = {
+            "/auth/updateInfo/**",
+            "/auth/myInfo/**"
+
+    };
+
+
 
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
@@ -60,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, PUBLIC_URLS).permitAll()
                         .requestMatchers("/admin/**").hasAuthority("SCOPE_ADMIN")
                         .requestMatchers("/customer/**").hasAuthority("SCOPE_CUSTOMER")
+                        .requestMatchers(COMMON_URLS).hasAnyAuthority("SCOPE_ADMIN", "SCOPE_CUSTOMER")
                         .anyRequest().authenticated()
                 )
 

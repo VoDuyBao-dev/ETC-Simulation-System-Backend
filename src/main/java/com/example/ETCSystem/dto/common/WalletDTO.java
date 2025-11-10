@@ -1,8 +1,10 @@
-package com.example.ETCSystem.entities;
+package com.example.ETCSystem.dto.common;
 
+import com.example.ETCSystem.entities.Topup;
+import com.example.ETCSystem.entities.User;
+import com.example.ETCSystem.entities.WalletTransaction;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,34 +14,28 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
-@Table(name = "wallets")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Wallet {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class WalletDTO {
+
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
+
     private User user;
 
     private BigDecimal balance = BigDecimal.ZERO;
 
     private Boolean isBlocked = false;
 
-    @CreationTimestamp
-    @Column(updatable = false)
+
     private LocalDateTime createdAt;
-    @UpdateTimestamp
+
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "wallet")
+
     private List<WalletTransaction> transactions;
 
-    @OneToMany(mappedBy = "wallet")
+
     private List<Topup> topups;
 }

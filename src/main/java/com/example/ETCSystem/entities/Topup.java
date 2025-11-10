@@ -3,6 +3,10 @@ package com.example.ETCSystem.entities;
 import com.example.ETCSystem.enums.TopupMethod;
 import com.example.ETCSystem.enums.TopupStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
@@ -10,7 +14,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "topups")
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Topup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

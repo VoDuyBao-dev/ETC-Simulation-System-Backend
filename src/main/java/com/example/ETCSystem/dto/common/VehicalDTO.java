@@ -1,9 +1,11 @@
-package com.example.ETCSystem.entities;
+package com.example.ETCSystem.dto.common;
 
+import com.example.ETCSystem.entities.RfidTag;
+import com.example.ETCSystem.entities.TollTransaction;
+import com.example.ETCSystem.entities.User;
 import com.example.ETCSystem.enums.VehicleType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,41 +14,28 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
-@Table(name = "vehicles")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Vehicle {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class VehicalDTO {
+
+
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+
     private User user;
 
-    @Column(unique = true)
     private String plateNumber;
 
-    @Enumerated(EnumType.STRING)
     private VehicleType vehicleType;
-
     private String brand;
     private String model;
     private String color;
 
-    @CreationTimestamp
-    @Column(updatable = false)
     private LocalDateTime createdAt;
-    @UpdateTimestamp
+
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "vehicle")
     private RfidTag rfidTag;
-
-    @OneToMany(mappedBy = "vehicle")
     private List<TollTransaction> tollTransactions;
-
 }

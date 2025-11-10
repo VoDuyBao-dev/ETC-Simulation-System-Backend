@@ -2,6 +2,7 @@ package com.example.ETCSystem.entities;
 
 import com.example.ETCSystem.enums.TransactionType;
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
@@ -9,6 +10,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "wallet_transactions")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class WalletTransaction {
 
     @Id
@@ -26,7 +31,11 @@ public class WalletTransaction {
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
+    @NonNull
     private TransactionType transactionType;
+
+    @Column(name = "balance_after")
+    private BigDecimal balanceAfter;
 
     private String description;
     @CreationTimestamp
