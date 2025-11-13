@@ -70,7 +70,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse> handlingMethodArgumentNotValidException(MethodArgumentNotValidException exception){
-        String enumKey = exception.getFieldError().getDefaultMessage();
+        // String enumKey = exception.getFieldError().getDefaultMessage();
+        String enumKey = exception.getFieldError() != null 
+                    ? exception.getFieldError().getDefaultMessage()
+                : "INVALID_KEY";
+
 
 //        Xử lí nhập sai key Enum tại đây:
 

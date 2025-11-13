@@ -1,0 +1,35 @@
+package com.example.ETCSystem.controller.admin;
+
+import com.example.ETCSystem.dto.request.AdminUpdateVehicleRequest;
+import com.example.ETCSystem.dto.response.AdminVehicleResponse;
+import com.example.ETCSystem.services.AdminVehicleService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import com.example.ETCSystem.dto.response.PagedResponse;
+
+@RestController
+@RequestMapping("/admin/vehicles")
+@RequiredArgsConstructor
+public class AdminVehicleController {
+
+    private final AdminVehicleService adminVehicleService;
+
+    // Lấy danh sách phương tiện
+    @GetMapping
+    public ResponseEntity<PagedResponse<AdminVehicleResponse>> getAllVehicles(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size) {
+        return ResponseEntity.ok(adminVehicleService.getAllVehicles(page, size));
+    }
+
+    // Cập nhật trạng thái phương tiện
+    @PutMapping("/{id}/status")
+    public ResponseEntity<AdminVehicleResponse> updateVehicleStatus(
+            @Valid @PathVariable Long id,
+            @RequestBody AdminUpdateVehicleRequest request) {
+        return ResponseEntity.ok(adminVehicleService.updateVehicleStatus(id, request));
+    }
+}
