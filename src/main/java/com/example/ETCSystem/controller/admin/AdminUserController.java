@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.data.domain.Page;
-
 @RestController
 @RequestMapping("/admin/manager-users")
 @RequiredArgsConstructor

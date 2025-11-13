@@ -19,14 +19,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     UserService userService;
 
-    @GetMapping("/myInfo")
-    public ApiResponse<UserResponse> getMyInfo() {
-        UserResponse userResponse = userService.getMyInfo();
-        return ApiResponse.<UserResponse>builder()
-                .code(200)
-                .message("Lấy thông tin người dùng thành công")
-                .result(userResponse)
-                .build();
-    }
+
+
+
+
+
+
 
 }

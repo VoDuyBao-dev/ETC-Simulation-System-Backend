@@ -1,6 +1,7 @@
 package com.example.ETCSystem.repositories;
 
 import com.example.ETCSystem.entities.TollTransaction;
+import com.example.ETCSystem.projections.TollTransactionProjection;
 import com.example.ETCSystem.enums.TollStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TollTransactionRepository extends JpaRepository<TollTransaction, Long> {
 
+  Page<TollTransactionProjection> findAllByOrderByCreatedAtDesc(Pageable pageable);
   long countByStatus(TollStatus status);
 
   long countByStationId(Long stationId);

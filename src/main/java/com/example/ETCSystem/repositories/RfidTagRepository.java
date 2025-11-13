@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 @Repository
 public interface RfidTagRepository extends JpaRepository<RfidTag, Long> {
     Optional<RfidTag> findByVehicleId(Long vehicleId);
+    Optional<RfidTag> findByTagUid(String tagUid);
 }

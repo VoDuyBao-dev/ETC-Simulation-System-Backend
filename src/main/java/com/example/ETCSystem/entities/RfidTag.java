@@ -1,6 +1,10 @@
 package com.example.ETCSystem.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -9,12 +13,10 @@ import lombok.*;
 
 @Entity
 @Table(name = "rfid_tags")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class RfidTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

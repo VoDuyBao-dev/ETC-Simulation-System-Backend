@@ -1,19 +1,27 @@
 package com.example.ETCSystem.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.example.ETCSystem.enums.TollStatus;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "toll_transactions")
 
 public class TollTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;    
 
     @ManyToOne @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;

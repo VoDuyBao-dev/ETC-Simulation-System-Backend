@@ -2,9 +2,9 @@ package com.example.ETCSystem.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,8 +13,7 @@ import com.example.ETCSystem.enums.StationStatus;
 
 @Entity
 @Table(name = "stations")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

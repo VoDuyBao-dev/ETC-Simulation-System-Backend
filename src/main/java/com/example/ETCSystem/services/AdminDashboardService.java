@@ -2,7 +2,6 @@ package com.example.ETCSystem.services;
 
 import com.example.ETCSystem.dto.response.*;
 import com.example.ETCSystem.enums.TollStatus;
-import com.example.ETCSystem.enums.StationStatus;
 import com.example.ETCSystem.mapper.AdminDashboardMapper;
 import com.example.ETCSystem.repositories.*;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

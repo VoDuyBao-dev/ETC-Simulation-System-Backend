@@ -1,11 +1,9 @@
 package com.example.ETCSystem.services;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 
@@ -25,14 +23,35 @@ import com.example.ETCSystem.repositories.VehicleRepository;
 import com.example.ETCSystem.repositories.RfidTagRepository;
 import com.example.ETCSystem.mapper.VehicleMapper;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VehicleService {
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
     private final RfidTagRepository rfidTagRepository;
     private final VehicleMapper vehicleMapper;
+
+    public Vehicle getVehicleByRfidTag(String getRfidTagCode) {
+        RfidTag rfidTag = rfidTagRepository.findByTagUid(getRfidTagCode)
+                .orElseThrow(() -> new AppException(ErrorCode.RDIF_TAG_NOT_EXISTED));
+
+        if (rfidTag.getStatus() != TagStatus.ACTIVE) {
+            throw new AppException(ErrorCode.RDIF_TAG_NOT_ACTIVE);
+        }
+
+        Vehicle vehical = rfidTag.getVehicle();
+        if (vehical == null) {
+            throw new AppException(ErrorCode.VEHICLE_NOT_EXISTED);
+        }
+
+        return  vehical;
+    }
+
 
     public VehicleResponse registerVehicle(Long userId, RegisterVehicleRequest request) {
         User user = userRepository.findById(userId)
