@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountNotFoundException;
+import java.math.BigDecimal;
 
 @Service
 @Slf4j
@@ -62,6 +63,21 @@ public class WalletService {
         return wallet;
 
 
+    }
+
+    public void addBalance(Long walletId, BigDecimal amount) {
+        Wallet wallet = walletRepository.findById(walletId)
+                .orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_EXISTED));
+
+        if (wallet.getIsBlocked()) {
+            throw new AppException(ErrorCode.WALLET_BLOCKED);
+        }
+
+        // Cập nhật số dư
+        wallet.setBalance(wallet.getBalance().add(amount));
+        walletRepository.save(wallet);
+
+        log.info("Added {} to wallet {}", amount, walletId);
     }
 
 

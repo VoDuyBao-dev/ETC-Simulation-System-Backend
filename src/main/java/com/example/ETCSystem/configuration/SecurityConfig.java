@@ -43,7 +43,9 @@ public class SecurityConfig {
             "/auth/refresh-token",
             "/auth/otp/verify",
             "/auth/otp/resend",
-            "device/toll-payment"
+            "/device/toll-payment",
+            "/payment/vn-pay-callback",
+
 
     };
 
@@ -72,9 +74,11 @@ public class SecurityConfig {
     public SecurityFilterChain openSecurity(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, PUBLIC_URLS).permitAll()
+                        .requestMatchers(PUBLIC_URLS).permitAll()
                         .requestMatchers("/admin/**").hasAuthority("SCOPE_ADMIN")
                         .requestMatchers("/customer/**").hasAuthority("SCOPE_CUSTOMER")
+                        .requestMatchers("/payment/vn-pay").hasAuthority("SCOPE_CUSTOMER")
+                        .requestMatchers("/payment/topup/status/**").hasAuthority("SCOPE_CUSTOMER")
                         .requestMatchers(COMMON_URLS).hasAnyAuthority("SCOPE_ADMIN", "SCOPE_CUSTOMER")
                         .anyRequest().authenticated()
                 )

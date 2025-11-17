@@ -59,6 +59,10 @@ public enum ErrorCode {
     WALLET_DATA_MISSING(2003, "Wallet data is missing", HttpStatus.BAD_REQUEST),
     STATION_DATA_MISSING(2004, "Station data is missing", HttpStatus.BAD_REQUEST),
     VEHICLE_DATA_MISSING(2005, "Vehicle data is missing", HttpStatus.BAD_REQUEST),
+    SAVE_TOPUP_FAILED(2006, "save topup failed", HttpStatus.BAD_REQUEST),
+    TOPUP_NOT_EXISTED(2007, "Topup not existed", HttpStatus.BAD_REQUEST),
+    WALLET_BLOCKED(2008, "Wallet blocked", HttpStatus.BAD_REQUEST),
+
 
     ;
     private int code;
