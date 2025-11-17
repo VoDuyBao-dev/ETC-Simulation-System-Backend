@@ -9,5 +9,6 @@ import org.mapstruct.Mapping;
 public interface VehicleMapper {
     @Mapping(target = "tagStatus", source = "vehicle.rfidTag.status")
     @Mapping(target = "tagUid", source = "vehicle.rfidTag.tagUid")
+    @Mapping(target = "vehicleStatus", source = "vehicle.status")
     VehicleResponse toVehicleResponse(Vehicle vehicle);
 }

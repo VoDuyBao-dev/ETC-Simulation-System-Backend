@@ -22,6 +22,7 @@ import com.example.ETCSystem.repositories.UserRepository;
 import com.example.ETCSystem.repositories.VehicleRepository;
 import com.example.ETCSystem.repositories.RfidTagRepository;
 import com.example.ETCSystem.mapper.VehicleMapper;
+import com.example.ETCSystem.services.UserService;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ public class VehicleService {
     private final UserRepository userRepository;
     private final RfidTagRepository rfidTagRepository;
     private final VehicleMapper vehicleMapper;
+    private final UserService userService;
 
     public Vehicle getVehicleByRfidTag(String getRfidTagCode) {
         RfidTag rfidTag = rfidTagRepository.findByTagUid(getRfidTagCode)
@@ -49,11 +51,14 @@ public class VehicleService {
             throw new AppException(ErrorCode.VEHICLE_NOT_EXISTED);
         }
 
-        return  vehical;
+        return vehical;
     }
 
+    // đăng kí xe mới
+    public VehicleResponse registerVehicle(RegisterVehicleRequest request) {
+        User currentUser = userService.getCurrentUser();
+        Long userId = currentUser.getUserId();
 
-    public VehicleResponse registerVehicle(Long userId, RegisterVehicleRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
@@ -76,29 +81,63 @@ public class VehicleService {
         return vehicleMapper.toVehicleResponse(vehicle);
     }
 
-    public void reportLostTag(Long vehicleId) {
-        RfidTag tag = rfidTagRepository.findByVehicleId(vehicleId)
-                .orElseThrow(() -> new AppException(ErrorCode.RFID_TAG_NOT_FOUND));
-        tag.setStatus(TagStatus.LOST);
-        rfidTagRepository.save(tag);
-    }
+    // đổi trạng thái của thẻ xe
+    public VehicleResponse updateRfidTagStatus(Long vehicleId) {
 
-    public void reissueTag(Long vehicleId) {
-        RfidTag oldTag = rfidTagRepository.findByVehicleId(vehicleId)
-                .orElseThrow(() -> new AppException(ErrorCode.RFID_TAG_NOT_FOUND));
-        oldTag.setStatus(TagStatus.INACTIVE);
-        rfidTagRepository.save(oldTag);
+        User currentUser = userService.getCurrentUser();
+        Long userId = currentUser.getUserId();
 
-        RfidTag newTag = new RfidTag();
-        newTag.setVehicle(oldTag.getVehicle());
-        newTag.setTagUid(UUID.randomUUID().toString().substring(0, 5));
-        newTag.setStatus(TagStatus.ACTIVE);
-        rfidTagRepository.save(newTag);
-    }
+        userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-    public VehicleResponse updateVehicleStatus(Long vehicleId, UpdateVehicleStatusRequest request) {
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
+
+        if (!vehicle.getUser().getUserId().equals(currentUser.getUserId())) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+        RfidTag tag = rfidTagRepository.findByVehicleId(vehicleId)
+                .orElseThrow(() -> new AppException(ErrorCode.RFID_TAG_NOT_FOUND));
+
+        tag.setStatus(TagStatus.INACTIVE);
+        rfidTagRepository.save(tag);
+
+        return vehicleMapper.toVehicleResponse(vehicle);
+    }
+
+    // //
+    // public void reissueTag(Long vehicleId) {
+    // RfidTag oldTag = rfidTagRepository.findByVehicleId(vehicleId)
+    // .orElseThrow(() -> new AppException(ErrorCode.RFID_TAG_NOT_FOUND));
+    // oldTag.setStatus(TagStatus.INACTIVE);
+    // rfidTagRepository.save(oldTag);
+
+    // RfidTag newTag = new RfidTag();
+    // newTag.setVehicle(oldTag.getVehicle());
+    // newTag.setTagUid(UUID.randomUUID().toString().substring(0, 5));
+    // newTag.setStatus(TagStatus.ACTIVE);
+    // rfidTagRepository.save(newTag);
+    // }
+
+    public VehicleResponse updateVehicleStatus(Long vehicleId, UpdateVehicleStatusRequest request) {
+        User currentUser = userService.getCurrentUser();
+        Long userId = currentUser.getUserId();
+
+        System.out.println("Current User ID: "
+                + currentUser.getUserId()
+                + " | Type: "
+                + currentUser.getUserId().getClass().getName());
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
+                
+// Nếu không phải người dùng đang đăng nhập sửa trạng thái thì sẽ báo lỗi 
+        if (!vehicle.getUser().getUserId().equals(currentUser.getUserId())) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
 
         RfidTag tag = rfidTagRepository.findByVehicleId(vehicleId)
                 .orElseThrow(() -> new AppException(ErrorCode.RFID_TAG_NOT_FOUND));
@@ -124,10 +163,14 @@ public class VehicleService {
         return vehicleMapper.toVehicleResponse(vehicle);
     }
 
-    public PagedResponse<VehicleResponse> getUserVehicles(Long userId, int page, int size) {
+    // danh sách xe của người dùng đã đăng nhập
+    public PagedResponse<VehicleResponse> getUserVehicles(int page, int size) {
         if (page < 0 || size <= 0) {
             throw new AppException(ErrorCode.INVALID_PAGINATION);
         }
+        User currentUser = userService.getCurrentUser();
+        Long userId = currentUser.getUserId();
+
         PageRequest pageable = PageRequest.of(page, size);
         Page<Vehicle> vehicles = vehicleRepository.findByUserUserId(userId, pageable);
         List<VehicleResponse> responses = vehicles.getContent()

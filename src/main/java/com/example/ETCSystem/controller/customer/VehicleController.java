@@ -22,22 +22,21 @@ public class VehicleController {
 
     @PostMapping("/register")
     public ResponseEntity<VehicleResponse> register(
-            @RequestBody RegisterVehicleRequest request,
-            @RequestParam Long userId) {
-        return ResponseEntity.ok(vehicleService.registerVehicle(userId, request));
+            @RequestBody RegisterVehicleRequest request) {
+        return ResponseEntity.ok(vehicleService.registerVehicle(request));
     }
 
-    @PutMapping("/{id}/report-lost")
-    public ResponseEntity<String> reportLost(@PathVariable Long id) {
-        vehicleService.reportLostTag(id);
-        return ResponseEntity.ok("Report lost successfully");
+    // Cập nhật trạng thái của rfidTag
+    @PutMapping("/{id}/status-rfidTtag")
+    public ResponseEntity<VehicleResponse> updateStatusRfidTag(@PathVariable Long id) {
+        return ResponseEntity.ok(vehicleService.updateRfidTagStatus(id));
     }
 
-    @PutMapping("/{id}/reissue-tag")
-    public ResponseEntity<String> reissueTag(@PathVariable Long id) {
-        vehicleService.reissueTag(id);
-        return ResponseEntity.ok("New tag issued successfully");
-    }
+    // @PutMapping("/{id}/reissue-tag")
+    // public ResponseEntity<String> reissueTag(@PathVariable Long id) {
+    //     vehicleService.reissueTag(id);
+    //     return ResponseEntity.ok("New tag issued successfully");
+    // }
 
     @PutMapping("/{id}/status")
     public ResponseEntity<VehicleResponse> updateStatus(
@@ -47,9 +46,8 @@ public class VehicleController {
 
     @GetMapping
     public ResponseEntity<PagedResponse<VehicleResponse>> getUserVehicles(
-            @RequestParam Long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
-        return ResponseEntity.ok(vehicleService.getUserVehicles(userId, page, size));
+        return ResponseEntity.ok(vehicleService.getUserVehicles(page, size));
     }
 }

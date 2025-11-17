@@ -2,18 +2,20 @@
 
 UPDATE users SET fullname = 'Nguyen Van A', phone = '0901234567', address = '123 Lê Lợi, TP.HCM', email = 'admin@gmail.com' WHERE user_id = 1;
 
-INSERT INTO `users` (`user_id`, `fullname`, `email`, `password`, `phone`, `address`, `status`, `created_at`) VALUES
 
-(2, 'Tran Thi B', 'tranb@example.com', '$2y$10$example1', '0912345678', '456 Nguyễn Trãi, Hà Nội', '1', NOW()),
-(3, 'Le Van C', 'levanc@example.com', '$2y$10$example2', '0932123456', '789 Lý Thường Kiệt, Đà Nẵng', '1', NOW()),
-(4, 'Pham Thi D', 'phamd@example.com', '$2y$10$example3', '0987654321', '12 Trần Hưng Đạo, Cần Thơ', '1', NOW()),
-(5, 'Bui Van E', 'buie@example.com', '$2y$10$example4', '0909123456', '34 Nguyễn Huệ, Huế', '1', NOW()),
-(6, 'Do Thi F', 'dof@example.com', '$2y$10$example5', '0976543210', '56 Phan Chu Trinh, Vũng Tàu', '1', NOW()),
-(7, 'Nguyen Van G', 'nguyeng@example.com', '$2y$10$example6', '0911122233', '78 Hai Bà Trưng, Hà Nội', '1', NOW()),
-(8, 'Tran Van H', 'tranh@example.com', '$2y$10$example7', '0945678901', '90 Lý Tự Trọng, TP.HCM', '1', NOW()),
-(9, 'Vo Thi I', 'voi@example.com', '$2y$10$example8', '0923456789', '101 Bạch Đằng, Đà Nẵng', '1', NOW()),
-(10, 'Pham Van J', 'phamj@example.com', '$2y$10$example9', '0906789123', '112 Hùng Vương, Cần Thơ', '1', NOW()),
-(11, 'Le Thi K', 'lek@example.com', '$2y$10$example10', '0977123456', '23 Điện Biên Phủ, Huế', '1', NOW());
+-- Mật khẩu "admin"
+INSERT INTO `users` (`user_id`, `fullname`, `email`, `username`, `password`, `phone`, `address`, `status`, `created_at`) VALUES
+
+(2, 'Tran Thi B', 'tranb@example.com', "name1", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0912345678', '456 Nguyễn Trãi, Hà Nội', '1', NOW()),
+(3, 'Le Van C', 'levanc@example.com', "name2", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0932123456', '789 Lý Thường Kiệt, Đà Nẵng', '1', NOW()),
+(4, 'Pham Thi D', 'phamd@example.com', "name3", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0987654321', '12 Trần Hưng Đạo, Cần Thơ', '1', NOW()),
+(5, 'Bui Van E', 'buie@example.com', "name4", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0909123456', '34 Nguyễn Huệ, Huế', '1', NOW()),
+(6, 'Do Thi F', 'dof@example.com', "name5", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0976543210', '56 Phan Chu Trinh, Vũng Tàu', '1', NOW()),
+(7, 'Nguyen Van G', 'nguyeng@example.com', "name6", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0911122233', '78 Hai Bà Trưng, Hà Nội', '1', NOW()),
+(8, 'Tran Van H', 'tranh@example.com', "name7", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0945678901', '90 Lý Tự Trọng, TP.HCM', '1', NOW()),
+(9, 'Vo Thi I', 'voi@example.com', "name8", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0923456789', '101 Bạch Đằng, Đà Nẵng', '1', NOW()),
+(10, 'Pham Van J', 'phamj@example.com', "name9", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0906789123', '112 Hùng Vương, Cần Thơ', '1', NOW()),
+(11, 'Le Thi K', 'lek@example.com', "name10", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0977123456', '23 Điện Biên Phủ, Huế', '1', NOW());
 
 INSERT INTO user_roles (user_id, role)
 VALUES
@@ -30,16 +32,16 @@ VALUES
 
 INSERT INTO vehicles (id, brand, model, color, plate_number, vehicle_type, user_id, created_at, updated_at, status)
 VALUES
-(1, 'Toyota', 'Vios', 'Red', '33A-12345', 'CAR', 11, '2025-10-01 08:30:00', '2025-10-01 08:30:00', 'INACTIVE'),
-(2, 'Hyundai', 'Accent', 'White', '43A-67890', 'CAR', 2, '2025-10-02 09:10:00', '2025-10-02 09:10:00', 'INACTIVE'),
-(3, 'Ford', 'Ranger', 'Blue', '51C-24680', 'TRUCK', 3, '2025-10-03 10:05:00', '2025-10-03 10:05:00', 'INACTIVE'),
-(4, 'Kia', 'Morning', 'Black', '65A-11223', 'CAR', 4, '2025-10-04 11:15:00', '2025-10-04 11:15:00', 'INACTIVE'),
-(5, 'Isuzu', 'D-Max', 'Silver', '75C-33445', 'TRUCK', 5, '2025-10-05 12:20:00', '2025-10-05 12:20:00', 'INACTIVE'),
-(6, 'Mazda', '3', 'Gray', '29A-55667', 'CAR', 7, '2025-10-06 08:40:00', '2025-10-06 08:40:00', 'INACTIVE'),
-(7, 'Honda', 'City', 'White', '60A-77889', 'CAR', 8, '2025-10-07 09:50:00', '2025-10-07 09:50:00', 'INACTIVE'),
-(8, 'Suzuki', 'Carry', 'Blue', '36C-99001', 'TRUCK', 9, '2025-10-08 10:30:00', '2025-10-08 10:30:00', 'INACTIVE'),
-(9, 'VinFast', 'Lux A2.0', 'Black', '30G-11234', 'CAR', 10, '2025-10-09 11:10:00', '2025-10-09 11:10:00', 'INACTIVE'),
-(10, 'Toyota', 'Fortuner', 'Brown', '50A-22334', 'CAR', 6, '2025-10-10 12:10:00', '2025-10-10 12:10:00', 'INACTIVE');
+(1, 'Toyota', 'Vios', 'Red', '33A-12345', 'CAR', 11, '2025-10-01 08:30:00', '2025-10-01 08:30:00', 'ACTIVE'),
+(2, 'Hyundai', 'Accent', 'White', '43A-67890', 'CAR', 2, '2025-10-02 09:10:00', '2025-10-02 09:10:00', 'ACTIVE'),
+(3, 'Ford', 'Ranger', 'Blue', '51C-24680', 'TRUCK', 3, '2025-10-03 10:05:00', '2025-10-03 10:05:00', 'ACTIVE'),
+(4, 'Kia', 'Morning', 'Black', '65A-11223', 'CAR', 4, '2025-10-04 11:15:00', '2025-10-04 11:15:00', 'ACTIVE'),
+(5, 'Isuzu', 'D-Max', 'Silver', '75C-33445', 'TRUCK', 5, '2025-10-05 12:20:00', '2025-10-05 12:20:00', 'ACTIVE'),
+(6, 'Mazda', '3', 'Gray', '29A-55667', 'CAR', 7, '2025-10-06 08:40:00', '2025-10-06 08:40:00', 'ACTIVE'),
+(7, 'Honda', 'City', 'White', '60A-77889', 'CAR', 8, '2025-10-07 09:50:00', '2025-10-07 09:50:00', 'ACTIVE'),
+(8, 'Suzuki', 'Carry', 'Blue', '36C-99001', 'TRUCK', 9, '2025-10-08 10:30:00', '2025-10-08 10:30:00', 'ACTIVE'),
+(9, 'VinFast', 'Lux A2.0', 'Black', '30G-11234', 'CAR', 10, '2025-10-09 11:10:00', '2025-10-09 11:10:00', 'ACTIVE'),
+(10, 'Toyota', 'Fortuner', 'Brown', '50A-22334', 'CAR', 6, '2025-10-10 12:10:00', '2025-10-10 12:10:00', 'ACTIVE');
 
 
 

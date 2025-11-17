@@ -14,4 +14,5 @@ public class VehicleResponse {
     private String tagUid;
     private String tagStatus;
     private String vehicleType;
+    private String vehicleStatus;
 }
