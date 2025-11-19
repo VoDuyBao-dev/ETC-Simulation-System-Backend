@@ -73,7 +73,7 @@ public class UserService {
 
     public List<UserResponse> getAllUsers() {
 
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAllExceptAdmin();
         return userMapper.toUserResponseList(users);
     }
 
@@ -106,8 +106,6 @@ public class UserService {
         userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
-
-
 
 
 }

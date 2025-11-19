@@ -35,6 +35,11 @@ public class WalletService {
         return walletMapper.toWalletDTO(wallet);
     }
 
+    public WalletDTO getWalletById(Long id) {
+        Wallet wallet = walletRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_EXISTED));
+        return walletMapper.toWalletDTO(wallet);
+    }
+
     public Wallet getWalletByRfidTag(DeviceRequest deviceRequest){
         RfidTag rfidTag = rfidTagRepository.findByTagUid(deviceRequest.getRfidTagCode())
                 .orElseThrow(() -> new AppException(ErrorCode.RDIF_TAG_NOT_EXISTED));

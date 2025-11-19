@@ -49,6 +49,9 @@ public class Topup {
     @Enumerated(EnumType.STRING)
     private TopupStatus status; // PENDING, COMPLETED, FAILED
 
+    @Column(name = "balance_after")
+    private BigDecimal balanceAfter;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;

@@ -9,16 +9,24 @@ import com.example.ETCSystem.enums.TopupStatus;
 import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.exceptions.ErrorCode;
 import com.example.ETCSystem.mapper.TopupMapper;
+import com.example.ETCSystem.projections.TopupHistory;
 import com.example.ETCSystem.repositories.TopupRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -71,4 +79,36 @@ public class TopupService {
 
 
     }
+
+
+    //    lịch sử nạp tiền:
+    public Page<TopupDTO> getUserTopups(int page, int size) {
+        var context = SecurityContextHolder.getContext();
+        String username = context.getAuthentication().getName();
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        List<TopupHistory> topuplist = topupRepository.findByUser_UsernameAndStatusOrderByCreatedAtDesc(username, TopupStatus.COMPLETED);
+
+        // Map sang DTO
+        List<TopupDTO> dtoList = topuplist.stream()
+                .map(t -> new TopupDTO(
+                        t.getId(),
+                        t.getAmount(),
+                        t.getBalanceAfter(),
+                        t.getMethod(),
+                        t.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
+
+        // Tạo PageImpl để phân trang
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), dtoList.size());
+        List<TopupDTO> pageContent = dtoList.subList(start, end);
+
+        return new PageImpl<>(pageContent, pageable, dtoList.size());
+
+    }
+
+
 }

@@ -38,6 +38,7 @@ public class SecurityConfig {
     private final String[] PUBLIC_URLS = {
             "/auth/register",
             "/auth/login",
+            "/auth/loginAdmin",
             "/auth/logout",
             "/auth/introspect",
             "/auth/refresh-token",

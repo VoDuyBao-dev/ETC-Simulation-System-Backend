@@ -2,9 +2,11 @@ package com.example.ETCSystem.services;
 
 import com.example.ETCSystem.configuration.VNPAYConfig;
 import com.example.ETCSystem.dto.common.TopupDTO;
+import com.example.ETCSystem.dto.common.WalletDTO;
 import com.example.ETCSystem.dto.response.VNPAYResponse;
 import com.example.ETCSystem.entities.Topup;
 import com.example.ETCSystem.entities.User;
+import com.example.ETCSystem.entities.Wallet;
 import com.example.ETCSystem.enums.TopupMethod;
 import com.example.ETCSystem.enums.TopupStatus;
 import com.example.ETCSystem.exceptions.AppException;
@@ -192,6 +194,12 @@ public class VNPAYService {
 
                 // Cộng tiền vào ví
                 walletService.addBalance(topup.getWallet().getId(), topup.getAmount());
+
+                // Lấy lại ví đã cập nhật từ DB
+                WalletDTO updatedWallet = walletService.getWalletById(topup.getWallet().getId());
+
+           // Lưu số dư sau giao dịch
+                topup.setBalanceAfter(updatedWallet.getBalance());
 
                 topupRepository.save(topup);
 
