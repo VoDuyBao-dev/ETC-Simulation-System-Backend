@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/admin/toll-transactions")
 @RequiredArgsConstructor
@@ -24,14 +26,12 @@ public class TollTransactionAdminController {
     TollTransactionService tollTransactionService;
 
 
+//    trả về list
     @GetMapping("/transactions")
-    public ApiResponse<Page<TransactionHistoryAdminResponse>> getAllHistory(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+    public ApiResponse<List<TransactionHistoryAdminResponse>> getAllHistory() {
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<TransactionHistoryAdminResponse> result = tollTransactionService.getAllHistory(pageable);
-        return ApiResponse.<Page<TransactionHistoryAdminResponse>>builder()
+                List<TransactionHistoryAdminResponse> result = tollTransactionService.getAllHistory();
+        return ApiResponse.<List<TransactionHistoryAdminResponse>>builder()
                 .code(200)
                 .message("Lấy toàn bộ lịch sử giao dịch qua trạm thành công")
                 .result(result)

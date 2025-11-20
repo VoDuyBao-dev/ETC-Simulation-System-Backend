@@ -53,8 +53,8 @@ public enum ErrorCode {
     STACK_OVERFLOW(1052, "Recursive data detected or infinite loop while processing the request.", HttpStatus.INTERNAL_SERVER_ERROR),
     WALLET_NOT_EXISTED(1053, "wallet not existed", HttpStatus.BAD_REQUEST),
     WALLET_IS_BLOCKED(1054, "wallet is blocked", HttpStatus.BAD_REQUEST),
-    RDIF_TAG_NOT_EXISTED(1055, "Rfid tag not existed", HttpStatus.BAD_REQUEST),
-    RDIF_TAG_NOT_ACTIVE(1056, "Rfid tag has been blocked or inactive", HttpStatus.BAD_REQUEST),
+    RFID_TAG_NOT_EXISTED(1055, "Rfid tag not existed", HttpStatus.BAD_REQUEST),
+    RFID_TAG_NOT_ACTIVE(1056, "Rfid tag has been blocked or inactive", HttpStatus.BAD_REQUEST),
     VEHICLE_NOT_EXISTED(1057, "Vehicle tag not existed", HttpStatus.BAD_REQUEST),
     VEHICLE_TYPE_UNVALID(1058, "Vehicle type unvalid", HttpStatus.BAD_REQUEST),
     RFID_READER_NOT_EXISTED(1059, "Rfid reader not existed", HttpStatus.BAD_REQUEST),
@@ -72,6 +72,11 @@ public enum ErrorCode {
     WALLET_DATA_MISSING(2003, "Wallet data is missing", HttpStatus.BAD_REQUEST),
     STATION_DATA_MISSING(2004, "Station data is missing", HttpStatus.BAD_REQUEST),
     VEHICLE_DATA_MISSING(2005, "Vehicle data is missing", HttpStatus.BAD_REQUEST),
+    SAVE_TOPUP_FAILED(2006, "save topup failed", HttpStatus.BAD_REQUEST),
+    TOPUP_NOT_EXISTED(2007, "Topup not existed", HttpStatus.BAD_REQUEST),
+    WALLET_BLOCKED(2008, "Wallet blocked", HttpStatus.BAD_REQUEST),
+    EMAIL_INVALID(2009, "Email invalid", HttpStatus.BAD_REQUEST),
+
 
     // Admin manage vehicles
     VEHICLE_NOT_FOUND(1200, "Vehicle not found", HttpStatus.NOT_FOUND),
