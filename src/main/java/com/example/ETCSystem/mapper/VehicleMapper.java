@@ -1,5 +1,6 @@
 package com.example.ETCSystem.mapper;
 
+import com.example.ETCSystem.dto.response.RfidTagResponse;
 import com.example.ETCSystem.dto.response.VehicleResponse;
 import com.example.ETCSystem.entities.RfidTag;
 import com.example.ETCSystem.entities.Vehicle;
@@ -39,4 +40,8 @@ public interface VehicleMapper {
                 .findFirst()
                 .orElse(null);
     }
+
+    @Mapping(target = "vehicleId", source = "vehicle.id")
+    @Mapping(target = "status", expression = "java(rfidTag.getStatus().name())")
+    RfidTagResponse toRfidTagResponse(RfidTag rfidTag);
 }

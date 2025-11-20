@@ -4,6 +4,9 @@ import lombok.*;
 import com.example.ETCSystem.services.VehicleService;
 import com.example.ETCSystem.dto.response.PagedResponse;
 import com.example.ETCSystem.dto.response.VehicleResponse;
+import com.example.ETCSystem.dto.response.RfidTagResponse;
+import com.example.ETCSystem.entities.RfidTag;
+import com.example.ETCSystem.dto.ApiResponse;
 import com.example.ETCSystem.dto.request.RegisterVehicleRequest;
 import com.example.ETCSystem.dto.request.UpdateVehicleStatusRequest;
 
@@ -50,4 +53,19 @@ public class VehicleController {
     public ResponseEntity<List<VehicleResponse>> getUserVehicles() {
         return ResponseEntity.ok(vehicleService.getUserVehicles());
     }
+
+@PostMapping("/{vehicleId}/report-lost-tag")
+public ResponseEntity<ApiResponse<RfidTagResponse>> reportLostTag(@PathVariable Long vehicleId) {
+
+    RfidTagResponse newTag = vehicleService.reportLostAndIssueNewTag(vehicleId);
+
+    return ResponseEntity.ok(
+            ApiResponse.<RfidTagResponse>builder()
+                    .code(200)
+                    .message("Cấp lại thẻ mới thành công")
+                    .result(newTag)
+                    .build()
+    );
+}
+
 }
