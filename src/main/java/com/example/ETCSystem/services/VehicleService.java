@@ -40,10 +40,10 @@ public class VehicleService {
 
     public Vehicle getVehicleByRfidTag(String getRfidTagCode) {
         RfidTag rfidTag = rfidTagRepository.findByTagUid(getRfidTagCode)
-                .orElseThrow(() -> new AppException(ErrorCode.RDIF_TAG_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.RFID_TAG_NOT_EXISTED));
 
         if (rfidTag.getStatus() != TagStatus.ACTIVE) {
-            throw new AppException(ErrorCode.RDIF_TAG_NOT_ACTIVE);
+            throw new AppException(ErrorCode.RFID_TAG_NOT_ACTIVE);
         }
 
         Vehicle vehical = rfidTag.getVehicle();

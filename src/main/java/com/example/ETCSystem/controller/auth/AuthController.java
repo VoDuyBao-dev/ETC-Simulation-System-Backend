@@ -11,6 +11,7 @@ import com.example.ETCSystem.services.AuthenticationService;
 import com.example.ETCSystem.services.OtpService;
 import com.example.ETCSystem.services.UserService;
 import com.nimbusds.jose.JOSEException;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,7 +32,7 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ApiResponse<UserResponse> registerUser(@RequestBody UserRequest userRequest) {
+    public ApiResponse<UserResponse> registerUser(@Valid @RequestBody UserRequest userRequest) {
         log.info("userRequest: {}", userRequest);
 
         UserResponse userResponse = userService.createUser(userRequest);
@@ -46,8 +47,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public  ApiResponse<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
+    public  ApiResponse<AuthenticationResponse> login(@Valid @RequestBody AuthenticationRequest request) {
         AuthenticationResponse authenticationResponse = authenticationService.authenticate(request);
+        return ApiResponse.<AuthenticationResponse>builder()
+                .code(200)
+                .message("Đăng nhập thành công")
+                .result(authenticationResponse)
+                .build();
+
+    }
+
+    @PostMapping("/loginAdmin")
+    public  ApiResponse<AuthenticationResponse> loginAdmin(@RequestBody AdminLoginRequest request) {
+        AuthenticationResponse authenticationResponse = authenticationService.authenticateAdmin(request);
         return ApiResponse.<AuthenticationResponse>builder()
                 .code(200)
                 .message("Đăng nhập thành công")

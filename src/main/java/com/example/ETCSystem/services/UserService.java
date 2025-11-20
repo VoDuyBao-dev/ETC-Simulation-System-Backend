@@ -71,7 +71,7 @@ public class UserService {
 
     public List<UserResponse> getAllUsers() {
 
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAllExceptAdmin();
         return userMapper.toUserResponseList(users);
     }
 
@@ -106,12 +106,13 @@ public class UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
 
-    // Kiểm tra tên người dùng đang đăng nhập. 
+    // Kiểm tra tên người dùng đang đăng nhập.
     public User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
+
 
 }

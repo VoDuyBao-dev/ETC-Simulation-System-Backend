@@ -23,7 +23,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -54,10 +56,10 @@ public class TollTransactionService {
     }
 
 //    chức năng lịch sử bên admin
-    public Page<TransactionHistoryAdminResponse> getAllHistory(Pageable pageable) {
-        Page<TollTransactionProjection> page = tollTransactionRepository.findAllByOrderByCreatedAtDesc(pageable);
+    public List<TransactionHistoryAdminResponse> getAllHistory() {
+        List<TollTransactionProjection> tolls = tollTransactionRepository.findAllByOrderByCreatedAtDesc();
 
-        return page.map(this::toDTO);
+        return tolls.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     private TransactionHistoryAdminResponse toDTO(TollTransactionProjection proj) {

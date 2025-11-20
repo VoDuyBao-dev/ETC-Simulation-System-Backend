@@ -18,11 +18,12 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 //lịch sử giao dịch bên customer
 public class TransactionHistoryResponse {
-    private String account;
     private BigDecimal amount;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateTime;
     private BigDecimal balanceAfter;
     private String description;
-    private String hotline;
+    private String stationName;
+    private String plateNumber;
+
 }

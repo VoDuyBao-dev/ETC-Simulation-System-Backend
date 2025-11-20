@@ -5,6 +5,7 @@ import com.example.ETCSystem.dto.response.TransactionHistoryResponse;
 import com.example.ETCSystem.dto.response.UserResponse;
 import com.example.ETCSystem.repositories.UserRepository;
 import com.example.ETCSystem.services.UserService;
+import com.example.ETCSystem.services.WalletService;
 import com.example.ETCSystem.services.WalletTransactionService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/customer/wallet")
 @RequiredArgsConstructor
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class WalletController {
     WalletTransactionService walletTransactionService;
     UserService userService;
+    WalletService walletService;
 
     @GetMapping("/history")
     public ApiResponse<Page<TransactionHistoryResponse>> getHistory(
@@ -41,6 +45,16 @@ public class WalletController {
                 .code(200)
                 .message("Lấy lịch sử giao dịch thành công")
                 .result(result)
+                .build();
+    }
+
+    @GetMapping
+    public ApiResponse<BigDecimal> getBalance(){
+        BigDecimal balance = walletService.getBalance();
+        return ApiResponse.<BigDecimal>builder()
+                .code(200)
+                .message("Lấy số dư ví thành công")
+                .result(balance)
                 .build();
     }
 }

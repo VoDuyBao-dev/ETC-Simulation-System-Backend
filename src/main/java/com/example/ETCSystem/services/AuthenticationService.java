@@ -76,6 +76,31 @@ public class AuthenticationService {
 
     }
 
+    public AuthenticationResponse authenticateAdmin(AdminLoginRequest adminLoginRequest) {
+        User user = userRepository.findByUsername(adminLoginRequest.getUsername())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        boolean authenticated = passwordEncoder.matches(adminLoginRequest.getPassword(), user.getPassword());
+        if(!authenticated) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+
+        String token;
+        try {
+            token = generateToken(user);
+        } catch (KeyLengthException e) {
+            log.error("KeyLengthException", e);
+            throw new RuntimeException(e);
+        }
+
+        return AuthenticationResponse.builder()
+                .token(token)
+                .authenticated(true)
+                .build();
+
+
+
+    }
+
     public IntrospectResponse introspect(IntrospectRequest introspectRequest) throws ParseException, JOSEException {
         String token = introspectRequest.getToken();
         boolean isValid = true;

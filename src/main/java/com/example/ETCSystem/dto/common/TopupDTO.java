@@ -1,14 +1,13 @@
-package com.example.ETCSystem.entities;
+package com.example.ETCSystem.dto.common;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-
+import com.example.ETCSystem.entities.User;
+import com.example.ETCSystem.entities.Wallet;
 import com.example.ETCSystem.enums.TopupMethod;
 import com.example.ETCSystem.enums.TopupStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,27 +15,20 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "topups")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Topup {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class TopupDTO {
     private Long id;
-
-    @ManyToOne @JoinColumn(name = "wallet_id")
     private Wallet wallet;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     private BigDecimal amount;
 
-    @Enumerated(EnumType.STRING)
+    private BigDecimal balanceAfter;
+
     private TopupMethod method; // BANK, VNPAY
 
     private String referenceCode;
@@ -45,19 +37,17 @@ public class Topup {
     private String bankCode;
     private LocalDateTime payDate;
     private String vnpResponseCode;
-
-
     private String description;
-
-    @Enumerated(EnumType.STRING)
     private TopupStatus status; // PENDING, COMPLETED, FAILED
-
-    @Column(name = "balance_after")
-    private BigDecimal balanceAfter;
-
-    @CreationTimestamp
-    @Column(updatable = false)
     private LocalDateTime createdAt;
-
     private LocalDateTime completedAt;
+
+//    dùng cho trả về lịch sử nạp tiền user. tạo các trường cơ bản
+    public TopupDTO(Long id, BigDecimal amount, BigDecimal balanceAfter ,TopupMethod method, LocalDateTime createdAt) {
+        this.id = id;
+        this.amount = amount;
+        this.balanceAfter = balanceAfter;
+        this.method = method;
+        this.createdAt = createdAt;
+    }
 }
