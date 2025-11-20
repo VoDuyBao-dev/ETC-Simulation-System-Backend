@@ -7,15 +7,15 @@ UPDATE users SET fullname = 'Nguyen Van A', phone = '0901234567', address = '123
 INSERT INTO `users` (`user_id`, `fullname`, `email`, `username`, `password`, `phone`, `address`, `status`, `created_at`) VALUES
 
 (2, 'Tran Thi B', 'tranb@example.com', "tranb@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0912345678', '456 Nguyễn Trãi, Hà Nội', '1','2025-1-01 08:30:00'),
-(3, 'Le Van C', 'levanc@example.com', "tranb@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0932123456', '789 Lý Thường Kiệt, Đà Nẵng', '1','2025-1-01 08:30:00'),
-(4, 'Pham Thi D', 'phamd@example.com', "tranb@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0987654321', '12 Trần Hưng Đạo, Cần Thơ', '1','2025-1-01 08:30:00'),
-(5, 'Bui Van E', 'buie@example.com', "tranb@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0909123456', '34 Nguyễn Huệ, Huế', '1','2025-1-01 08:30:00'),
-(6, 'Do Thi F', 'dof@example.com', "tranb@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0976543210', '56 Phan Chu Trinh, Vũng Tàu', '1','2025-1-01 08:30:00'),
-(7, 'Nguyen Van G', 'nguyeng@example.com', "tranb@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0911122233', '78 Hai Bà Trưng, Hà Nội', '1','2025-1-01 08:30:00'),
-(8, 'Tran Van H', 'tranh@example.com', "tranb@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0945678901', '90 Lý Tự Trọng, TP.HCM', '1','2025-1-01 08:30:00'),
-(9, 'Vo Thi I', 'voi@example.com', "tranb@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0923456789', '101 Bạch Đằng, Đà Nẵng', '1','2025-1-01 08:30:00'),
-(10, 'Pham Van J', 'phamj@example.com', "tranb@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0906789123', '112 Hùng Vương, Cần Thơ', '1','2025-1-01 08:30:00'),
-(11, 'Le Thi K', 'lek@example.com', "tranb@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0977123456', '23 Điện Biên Phủ, Huế', '1','2025-1-01 08:30:00');
+(3, 'Le Van C', 'levanc@example.com', "levanc@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0932123456', '789 Lý Thường Kiệt, Đà Nẵng', '1','2025-1-01 08:30:00'),
+(4, 'Pham Thi D', 'phamd@example.com', "phamd@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0987654321', '12 Trần Hưng Đạo, Cần Thơ', '1','2025-1-01 08:30:00'),
+(5, 'Bui Van E', 'buie@example.com', "buie@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0909123456', '34 Nguyễn Huệ, Huế', '1','2025-1-01 08:30:00'),
+(6, 'Do Thi F', 'dof@example.com', "dof@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0976543210', '56 Phan Chu Trinh, Vũng Tàu', '1','2025-1-01 08:30:00'),
+(7, 'Nguyen Van G', 'nguyeng@example.com', "nguyeng@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0911122233', '78 Hai Bà Trưng, Hà Nội', '1','2025-1-01 08:30:00'),
+(8, 'Tran Van H', 'tranh@example.com', "tranh@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0945678901', '90 Lý Tự Trọng, TP.HCM', '1','2025-1-01 08:30:00'),
+(9, 'Vo Thi I', 'voi@example.com', "voi@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0923456789', '101 Bạch Đằng, Đà Nẵng', '1','2025-1-01 08:30:00'),
+(10, 'Pham Van J', 'phamj@example.com', "phamj@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0906789123', '112 Hùng Vương, Cần Thơ', '1','2025-1-01 08:30:00'),
+(11, 'Le Thi K', 'lek@example.com', "lek@example.com", '$2a$10$oA5lMQPcXuecMov6jJij6.EBN9mJJNPlt7sMHlGJkcnriyhNzn6yO', '0977123456', '23 Điện Biên Phủ, Huế', '1','2025-1-01 08:30:00');
 
 INSERT INTO user_roles (user_id, role)
 VALUES
@@ -81,7 +81,7 @@ VALUES
 (2, 'TAG0002', 'ACTIVE', 2),
 (3, 'TAG0003', 'ACTIVE', 3),
 (4, 'TAG0004', 'ACTIVE', 4),
-(5, 'TAG0005', 'BLOCKED', 5),
+(5, 'TAG0005', 'ACTIVE', 5),
 (6, 'TAG0006', 'ACTIVE', 6),
 (7, 'TAG0007', 'INACTIVE', 7),
 (8, 'TAG0008', 'ACTIVE', 8),

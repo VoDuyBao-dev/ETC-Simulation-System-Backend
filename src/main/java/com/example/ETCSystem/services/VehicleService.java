@@ -56,7 +56,7 @@ public class VehicleService {
         return vehical;
     }
 
-    // Đăng ký xe mới
+    // đăng kí xe mới
     public VehicleResponse registerVehicle(RegisterVehicleRequest request) {
 
         User currentUser = userService.getCurrentUser();
@@ -205,7 +205,7 @@ public class VehicleService {
 
     // Hàm sinh tag_uid đẹp hơn (ví dụ: ETG12345)
     private String generateTagUid() {
-        return "ETG" + UUID.randomUUID().toString().replace("-", "").substring(0, 6).toUpperCase();
+        return "E" + UUID.randomUUID().toString().replace("-", "").substring(0, 6).toUpperCase();
     }
 
 }

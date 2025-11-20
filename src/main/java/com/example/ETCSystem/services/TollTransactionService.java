@@ -2,10 +2,8 @@ package com.example.ETCSystem.services;
 
 import com.example.ETCSystem.dto.response.TransactionHistoryAdminResponse;
 import com.example.ETCSystem.dto.response.TransactionHistoryResponse;
-import com.example.ETCSystem.entities.RfidReader;
-import com.example.ETCSystem.entities.Station;
-import com.example.ETCSystem.entities.TollTransaction;
-import com.example.ETCSystem.entities.Vehicle;
+import com.example.ETCSystem.entities.*;
+import com.example.ETCSystem.enums.TagStatus;
 import com.example.ETCSystem.enums.TollStatus;
 import com.example.ETCSystem.enums.TransactionType;
 import com.example.ETCSystem.exceptions.AppException;
@@ -36,9 +34,15 @@ public class TollTransactionService {
     TollTransactionRepository tollTransactionRepository;
 
     public TollTransaction saveTollTransaction(Vehicle vehicle, Station station, RfidReader rfidReader, BigDecimal fee, TollStatus TollStatus, String note) {
+        // Lấy thẻ active hiện tại
+        RfidTag activeTag = vehicle.getRfidTags().stream()
+                .filter(tag -> tag.getStatus() == TagStatus.ACTIVE)
+                .findFirst()
+                .orElseThrow(() -> new AppException(ErrorCode.NO_ACTIVE_RFID_TAG));
+
         TollTransaction tollTransaction = TollTransaction.builder()
                 .vehicle(vehicle)
-                .rfidTag(vehicle.getRfidTag())
+                .rfidTag(activeTag)
                 .station(station)
                 .reader(rfidReader)
                 .fee(fee)

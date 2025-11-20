@@ -25,7 +25,6 @@ public class RfidTag {
     @Column(unique = true)
     private String tagUid;
 
-    // @OneToOne
     @ManyToOne
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
@@ -41,5 +40,5 @@ public class RfidTag {
     private Long lastPassageStationId;
 
     @Enumerated(EnumType.STRING)
-    private TagStatus status; // active, lost, blocked, inactive
+    private TagStatus status; // active,inactive
 }
