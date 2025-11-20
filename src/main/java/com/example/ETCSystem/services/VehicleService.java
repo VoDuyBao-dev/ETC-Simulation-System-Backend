@@ -1,5 +1,6 @@
 package com.example.ETCSystem.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
@@ -54,30 +55,37 @@ public class VehicleService {
         return vehical;
     }
 
-    // đăng kí xe mới
+    // Hàm sinh tag_uid đẹp hơn (ví dụ: ETG12345)
+    private String generateTagUid() {
+        return "ETG" + UUID.randomUUID().toString().replace("-", "").substring(0, 6).toUpperCase();
+    }
+
+    // Đăng ký xe mới
     public VehicleResponse registerVehicle(RegisterVehicleRequest request) {
+
         User currentUser = userService.getCurrentUser();
         Long userId = currentUser.getUserId();
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
+        // 1. Tạo xe mới
         Vehicle vehicle = new Vehicle();
         vehicle.setUser(user);
         vehicle.setPlateNumber(request.getPlateNumber());
         vehicle.setVehicleType(request.getVehicleType());
-        // vehicle.setBrand(request.getBrand());
-        // vehicle.setModel(request.getModel());
-        // vehicle.setColor(request.getColor());
         vehicle.setStatus(VehicleStatus.ACTIVE);
+
         vehicleRepository.save(vehicle);
 
+        // 2. Tạo thẻ E-Tag đầu tiên cho xe
         RfidTag tag = new RfidTag();
         tag.setVehicle(vehicle);
-        tag.setTagUid(UUID.randomUUID().toString().substring(0, 5));
+        tag.setTagUid(generateTagUid()); // Hàm sinh mã thẻ chuẩn hơn
         tag.setStatus(TagStatus.ACTIVE);
+        tag.setIssuedAt(LocalDateTime.now());
+
         rfidTagRepository.save(tag);
-        vehicle.setRfidTag(tag);
         return vehicleMapper.toVehicleResponse(vehicle);
     }
 

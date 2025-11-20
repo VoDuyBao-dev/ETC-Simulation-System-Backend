@@ -76,6 +76,7 @@ public enum ErrorCode {
     TOPUP_NOT_EXISTED(2007, "Topup not existed", HttpStatus.BAD_REQUEST),
     WALLET_BLOCKED(2008, "Wallet blocked", HttpStatus.BAD_REQUEST),
     EMAIL_INVALID(2009, "Email invalid", HttpStatus.BAD_REQUEST),
+    NO_ACTIVE_RFID_TAG(2010, "NO ACTIVE RFID TAG", HttpStatus.BAD_REQUEST),
 
 
     // Admin manage vehicles

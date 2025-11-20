@@ -50,8 +50,8 @@ public class Vehicle {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "vehicle")
-    private RfidTag rfidTag;
+    @OneToMany(mappedBy = "vehicle")
+    private List<RfidTag>  rfidTags;
 
     @OneToMany(mappedBy = "vehicle")
     private List<TollTransaction> tollTransactions;
