@@ -1,16 +1,18 @@
 package com.example.ETCSystem.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Page;
+// import org.springframework.data.domain.PageRequest;
+// import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 import com.example.ETCSystem.dto.request.RegisterVehicleRequest;
 import com.example.ETCSystem.dto.request.UpdateVehicleStatusRequest;
-import com.example.ETCSystem.dto.response.PagedResponse;
+// import com.example.ETCSystem.dto.response.PagedResponse;
 import com.example.ETCSystem.dto.response.VehicleResponse;
+import com.example.ETCSystem.dto.response.RfidTagResponse;
 import com.example.ETCSystem.entities.RfidTag;
 import com.example.ETCSystem.entities.User;
 import com.example.ETCSystem.entities.Vehicle;
@@ -22,7 +24,7 @@ import com.example.ETCSystem.repositories.UserRepository;
 import com.example.ETCSystem.repositories.VehicleRepository;
 import com.example.ETCSystem.repositories.RfidTagRepository;
 import com.example.ETCSystem.mapper.VehicleMapper;
-import com.example.ETCSystem.services.UserService;
+// import com.example.ETCSystem.services.UserService;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -54,30 +56,32 @@ public class VehicleService {
         return vehical;
     }
 
-    // đăng kí xe mới
+    // Đăng ký xe mới
     public VehicleResponse registerVehicle(RegisterVehicleRequest request) {
+
         User currentUser = userService.getCurrentUser();
         Long userId = currentUser.getUserId();
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
+        // 1. Tạo xe mới
         Vehicle vehicle = new Vehicle();
         vehicle.setUser(user);
         vehicle.setPlateNumber(request.getPlateNumber());
         vehicle.setVehicleType(request.getVehicleType());
-        // vehicle.setBrand(request.getBrand());
-        // vehicle.setModel(request.getModel());
-        // vehicle.setColor(request.getColor());
         vehicle.setStatus(VehicleStatus.ACTIVE);
+
         vehicleRepository.save(vehicle);
 
+        // 2. Tạo thẻ E-Tag đầu tiên cho xe
         RfidTag tag = new RfidTag();
         tag.setVehicle(vehicle);
-        tag.setTagUid(UUID.randomUUID().toString().substring(0, 5));
+        tag.setTagUid(generateTagUid()); // Hàm sinh mã thẻ chuẩn hơn
         tag.setStatus(TagStatus.ACTIVE);
+        tag.setIssuedAt(LocalDateTime.now());
+
         rfidTagRepository.save(tag);
-        vehicle.setRfidTag(tag);
         return vehicleMapper.toVehicleResponse(vehicle);
     }
 
@@ -105,20 +109,7 @@ public class VehicleService {
         return vehicleMapper.toVehicleResponse(vehicle);
     }
 
-    // //
-    // public void reissueTag(Long vehicleId) {
-    // RfidTag oldTag = rfidTagRepository.findByVehicleId(vehicleId)
-    // .orElseThrow(() -> new AppException(ErrorCode.RFID_TAG_NOT_FOUND));
-    // oldTag.setStatus(TagStatus.INACTIVE);
-    // rfidTagRepository.save(oldTag);
-
-    // RfidTag newTag = new RfidTag();
-    // newTag.setVehicle(oldTag.getVehicle());
-    // newTag.setTagUid(UUID.randomUUID().toString().substring(0, 5));
-    // newTag.setStatus(TagStatus.ACTIVE);
-    // rfidTagRepository.save(newTag);
-    // }
-
+    // Đổi trạng thái của xe và thẻ xe sẽ đổi theo
     public VehicleResponse updateVehicleStatus(Long vehicleId, UpdateVehicleStatusRequest request) {
         User currentUser = userService.getCurrentUser();
         Long userId = currentUser.getUserId();
@@ -174,6 +165,47 @@ public class VehicleService {
         return vehicles.stream()
                 .map(vehicleMapper::toVehicleResponse)
                 .toList();
+    }
+
+    // @Transactional
+    public RfidTagResponse reportLostAndIssueNewTag(Long vehicleId) {
+
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
+
+        // 1. Lấy thẻ ACTIVE hiện tại
+        RfidTag oldTag = rfidTagRepository
+                .findByVehicleIdAndStatus(vehicleId, TagStatus.ACTIVE)
+                .orElseThrow(() -> new AppException(ErrorCode.RFID_TAG_NOT_FOUND));
+
+        // 2. Vô hiệu hóa thẻ cũ
+        oldTag.setStatus(TagStatus.INACTIVE);
+        oldTag.setLastSuccessfulPassage(null);
+        oldTag.setLastPassageStationId(null);
+        rfidTagRepository.save(oldTag);
+
+        // 3. Tạo thẻ mới (chưa gán UID)
+        RfidTag newTag = RfidTag.builder()
+                .vehicle(vehicle)
+                .status(TagStatus.ACTIVE)
+                .issuedAt(LocalDateTime.now())
+                .build();
+
+        // 4. Lưu trước để lấy id tự tăng
+        rfidTagRepository.save(newTag);
+
+        // String generatedUid = "TAG" + String.format("%05d", newTag.getId());
+        // newTag.setTagUid(generatedUid);
+        newTag.setTagUid(generateTagUid());
+
+        rfidTagRepository.save(newTag);
+
+        return vehicleMapper.toRfidTagResponse(newTag);
+    }
+
+    // Hàm sinh tag_uid đẹp hơn (ví dụ: ETG12345)
+    private String generateTagUid() {
+        return "ETG" + UUID.randomUUID().toString().replace("-", "").substring(0, 6).toUpperCase();
     }
 
 }

@@ -11,7 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.example.ETCSystem.enums.VehicleType;
 import com.example.ETCSystem.enums.VehicleStatus;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.*;
@@ -50,8 +49,11 @@ public class Vehicle {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "vehicle")
-    private RfidTag rfidTag;
+    // @OneToOne(mappedBy = "vehicle")
+    // private RfidTag rfidTag;
+
+    @OneToMany(mappedBy = "vehicle")
+    private List<RfidTag> rfidTags;
 
     @OneToMany(mappedBy = "vehicle")
     private List<TollTransaction> tollTransactions;
