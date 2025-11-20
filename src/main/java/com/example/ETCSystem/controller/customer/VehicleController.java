@@ -7,6 +7,8 @@ import com.example.ETCSystem.dto.response.VehicleResponse;
 import com.example.ETCSystem.dto.request.RegisterVehicleRequest;
 import com.example.ETCSystem.dto.request.UpdateVehicleStatusRequest;
 
+import java.util.List;
+
 // import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +36,8 @@ public class VehicleController {
 
     // @PutMapping("/{id}/reissue-tag")
     // public ResponseEntity<String> reissueTag(@PathVariable Long id) {
-    //     vehicleService.reissueTag(id);
-    //     return ResponseEntity.ok("New tag issued successfully");
+    // vehicleService.reissueTag(id);
+    // return ResponseEntity.ok("New tag issued successfully");
     // }
 
     @PutMapping("/{id}/status")
@@ -45,9 +47,7 @@ public class VehicleController {
     }
 
     @GetMapping
-    public ResponseEntity<PagedResponse<VehicleResponse>> getUserVehicles(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
-        return ResponseEntity.ok(vehicleService.getUserVehicles(page, size));
+    public ResponseEntity<List<VehicleResponse>> getUserVehicles() {
+        return ResponseEntity.ok(vehicleService.getUserVehicles());
     }
 }
