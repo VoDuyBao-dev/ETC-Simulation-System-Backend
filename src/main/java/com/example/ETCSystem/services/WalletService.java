@@ -11,11 +11,13 @@ import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.exceptions.ErrorCode;
 import com.example.ETCSystem.mapper.WalletMapper;
 import com.example.ETCSystem.repositories.RfidTagRepository;
+import com.example.ETCSystem.repositories.UserRepository;
 import com.example.ETCSystem.repositories.WalletRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountNotFoundException;
@@ -29,6 +31,7 @@ public class WalletService {
     WalletRepository walletRepository;
     WalletMapper walletMapper;
     RfidTagRepository rfidTagRepository;
+    UserRepository userRepository;
 
     public WalletDTO getWalletByUserId(Long userId) {
         Wallet wallet = walletRepository.findByUser_UserId(userId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_EXISTED));
@@ -83,6 +86,20 @@ public class WalletService {
         walletRepository.save(wallet);
 
         log.info("Added {} to wallet {}", amount, walletId);
+    }
+
+    public BigDecimal getBalance() {
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        if(user.getWallet() != null){
+            BigDecimal balance = user.getWallet().getBalance();
+            return balance;
+        }else {
+            throw new AppException(ErrorCode.WALLET_NOT_EXISTED);
+        }
+
+
     }
 
 
