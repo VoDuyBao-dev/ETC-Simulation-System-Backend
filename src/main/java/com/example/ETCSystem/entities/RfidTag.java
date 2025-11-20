@@ -30,6 +30,13 @@ public class RfidTag {
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime issuedAt;
 
+//    Thời điểm xe thanh toán thành công lần cuối
+    @Column(name = "last_successful_passage")
+    private LocalDateTime lastSuccessfulPassage;
+// trạm mà xe vừa qua thành công lần cuối
+    @Column(name = "last_passage_station_id")
+    private Long lastPassageStationId;
+
     @Enumerated(EnumType.STRING)
     private TagStatus status; // active, lost, blocked, inactive
 }

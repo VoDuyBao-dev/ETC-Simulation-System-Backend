@@ -31,4 +31,5 @@ public class TagRead {
     private LocalDateTime readTime;
     private Boolean processed = false;
     private ProcessResult processResult;
+
 }
