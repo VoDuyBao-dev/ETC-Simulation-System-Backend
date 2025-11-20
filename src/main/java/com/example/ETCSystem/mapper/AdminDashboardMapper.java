@@ -34,7 +34,7 @@ public class AdminDashboardMapper {
                 .plateNumber((String) row[2])
                 .occurredAt((LocalDateTime) row[3])
                 .status((String) row[4])
-                // .reason(row.length > 5 ? (String) row[5] : null)
+                .reason(row.length > 5 ? (String) row[5] : null)
                 .build();
     }
 }

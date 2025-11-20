@@ -1,17 +1,17 @@
 package com.example.ETCSystem.controller.admin;
 
+import com.example.ETCSystem.dto.ApiResponse;
 import com.example.ETCSystem.dto.request.AdminCreateStationRequest;
 import com.example.ETCSystem.dto.request.AdminUpdateStationRequest;
 import com.example.ETCSystem.dto.response.AdminStationResponse;
-import com.example.ETCSystem.dto.response.PagedResponse;
 import com.example.ETCSystem.services.AdminStationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
-
 
 @RestController
 @RequestMapping("/admin/stations")
@@ -20,12 +20,15 @@ public class AdminStationController {
 
     private final AdminStationService adminStationService;
 
-    // Hiển thị danh sách trạm
     @GetMapping
-    public ResponseEntity<PagedResponse<AdminStationResponse>> getAllStations(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
-        return ResponseEntity.ok(adminStationService.getAllStations(page, size));
+    public ApiResponse<List<AdminStationResponse>> getAllStations() {
+        List<AdminStationResponse> stations = adminStationService.getAllStations();
+
+        return ApiResponse.<List<AdminStationResponse>>builder()
+                .code(200)
+                .message("Lấy danh sách trạm thành công")
+                .result(stations)
+                .build();
     }
 
     @GetMapping("/statistics")

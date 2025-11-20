@@ -4,7 +4,6 @@ import com.example.ETCSystem.dto.ApiResponse;
 import com.example.ETCSystem.dto.request.OtpRequest;
 import com.example.ETCSystem.dto.request.UserRequest;
 import com.example.ETCSystem.dto.response.OtpResponse;
-import com.example.ETCSystem.dto.response.UserResponse;
 import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.services.OtpService;
 import com.example.ETCSystem.services.UserService;
