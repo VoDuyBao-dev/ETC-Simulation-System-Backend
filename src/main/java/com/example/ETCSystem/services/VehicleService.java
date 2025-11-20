@@ -1,6 +1,7 @@
 package com.example.ETCSystem.services;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 // import org.springframework.data.domain.PageRequest;
@@ -74,15 +75,24 @@ public class VehicleService {
 
         vehicleRepository.save(vehicle);
 
-        // 2. Tạo thẻ E-Tag đầu tiên cho xe
+        // 2. Tạo thẻ E-Tag đầu tiên
         RfidTag tag = new RfidTag();
         tag.setVehicle(vehicle);
-        tag.setTagUid(generateTagUid()); // Hàm sinh mã thẻ chuẩn hơn
+        tag.setTagUid(generateTagUid());
         tag.setStatus(TagStatus.ACTIVE);
         tag.setIssuedAt(LocalDateTime.now());
+        if (vehicle.getRfidTags() == null) {
+            vehicle.setRfidTags(new ArrayList<>());
+        }
+        vehicle.getRfidTags().add(tag);
 
         rfidTagRepository.save(tag);
-        return vehicleMapper.toVehicleResponse(vehicle);
+        vehicleRepository.save(vehicle);
+        // 3. LOAD LẠI VEHICLE SAU KHI LƯU TAG
+        Vehicle fullVehicle = vehicleRepository.findById(vehicle.getId())
+                .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
+
+        return vehicleMapper.toVehicleResponse(fullVehicle);
     }
 
     // đổi trạng thái của thẻ xe
@@ -91,67 +101,103 @@ public class VehicleService {
         User currentUser = userService.getCurrentUser();
         Long userId = currentUser.getUserId();
 
+        // 1. Kiểm tra user
         userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
+        // 2. Kiểm tra xe
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
 
+        // 3. Kiểm tra quyền sở hữu
         if (!vehicle.getUser().getUserId().equals(currentUser.getUserId())) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
-        RfidTag tag = rfidTagRepository.findByVehicleId(vehicleId)
+
+        // 4. Lấy thẻ ACTIVE hiện tại (1 xe chỉ có 1 thẻ ACTIVE)
+        RfidTag activeTag = rfidTagRepository
+                .findByVehicleIdAndStatus(vehicleId, TagStatus.ACTIVE)
                 .orElseThrow(() -> new AppException(ErrorCode.RFID_TAG_NOT_FOUND));
 
-        tag.setStatus(TagStatus.INACTIVE);
-        rfidTagRepository.save(tag);
+        // 5. Vô hiệu hóa thẻ ACTIVE
+        activeTag.setStatus(TagStatus.INACTIVE);
+        activeTag.setLastSuccessfulPassage(null);
+        activeTag.setLastPassageStationId(null);
 
-        return vehicleMapper.toVehicleResponse(vehicle);
+        rfidTagRepository.save(activeTag);
+
+        // 6. Không tạo thẻ mới — hàm này chỉ vô hiệu hoá
+        // (nếu muốn cấp thẻ mới → dùng API /report-lost-tag)
+
+        // 7. Load lại vehicle để mapper lấy danh sách thẻ mới nhất
+        Vehicle fullVehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
+
+        return vehicleMapper.toVehicleResponse(fullVehicle);
     }
 
     // Đổi trạng thái của xe và thẻ xe sẽ đổi theo
     public VehicleResponse updateVehicleStatus(Long vehicleId, UpdateVehicleStatusRequest request) {
+
         User currentUser = userService.getCurrentUser();
-        Long userId = currentUser.getUserId();
 
-        System.out.println("Current User ID: "
-                + currentUser.getUserId()
-                + " | Type: "
-                + currentUser.getUserId().getClass().getName());
-
-        userRepository.findById(userId)
+        // Kiểm tra user hợp lệ
+        User user = userRepository.findById(currentUser.getUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
 
-        // Nếu không phải người dùng đang đăng nhập sửa trạng thái thì sẽ báo lỗi
+        // Kiểm tra quyền sở hữu xe
         if (!vehicle.getUser().getUserId().equals(currentUser.getUserId())) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
-        RfidTag tag = rfidTagRepository.findByVehicleId(vehicleId)
-                .orElseThrow(() -> new AppException(ErrorCode.RFID_TAG_NOT_FOUND));
-
+        // Parse trạng thái mới của xe
+        VehicleStatus newStatus;
         try {
-            VehicleStatus newStatus = VehicleStatus.valueOf(request.getStatus().toUpperCase());
-            vehicle.setStatus(newStatus);
-            if (tag != null) {
-                if (newStatus == VehicleStatus.INACTIVE) {
-                    tag.setStatus(TagStatus.INACTIVE);
-                } else if (newStatus == VehicleStatus.ACTIVE && tag.getStatus() == TagStatus.INACTIVE) {
-                    // Nếu xe được kích hoạt lại, cho phép mở tag hoạt động trở lại
-                    tag.setStatus(TagStatus.ACTIVE);
-                }
-                rfidTagRepository.save(tag);
-            }
-        } catch (IllegalArgumentException e) {
+            newStatus = VehicleStatus.valueOf(request.getStatus().toUpperCase());
+        } catch (Exception e) {
             throw new AppException(ErrorCode.INVALID_STATUS);
         }
 
+        // Cập nhật trạng thái xe
+        vehicle.setStatus(newStatus);
         vehicleRepository.save(vehicle);
-        rfidTagRepository.save(tag);
-        return vehicleMapper.toVehicleResponse(vehicle);
+
+        // Lấy danh sách tất cả thẻ của xe
+        List<RfidTag> tags = rfidTagRepository.findAllByVehicleId(vehicleId);
+
+        if (tags != null && !tags.isEmpty()) {
+            if (newStatus == VehicleStatus.INACTIVE) {
+                // ✔ Nếu xe bị vô hiệu hoá → tất cả thẻ ACTIVE đều INACTIVE
+                for (RfidTag tag : tags) {
+                    if (tag.getStatus() == TagStatus.ACTIVE) {
+                        tag.setStatus(TagStatus.INACTIVE);
+                    }
+                }
+                rfidTagRepository.saveAll(tags);
+
+            } else if (newStatus == VehicleStatus.ACTIVE) {
+                // ✔ Xe hoạt động → chỉ mở thẻ ACTIVE gần nhất
+                RfidTag latestActive = tags.stream()
+                        .filter(t -> t.getStatus() == TagStatus.INACTIVE)
+                        .sorted((a, b) -> b.getIssuedAt().compareTo(a.getIssuedAt()))
+                        .findFirst()
+                        .orElse(null);
+
+                if (latestActive != null) {
+                    latestActive.setStatus(TagStatus.ACTIVE);
+                    rfidTagRepository.save(latestActive);
+                }
+            }
+        }
+
+        // Load lại vehicle sau khi cập nhật
+        Vehicle fullVehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
+
+        return vehicleMapper.toVehicleResponse(fullVehicle);
     }
 
     // danh sách xe của người dùng đã đăng nhập
@@ -169,9 +215,18 @@ public class VehicleService {
 
     // @Transactional
     public RfidTagResponse reportLostAndIssueNewTag(Long vehicleId) {
+        User currentUser = userService.getCurrentUser();
+        Long currentUserId = currentUser.getUserId();
+        // Kiểm tra user hợp lệ
+        User user = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
+
+        if (!vehicle.getUser().getUserId().equals(currentUserId)) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
 
         // 1. Lấy thẻ ACTIVE hiện tại
         RfidTag oldTag = rfidTagRepository
