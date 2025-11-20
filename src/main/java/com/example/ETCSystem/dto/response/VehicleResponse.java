@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class VehicleResponse {
+    private Long id;         // id của xe 
     private String plateNumber;
     private String tagUid;
     private String tagStatus;

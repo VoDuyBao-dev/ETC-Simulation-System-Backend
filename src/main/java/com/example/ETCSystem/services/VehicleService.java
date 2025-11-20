@@ -133,8 +133,8 @@ public class VehicleService {
 
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
-                
-// Nếu không phải người dùng đang đăng nhập sửa trạng thái thì sẽ báo lỗi 
+
+        // Nếu không phải người dùng đang đăng nhập sửa trạng thái thì sẽ báo lỗi
         if (!vehicle.getUser().getUserId().equals(currentUser.getUserId())) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
@@ -164,26 +164,16 @@ public class VehicleService {
     }
 
     // danh sách xe của người dùng đã đăng nhập
-    public PagedResponse<VehicleResponse> getUserVehicles(int page, int size) {
-        if (page < 0 || size <= 0) {
-            throw new AppException(ErrorCode.INVALID_PAGINATION);
-        }
+    public List<VehicleResponse> getUserVehicles() {
+
         User currentUser = userService.getCurrentUser();
         Long userId = currentUser.getUserId();
 
-        PageRequest pageable = PageRequest.of(page, size);
-        Page<Vehicle> vehicles = vehicleRepository.findByUserUserId(userId, pageable);
-        List<VehicleResponse> responses = vehicles.getContent()
-                .stream()
+        List<Vehicle> vehicles = vehicleRepository.findByUserUserId(userId);
+
+        return vehicles.stream()
                 .map(vehicleMapper::toVehicleResponse)
                 .toList();
-
-        return PagedResponse.of(
-                responses,
-                vehicles.getNumber(),
-                vehicles.getSize(),
-                vehicles.getTotalElements(),
-                vehicles.getTotalPages());
     }
 
 }

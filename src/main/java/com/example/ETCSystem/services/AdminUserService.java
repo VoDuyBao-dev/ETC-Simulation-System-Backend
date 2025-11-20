@@ -2,7 +2,6 @@ package com.example.ETCSystem.services;
 
 import com.example.ETCSystem.dto.request.AdminUpdateUserRequest;
 import com.example.ETCSystem.dto.response.AdminUserResponse;
-import com.example.ETCSystem.dto.response.PagedResponse;
 import com.example.ETCSystem.entities.User;
 import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.exceptions.ErrorCode;
@@ -10,9 +9,7 @@ import com.example.ETCSystem.mapper.AdminUserMapper;
 import com.example.ETCSystem.repositories.AdminUserRepository;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
 
 import com.example.ETCSystem.enums.AccountStatus;
 import java.util.List;
@@ -25,23 +22,13 @@ public class AdminUserService {
     private final AdminUserMapper userMapper;
     private final AdminUserRepository userRepository;
 
-    public PagedResponse<AdminUserResponse> getAllUsers(int page, int size) {
-        if (page < 0 || size <= 0) {
-            throw new AppException(ErrorCode.INVALID_PAGINATION);
-        }
-        Page<User> userPage = userRepository.findAll(PageRequest.of(page, size));
+    // Hiển thị toàn bộ danh sách người dùng (không phân trang)
+    public List<AdminUserResponse> getAllUsers() {
+        List<User> users = userRepository.findAllByOrderByCreatedAtDesc();
 
-        List<AdminUserResponse> responses = userPage.getContent()
-                .stream()
+        return users.stream()
                 .map(userMapper::toAdminUserResponse)
                 .toList();
-
-        return PagedResponse.of(
-                responses,
-                userPage.getNumber(),
-                userPage.getSize(),
-                userPage.getTotalElements(),
-                userPage.getTotalPages());
     }
 
     public AdminUserResponse updateUserStatus(Long id, AdminUpdateUserRequest request) {
