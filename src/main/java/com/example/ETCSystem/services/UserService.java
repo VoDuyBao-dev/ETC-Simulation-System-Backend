@@ -1,6 +1,5 @@
 package com.example.ETCSystem.services;
 
-
 import com.example.ETCSystem.dto.request.UserRequest;
 import com.example.ETCSystem.dto.response.UserResponse;
 import com.example.ETCSystem.entities.User;
@@ -34,10 +33,10 @@ public class UserService {
 
     public UserResponse createUser(UserRequest userRequest) {
 
-        if(!userRequest.getPassword().equals(userRequest.getConfirmPassword())) {
+        if (!userRequest.getPassword().equals(userRequest.getConfirmPassword())) {
             throw new AppException(ErrorCode.PASSWORDS_DO_NOT_MATCH);
         }
-        if(userRepository.existsByUsername(userRequest.getUsername())) {
+        if (userRepository.existsByUsername(userRequest.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
         User user = userMapper.toUser(userRequest);
@@ -53,23 +52,22 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-//    kích hoạt tài khoản
+    // kích hoạt tài khoản
     public void activateUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        
+
         log.info("user in activateUser{}", user);
 
         user.setEnabled(true);
         user.setStatus(AccountStatus.ACTIVE);
-        try{
+        try {
             userRepository.save(user);
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new AppException(ErrorCode.UPDATE_USER_FAILED, e);
         }
 
     }
-
 
     public List<UserResponse> getAllUsers() {
 
@@ -89,13 +87,14 @@ public class UserService {
 
     public UserResponse updateUserInfo(UserRequest userRequest) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-//        update user info
+        // update user info
         userMapper.updateUserFromRequest(userRequest, user);
-        try{
+        try {
             user = userRepository.save(user);
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new AppException(ErrorCode.UPDATE_USER_FAILED, e);
         }
         return userMapper.toUserResponse(user);
@@ -104,6 +103,14 @@ public class UserService {
 
     public void findByUsername(String username) {
         userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+    }
+
+    // Kiểm tra tên người dùng đang đăng nhập.
+    public User getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
 

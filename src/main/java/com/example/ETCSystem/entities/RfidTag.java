@@ -1,6 +1,5 @@
 package com.example.ETCSystem.entities;
 
-import com.example.ETCSystem.enums.TagStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+
+import com.example.ETCSystem.enums.TagStatus;
+import lombok.*;
 
 @Entity
 @Table(name = "rfid_tags")

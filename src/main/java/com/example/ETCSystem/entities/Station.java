@@ -1,6 +1,5 @@
 package com.example.ETCSystem.entities;
 
-import com.example.ETCSystem.enums.StationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.*;
+import com.example.ETCSystem.enums.StationStatus;
 
 @Entity
 @Table(name = "stations")
@@ -39,4 +40,9 @@ public class Station {
 
     @OneToMany(mappedBy = "station")
     private List<RfidReader> readers;
+
+    public static Object builder() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'builder'");
+    }
 }

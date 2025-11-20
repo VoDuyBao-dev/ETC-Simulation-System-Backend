@@ -1,6 +1,5 @@
 package com.example.ETCSystem.entities;
 
-import com.example.ETCSystem.enums.TollStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.example.ETCSystem.enums.TollStatus;
 
 @Data
 @NoArgsConstructor

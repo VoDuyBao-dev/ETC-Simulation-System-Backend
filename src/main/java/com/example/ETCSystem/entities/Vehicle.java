@@ -1,6 +1,5 @@
 package com.example.ETCSystem.entities;
 
-import com.example.ETCSystem.enums.VehicleType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +8,13 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.example.ETCSystem.enums.VehicleType;
+import com.example.ETCSystem.enums.VehicleStatus;
+
+
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.*;
 
 @Entity
 @Table(name = "vehicles")
@@ -36,6 +40,9 @@ public class Vehicle {
     private String brand;
     private String model;
     private String color;
+
+    @Enumerated(EnumType.STRING)
+    private VehicleStatus status;
 
     @CreationTimestamp
     @Column(updatable = false)

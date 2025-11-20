@@ -1,9 +1,10 @@
 package com.example.ETCSystem.entities;
 
-import com.example.ETCSystem.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+
+import com.example.ETCSystem.enums.TransactionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -1,5 +1,8 @@
 package com.example.ETCSystem.entities;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.example.ETCSystem.enums.TopupMethod;
 import com.example.ETCSystem.enums.TopupStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;

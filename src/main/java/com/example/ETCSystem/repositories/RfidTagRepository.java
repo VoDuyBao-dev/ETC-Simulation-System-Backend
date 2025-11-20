@@ -1,10 +1,13 @@
 package com.example.ETCSystem.repositories;
 
 import com.example.ETCSystem.entities.RfidTag;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-public interface RfidTagRepository extends JpaRepository<RfidTag,Long> {
+import org.springframework.data.jpa.repository.JpaRepository;
+@Repository
+public interface RfidTagRepository extends JpaRepository<RfidTag, Long> {
+    Optional<RfidTag> findByVehicleId(Long vehicleId);
     Optional<RfidTag> findByTagUid(String tagUid);
 }
