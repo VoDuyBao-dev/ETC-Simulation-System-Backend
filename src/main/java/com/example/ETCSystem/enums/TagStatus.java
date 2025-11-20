@@ -5,4 +5,3 @@ public enum TagStatus {
     INACTIVE,
 
 }
-// active, blocked, inactive

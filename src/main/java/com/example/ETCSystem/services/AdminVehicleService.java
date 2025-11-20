@@ -14,11 +14,7 @@ import com.example.ETCSystem.repositories.RfidTagRepository;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-// import org.springframework.data.domain.PageImpl;
-import com.example.ETCSystem.dto.response.PagedResponse;
 
 import java.util.List;
 
@@ -34,33 +30,42 @@ public class AdminVehicleService {
         List<Vehicle> vehicle = adminVehicleRepository.findAllByOrderByCreatedAtDesc();
 
         return vehicle.stream()
-                    .map(adminVehicleMapper::toAdminVehicleResponse)
-                    .toList();
+                .map(adminVehicleMapper::toAdminVehicleResponse)
+                .toList();
     }
 
     public AdminVehicleResponse updateVehicleStatus(Long id, AdminUpdateVehicleRequest request) {
+
         Vehicle vehicle = adminVehicleRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
-        RfidTag tag = rfidTagRepository.findByVehicleId(id)
-                .orElseThrow(() -> new AppException(ErrorCode.RFID_TAG_NOT_FOUND));
-            
+
+        List<RfidTag> tags = rfidTagRepository.findAllByVehicleId(id);
+
+        RfidTag activeTag = tags.stream()
+                .filter(t -> t.getStatus() == TagStatus.ACTIVE)
+                .findFirst()
+                .orElse(null);
+
+        VehicleStatus newStatus;
         try {
-            VehicleStatus newStatus = VehicleStatus.valueOf(request.getStatus().toUpperCase());
-            vehicle.setStatus(newStatus);
-            if (tag != null) {
-                if (newStatus == VehicleStatus.INACTIVE) {
-                    tag.setStatus(TagStatus.INACTIVE);
-                } else if (newStatus == VehicleStatus.ACTIVE && tag.getStatus() == TagStatus.INACTIVE) {
-                    // Nếu xe được kích hoạt lại, cho phép mở tag hoạt động trở lại
-                    tag.setStatus(TagStatus.ACTIVE);
-                }
-                rfidTagRepository.save(tag);
-            }
-        } catch (IllegalArgumentException e) {
+            newStatus = VehicleStatus.valueOf(request.getStatus().trim().toUpperCase());
+        } catch (Exception e) {
             throw new AppException(ErrorCode.INVALID_STATUS);
         }
-        adminVehicleRepository.save(vehicle);
 
+        vehicle.setStatus(newStatus);
+
+        if (activeTag != null) {
+            if (newStatus == VehicleStatus.INACTIVE) {
+                activeTag.setStatus(TagStatus.INACTIVE);
+            } else if (newStatus == VehicleStatus.ACTIVE && activeTag.getStatus() == TagStatus.INACTIVE) {
+                activeTag.setStatus(TagStatus.ACTIVE);
+            }
+            rfidTagRepository.save(activeTag);
+        }
+
+        adminVehicleRepository.save(vehicle);
         return adminVehicleMapper.toAdminVehicleResponse(vehicle);
     }
+
 }

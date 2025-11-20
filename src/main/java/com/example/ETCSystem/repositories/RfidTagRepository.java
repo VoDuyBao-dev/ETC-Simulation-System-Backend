@@ -5,6 +5,7 @@ import com.example.ETCSystem.enums.TagStatus;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,5 +19,7 @@ public interface RfidTagRepository extends JpaRepository<RfidTag, Long> {
 
     @Query("SELECT t FROM RfidTag t WHERE t.vehicle.id=:vehicleId AND t.status=:status")
     Optional<RfidTag> findByVehicleIdAndStatus(Long vehicleId, TagStatus status);
+
+    List<RfidTag> findAllByVehicleId(Long vehicleId);
 
 }

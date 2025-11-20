@@ -23,7 +23,7 @@ VALUES
 (3, 'CUSTOMER'),
 (4, 'CUSTOMER'),
 (5, 'CUSTOMER'),
-(6, 'ADMIN'),
+(6, 'CUSTOMER'),
 (7, 'CUSTOMER'),
 (8, 'CUSTOMER'),
 (9, 'CUSTOMER'),
@@ -83,7 +83,7 @@ VALUES
 (4, 'TAG0004', 'ACTIVE', 4),
 (5, 'TAG0005', 'ACTIVE', 5),
 (6, 'TAG0006', 'ACTIVE', 6),
-(7, 'TAG0007', 'INACTIVE', 7),
+(7, 'TAG0007', 'ACTIVE', 7),
 (8, 'TAG0008', 'ACTIVE', 8),
 (9, 'TAG0009', 'ACTIVE', 9),
 (10, 'TAG0010', 'ACTIVE', 10);
@@ -411,14 +411,14 @@ VALUES
 INSERT INTO topups (id, amount, description, method, status, reference_code, user_id, wallet_id, created_at, completed_at)
 VALUES
 (1, 100000, 'Nạp tiền ví lần đầu', 'BANK', 'COMPLETED', 'REF001', 11, 1, '2025-01-28 09:00:00', '2025-01-28 09:01:00'),
-(2, 50000, 'Nạp qua ví điện tử', 'WALLET', 'COMPLETED', 'REF002', 2, 2, '2025-01-28 09:05:00', '2025-01-28 09:06:00'),
+(2, 50000, 'Nạp qua ví điện tử', 'VNPAY', 'COMPLETED', 'REF002', 2, 2, '2025-01-28 09:05:00', '2025-01-28 09:06:00'),
 (3, 200000, 'Nạp tiền tháng 10', 'BANK', 'COMPLETED', 'REF003', 3, 3, '2025-01-28 09:10:00', '2025-01-28 09:11:00'),
-(4, 100000, 'Nạp tiền bổ sung', 'WALLET', 'COMPLETED', 'REF004', 4, 4, '2025-01-28 09:15:00', '2025-01-28 09:16:00'),
+(4, 100000, 'Nạp tiền bổ sung', 'VNPAY', 'COMPLETED', 'REF004', 4, 4, '2025-01-28 09:15:00', '2025-01-28 09:16:00'),
 (5, 300000, 'Nạp tiền ngân hàng', 'BANK', 'COMPLETED', 'REF005', 5, 5, '2025-01-28 09:20:00', '2025-01-28 09:21:00'),
 (6, 500000, 'Nạp tiền dự phòng', 'BANK', 'COMPLETED', 'REF006', 6, 6, '2025-01-28 09:25:00', '2025-01-28 09:26:00'),
-(7, 100000, 'Nạp thất bại thử nghiệm', 'WALLET', 'COMPLETED', 'REF007', 7, 7, '2025-01-28 09:30:00', '2025-01-28 09:30:00'),
+(7, 100000, 'Nạp thất bại thử nghiệm', 'VNPAY', 'COMPLETED', 'REF007', 7, 7, '2025-01-28 09:30:00', '2025-01-28 09:30:00'),
 (8, 150000, 'Nạp tự động hàng tháng', 'BANK', 'COMPLETED', 'REF008', 8, 8, '2025-01-28 09:35:00', '2025-01-28 09:36:00'),
-(9, 50000, 'Nạp từ Momo', 'WALLET', 'COMPLETED', 'REF009', 9, 9, '2025-01-28 09:40:00', '2025-01-28 09:41:00'),
+(9, 50000, 'Nạp từ Momo', 'VNPAY', 'COMPLETED', 'REF009', 9, 9, '2025-01-28 09:40:00', '2025-01-28 09:41:00'),
 (10, 250000, 'Nạp tiền khuyến mãi', 'BANK', 'COMPLETED', 'REF010', 10, 10, '2025-01-28 09:45:00', '2025-01-28 09:46:00');
 
 
