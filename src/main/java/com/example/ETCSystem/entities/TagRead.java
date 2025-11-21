@@ -30,6 +30,7 @@ public class TagRead {
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime readTime;
     private Boolean processed = false;
+    @Enumerated(EnumType.STRING)
     private ProcessResult processResult;
 
 }

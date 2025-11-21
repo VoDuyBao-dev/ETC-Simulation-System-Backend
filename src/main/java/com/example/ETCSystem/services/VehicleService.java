@@ -7,7 +7,6 @@ import java.util.List;
 // import org.springframework.data.domain.PageRequest;
 // import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import java.util.UUID;
 
 import com.example.ETCSystem.dto.request.RegisterVehicleRequest;
 import com.example.ETCSystem.dto.request.UpdateVehicleStatusRequest;
@@ -258,9 +257,10 @@ public class VehicleService {
         return vehicleMapper.toRfidTagResponse(newTag);
     }
 
-    // Hàm sinh tag_uid đẹp hơn (ví dụ: ETG12345)
+    // Hàm sinh tag_uid 
     private String generateTagUid() {
-        return "E" + UUID.randomUUID().toString().replace("-", "").substring(0, 6).toUpperCase();
-    }
+    long number = (long) (Math.random() * 1_000_000_0000L); // từ 0–9999999999
+    return String.format("%010d", number); // đảm bảo đủ 10 chữ số
+}
 
 }

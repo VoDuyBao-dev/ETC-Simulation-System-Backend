@@ -32,7 +32,7 @@ public class WalletController {
     WalletTransactionService walletTransactionService;
     UserService userService;
     WalletService walletService;
-
+    
     @GetMapping("/history")
     public ApiResponse<Page<TransactionHistoryResponse>> getHistory(
             @RequestParam(defaultValue = "0") int page,
