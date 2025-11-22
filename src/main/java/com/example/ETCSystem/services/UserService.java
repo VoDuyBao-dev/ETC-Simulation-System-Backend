@@ -1,5 +1,6 @@
 package com.example.ETCSystem.services;
 
+import com.example.ETCSystem.dto.common.WalletDTO;
 import com.example.ETCSystem.dto.request.UserRequest;
 import com.example.ETCSystem.dto.response.UserResponse;
 import com.example.ETCSystem.entities.User;
@@ -30,6 +31,7 @@ public class UserService {
     UserMapper userMapper;
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
+    WalletService walletService;
 
     public UserResponse createUser(UserRequest userRequest) {
 
@@ -49,7 +51,11 @@ public class UserService {
 
         log.info("user in createUser{}", user);
 
-        return userMapper.toUserResponse(userRepository.save(user));
+        User savedUser=userRepository.save(user);
+//        Tao vi gan voi ng dung
+        WalletDTO walletDTO = walletService.createWalletForUser(savedUser);
+
+        return userMapper.toUserResponse(savedUser);
     }
 
     // kích hoạt tài khoản

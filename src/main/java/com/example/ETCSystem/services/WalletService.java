@@ -33,6 +33,22 @@ public class WalletService {
     RfidTagRepository rfidTagRepository;
     UserRepository userRepository;
 
+    public WalletDTO createWalletForUser(User user) {
+        if (user.getWallet() != null) {
+            throw new AppException(ErrorCode.WALLET_EXISTED);
+        }
+
+        Wallet wallet = Wallet.builder()
+                .balance(BigDecimal.ZERO)
+                .isBlocked(false)
+                .user(user)
+                .build();
+
+        Wallet savedWallet = walletRepository.save(wallet);
+        log.info("Created wallet {} for user {}", savedWallet.getId(), user.getUserId());
+        return walletMapper.toWalletDTO(savedWallet);
+    }
+
     public WalletDTO getWalletByUserId(Long userId) {
         Wallet wallet = walletRepository.findByUser_UserId(userId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_EXISTED));
         return walletMapper.toWalletDTO(wallet);

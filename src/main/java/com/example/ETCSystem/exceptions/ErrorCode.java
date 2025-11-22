@@ -62,6 +62,7 @@ public enum ErrorCode {
     RFID_READER_NOT_ACTIVE(1061, "Rfid reader has been inactive", HttpStatus.BAD_REQUEST),
     RFID_READER_NOT_BELONG_TO_STATION(1062, "Rfid reader not belong to station", HttpStatus.BAD_REQUEST),
     WALLET_BALANCE_NOT_ENOUGH(1063, "wallet balance not enough", HttpStatus.BAD_REQUEST),
+    WALLET_EXISTED(1064, "wallet existed", HttpStatus.BAD_REQUEST),
 
 
 // lỗi save
