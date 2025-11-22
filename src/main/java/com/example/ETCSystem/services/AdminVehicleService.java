@@ -27,7 +27,7 @@ public class AdminVehicleService {
     private final RfidTagRepository rfidTagRepository;
 
     public List<AdminVehicleResponse> getAllVehicles() {
-        List<Vehicle> vehicle = adminVehicleRepository.findAllByOrderByCreatedAtDesc();
+        List<Vehicle> vehicle = adminVehicleRepository.findAllByOrderByIdAsc();
 
         return vehicle.stream()
                 .map(adminVehicleMapper::toAdminVehicleResponse)
