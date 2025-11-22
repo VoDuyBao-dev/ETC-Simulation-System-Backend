@@ -11,7 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.example.ETCSystem.enums.VehicleType;
 import com.example.ETCSystem.enums.VehicleStatus;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.*;

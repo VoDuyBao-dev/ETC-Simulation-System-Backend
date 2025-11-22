@@ -3,10 +3,7 @@ package com.example.ETCSystem.entities;
 import com.example.ETCSystem.enums.AccountStatus;
 import com.example.ETCSystem.enums.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,11 +11,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-@Entity
-@Table(name = "users")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "users")
 @Builder
 public class User {
     @Id

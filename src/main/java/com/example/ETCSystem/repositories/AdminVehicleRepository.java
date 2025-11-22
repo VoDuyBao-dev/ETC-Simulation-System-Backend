@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AdminVehicleRepository extends JpaRepository<Vehicle, Long> {
-    List<Vehicle> findAllByOrderByCreatedAtDesc();
+    List<Vehicle> findAllByOrderByIdAsc();
 }
