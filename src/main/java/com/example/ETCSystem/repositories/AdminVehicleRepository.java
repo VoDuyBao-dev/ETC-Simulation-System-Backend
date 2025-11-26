@@ -10,4 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AdminVehicleRepository extends JpaRepository<Vehicle, Long> {
     List<Vehicle> findAllByOrderByIdAsc();
+
+    Vehicle findByIdAndIsDelete(Long id, Integer isDelete);
+    List<Vehicle> findAllByIsDelete(Integer isDelete);
 }

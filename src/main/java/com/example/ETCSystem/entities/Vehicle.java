@@ -50,9 +50,11 @@ public class Vehicle {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "vehicle")
-    private List<RfidTag>  rfidTags;
+    private List<RfidTag> rfidTags;
 
     @OneToMany(mappedBy = "vehicle")
     private List<TollTransaction> tollTransactions;
 
+    @Column(name = "is_delete", nullable = false)
+    private Integer isDelete = 0;
 }

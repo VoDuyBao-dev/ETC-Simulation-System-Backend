@@ -12,8 +12,8 @@ import lombok.*;
 @Builder
 public class AdminCreateStationRequest {
 
-    @NotBlank(message = "CODE_REQUIRED")
-    private String code;
+    // @NotBlank(message = "CODE_REQUIRED")
+    // private String code;
 
     @NotBlank(message = "NAME_REQUIRED")
     private String name;
@@ -27,6 +27,6 @@ public class AdminCreateStationRequest {
     @NotNull(message = "LONGITUDE_REQUIRED")
     private Double longitude;
     
-    @NotNull(message = "STATION_REQUIED")
-    private StationStatus status;
+    // @NotNull(message = "STATION_REQUIED")
+    // private StationStatus status;
 }
