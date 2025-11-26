@@ -18,4 +18,5 @@ public class AdminUpdateStationRequest {
     private Double latitude;
     private Double longitude;
     private String status;
+    
 }

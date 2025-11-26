@@ -27,7 +27,7 @@ public class AdminVehicleService {
     private final RfidTagRepository rfidTagRepository;
 
     public List<AdminVehicleResponse> getAllVehicles() {
-        List<Vehicle> vehicle = adminVehicleRepository.findAllByOrderByIdAsc();
+        List<Vehicle> vehicle = adminVehicleRepository.findAllByIsDelete(0);
 
         return vehicle.stream()
                 .map(adminVehicleMapper::toAdminVehicleResponse)
@@ -66,6 +66,22 @@ public class AdminVehicleService {
 
         adminVehicleRepository.save(vehicle);
         return adminVehicleMapper.toAdminVehicleResponse(vehicle);
+    }
+
+    public AdminVehicleResponse deleteVehicle(Long id) {
+
+        Vehicle vehicle = adminVehicleRepository.findByIdAndIsDelete(id, 0);
+
+        if (vehicle == null) {
+            throw new AppException(ErrorCode.VEHICLE_NOT_FOUND);
+        }
+
+        // Soft delete
+        vehicle.setIsDelete(1);
+        vehicle.setStatus(VehicleStatus.INACTIVE);
+        Vehicle saved = adminVehicleRepository.save(vehicle);
+
+        return adminVehicleMapper.toAdminVehicleResponse(saved);
     }
 
 }

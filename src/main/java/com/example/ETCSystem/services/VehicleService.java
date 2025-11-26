@@ -113,20 +113,40 @@ public class VehicleService {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
-        // 4. Lấy thẻ ACTIVE hiện tại (1 xe chỉ có 1 thẻ ACTIVE)
-        RfidTag activeTag = rfidTagRepository
-                .findByVehicleIdAndStatus(vehicleId, TagStatus.ACTIVE)
-                .orElseThrow(() -> new AppException(ErrorCode.RFID_TAG_NOT_FOUND));
+        // // 4. Lấy thẻ ACTIVE hiện tại (1 xe chỉ có 1 thẻ ACTIVE)
+        // RfidTag activeTag = rfidTagRepository
+        // .findByVehicleIdAndStatus(vehicleId, TagStatus.ACTIVE)
+        // .orElseThrow(() -> new AppException(ErrorCode.RFID_TAG_NOT_FOUND));
 
-        // 5. Vô hiệu hóa thẻ ACTIVE
-        activeTag.setStatus(TagStatus.INACTIVE);
-        activeTag.setLastSuccessfulPassage(null);
-        activeTag.setLastPassageStationId(null);
+        // // 5. Vô hiệu hóa thẻ ACTIVE
+        // activeTag.setStatus(TagStatus.INACTIVE);
+        // activeTag.setLastSuccessfulPassage(null);
+        // activeTag.setLastPassageStationId(null);
 
-        rfidTagRepository.save(activeTag);
+        // rfidTagRepository.save(activeTag);
+        List<RfidTag> allTags = rfidTagRepository.findAllByVehicleId(vehicleId);
 
-        // 6. Không tạo thẻ mới — hàm này chỉ vô hiệu hoá
-        // (nếu muốn cấp thẻ mới → dùng API /report-lost-tag)
+        if (allTags.isEmpty()) {
+            throw new AppException(ErrorCode.RFID_TAG_NOT_FOUND);
+        }
+
+        // 5. Đổi trạng thái TẤT CẢ thẻ
+        for (RfidTag tag : allTags) {
+
+            if (tag.getStatus() == TagStatus.ACTIVE) {
+                tag.setStatus(TagStatus.INACTIVE);
+            } else {
+                tag.setStatus(TagStatus.ACTIVE);
+            }
+
+            // reset thông tin passage nếu bị tắt
+            if (tag.getStatus() == TagStatus.INACTIVE) {
+                // tag.setLastSuccessfulPassage(null);
+                // tag.setLastPassageStationId(null);
+            }
+
+            rfidTagRepository.save(tag);
+        }
 
         // 7. Load lại vehicle để mapper lấy danh sách thẻ mới nhất
         Vehicle fullVehicle = vehicleRepository.findById(vehicleId)
@@ -257,10 +277,10 @@ public class VehicleService {
         return vehicleMapper.toRfidTagResponse(newTag);
     }
 
-    // Hàm sinh tag_uid 
+    // Hàm sinh tag_uid
     private String generateTagUid() {
-    long number = (long) (Math.random() * 1_000_000_0000L); // từ 0–9999999999
-    return String.format("%010d", number); // đảm bảo đủ 10 chữ số
-}
+        long number = (long) (Math.random() * 1_000_000_0000L); // từ 0–9999999999
+        return String.format("%010d", number); // đảm bảo đủ 10 chữ số
+    }
 
 }

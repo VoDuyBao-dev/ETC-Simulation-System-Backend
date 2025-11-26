@@ -37,6 +37,9 @@ public class Station {
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
+    
+    @Column(name = "is_delete", nullable = false)
+    private Integer isDelete = 0;
 
     @OneToMany(mappedBy = "station")
     private List<RfidReader> readers;
