@@ -41,6 +41,9 @@ public class Station {
     @OneToMany(mappedBy = "station")
     private List<RfidReader> readers;
 
+    @Column(name = "is_delete", nullable = false)
+    private Integer isDelete = 0;
+
     public static Object builder() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'builder'");

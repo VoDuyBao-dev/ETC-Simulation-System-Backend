@@ -49,10 +49,14 @@ public class Vehicle {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @Column(name = "is_delete", nullable = false)
+    private Integer isDelete = 0;
+
     @OneToMany(mappedBy = "vehicle")
     private List<RfidTag>  rfidTags;
 
     @OneToMany(mappedBy = "vehicle")
     private List<TollTransaction> tollTransactions;
+
 
 }

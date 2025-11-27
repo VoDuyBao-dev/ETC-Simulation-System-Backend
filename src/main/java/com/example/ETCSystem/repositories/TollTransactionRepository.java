@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 @Repository
 public interface TollTransactionRepository extends JpaRepository<TollTransaction, Long> {
-    List<TollTransactionProjection> findAllByOrderByCreatedAtDesc();
+    List<TollTransactionProjection> findAllByStatusOrderByCreatedAtDesc(TollStatus status);
   long countByStatus(TollStatus status);
 
   long countByStationId(Long stationId);
