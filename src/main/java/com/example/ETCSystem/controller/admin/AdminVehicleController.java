@@ -34,4 +34,9 @@ public class AdminVehicleController {
             @RequestBody AdminUpdateVehicleRequest request) {
         return ResponseEntity.ok(adminVehicleService.updateVehicleStatus(id, request));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<AdminVehicleResponse> deleteVehicle(@PathVariable Long id) {
+        return ResponseEntity.ok(adminVehicleService.deleteVehicle(id));
+    }
 }

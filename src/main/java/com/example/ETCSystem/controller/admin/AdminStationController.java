@@ -59,4 +59,11 @@ public class AdminStationController {
             @RequestBody AdminUpdateStationRequest request) {
         return ResponseEntity.ok(adminStationService.updateStationStatus(id, request));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<AdminStationResponse> deleteStation(@PathVariable Long id) {
+        AdminStationResponse response = adminStationService.deleteStation(id);
+        return ResponseEntity.ok(response);
+    }
+
 }

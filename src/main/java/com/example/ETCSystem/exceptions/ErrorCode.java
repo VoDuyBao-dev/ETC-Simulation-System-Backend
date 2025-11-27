@@ -45,7 +45,7 @@ public enum ErrorCode {
     STATION_NOT_FOUND(1300, "Station not found", HttpStatus.NOT_FOUND),
     STATION_CODE_EXISTS(1301, "Station code already exists", HttpStatus.CONFLICT),
     SAVE_INVALIDATED_TOKEN_FAILED(1018, "save invalidated token failed", HttpStatus.INTERNAL_SERVER_ERROR),
-
+    STATION_LOCATION_EXISTS(1302, "Trùng khinh độ và vĩ độ", HttpStatus.CONFLICT),
 
 //    lỗi liên quan đến giao dịch qua trạm
     STATION_NOT_EXISTED(1050, "station not existed", HttpStatus.INTERNAL_SERVER_ERROR),

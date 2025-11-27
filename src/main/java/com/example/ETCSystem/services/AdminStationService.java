@@ -25,9 +25,15 @@ public class AdminStationService {
     private final StationRepository stationRepository;
     private final AdminStationMapper adminStationMapper;
 
+    private String generateStationCode() {
+        long number = (long) (Math.random() * 10000);
+        return String.format("ST_%04d", number);
+    }
+
     // Hiển thị toàn bộ danh sách trạm (không phân trang)
     public List<AdminStationResponse> getAllStations() {
-        List<Station> stations = stationRepository.findAll();
+
+        List<Station> stations = stationRepository.findAllByIsDelete(0);
 
         return stations.stream()
                 .map(adminStationMapper::toAdminStationResponse)
@@ -36,33 +42,40 @@ public class AdminStationService {
 
     // Thống kê tổng quan trạm thu phí
     public Map<String, Long> getStationStatistics() {
-        long total = stationRepository.count();
-        long active = stationRepository.countByStatus(StationStatus.ACTIVE);
-        long maintenance = stationRepository.countByStatus(StationStatus.MAINTENANCE);
-        long inactive = stationRepository.countByStatus(StationStatus.INACTIVE);
 
-        Map<String, Long> stats = new HashMap<>();
-        stats.put("totalStations", total);
-        stats.put("activeStations", active);
-        stats.put("maintenanceStations", maintenance);
-        stats.put("inactiveStations", inactive);
+    long total = stationRepository.countByIsDelete(0);
+    long active = stationRepository.countByStatusAndIsDelete(StationStatus.ACTIVE, 0);
+    long maintenance = stationRepository.countByStatusAndIsDelete(StationStatus.MAINTENANCE, 0);
+    long inactive = stationRepository.countByStatusAndIsDelete(StationStatus.INACTIVE, 0);
 
-        return stats;
-    }
+    Map<String, Long> stats = new HashMap<>();
+    stats.put("totalStations", total);
+    stats.put("activeStations", active);
+    stats.put("maintenanceStations", maintenance);
+    stats.put("inactiveStations", inactive);
+
+    return stats;
+}
 
     // Thêm trạm
     public AdminStationResponse createStation(AdminCreateStationRequest req) {
-        if (stationRepository.existsByCode(req.getCode())) {
-            throw new AppException(ErrorCode.STATION_CODE_EXISTS);
+        String code = generateStationCode();
+        while (stationRepository.existsByCode(code)) {
+            code = generateStationCode();
+        }
+
+        if (stationRepository.existsByLatitudeAndLongitude(req.getLatitude(), req.getLongitude())) {
+            throw new AppException(ErrorCode.STATION_LOCATION_EXISTS);
         }
 
         Station station = new Station();
-        station.setCode(req.getCode());
+        // station.setCode(req.getCode());
+        station.setCode(code);
         station.setName(req.getName());
         station.setAddress(req.getAddress());
         station.setLatitude(req.getLatitude());
         station.setLongitude(req.getLongitude());
-        station.setStatus(req.getStatus());
+        station.setStatus(StationStatus.ACTIVE);
 
         Station saved = stationRepository.save(station);
         AdminStationResponse res = adminStationMapper.toAdminStationResponse(saved);
@@ -101,5 +114,23 @@ public class AdminStationService {
         Station update = stationRepository.save(station);
 
         return adminStationMapper.toAdminStationResponse(update);
+    }
+
+    public AdminStationResponse deleteStation(Long id) {
+
+        Station station = stationRepository.findByIdAndIsDelete(id, 0);
+        stationRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
+        if (station == null) {
+            throw new AppException(ErrorCode.STATION_NOT_FOUND);
+        }
+
+        // Soft delete
+        station.setIsDelete(1);
+        station.setStatus(StationStatus.INACTIVE);
+
+        Station saved = stationRepository.save(station);
+
+        return adminStationMapper.toAdminStationResponse(saved);
     }
 }

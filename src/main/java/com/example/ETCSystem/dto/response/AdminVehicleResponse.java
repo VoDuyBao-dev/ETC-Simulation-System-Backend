@@ -13,8 +13,8 @@ public class AdminVehicleResponse {
     private Long id;
     private String plateNumber;
     private VehicleType vehicleType;
-    private String FullName;
-    private String Email;
+    private String fullName;
+    private String email;
     private String rfidUid;
     private VehicleStatus status;
 }

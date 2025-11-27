@@ -2,7 +2,6 @@ package com.example.ETCSystem.controller.customer;
 
 import lombok.*;
 import com.example.ETCSystem.services.VehicleService;
-import com.example.ETCSystem.dto.response.PagedResponse;
 import com.example.ETCSystem.dto.response.VehicleResponse;
 import com.example.ETCSystem.dto.response.RfidTagResponse;
 import com.example.ETCSystem.entities.RfidTag;

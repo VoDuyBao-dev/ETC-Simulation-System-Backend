@@ -53,7 +53,7 @@ public class Vehicle {
     private Integer isDelete = 0;
 
     @OneToMany(mappedBy = "vehicle")
-    private List<RfidTag>  rfidTags;
+    private List<RfidTag> rfidTags;
 
     @OneToMany(mappedBy = "vehicle")
     private List<TollTransaction> tollTransactions;

@@ -15,27 +15,27 @@ public interface VehicleMapper {
     @Mapping(target = "plateNumber", source = "vehicle.plateNumber")
     @Mapping(target = "vehicleType", source = "vehicle.vehicleType")
     @Mapping(target = "vehicleStatus", source = "vehicle.status")
-    @Mapping(target = "tagUid", source = "vehicle", qualifiedByName = "mapActiveTagUid")
-    @Mapping(target = "tagStatus", source = "vehicle", qualifiedByName = "mapActiveTagStatus")
+    @Mapping(target = "tagUid", source = "vehicle", qualifiedByName = "mapTagUid")
+    @Mapping(target = "tagStatus", source = "vehicle", qualifiedByName = "mapTagStatus")
     VehicleResponse toVehicleResponse(Vehicle vehicle);
 
     // Lấy UID thẻ ACTIVE
-    @Named("mapActiveTagUid")
+    @Named("mapTagUid")
     default String mapActiveTagUid(Vehicle vehicle) {
         if (vehicle.getRfidTags() == null) return null;
         return vehicle.getRfidTags().stream()
-                .filter(tag -> tag.getStatus().name().equals("ACTIVE"))
+                // .filter(tag -> tag.getStatus().name().equals("ACTIVE"))
                 .map(RfidTag::getTagUid)
                 .findFirst()
                 .orElse(null);
     }
 
     // Lấy Status của thẻ ACTIVE
-    @Named("mapActiveTagStatus")
+    @Named("mapTagStatus")
     default String mapActiveTagStatus(Vehicle vehicle) {
         if (vehicle.getRfidTags() == null) return null;
         return vehicle.getRfidTags().stream()
-                .filter(tag -> tag.getStatus().name().equals("ACTIVE"))
+                // .filter(tag -> tag.getStatus().name().equals("ACTIVE"))
                 .map(tag -> tag.getStatus().name())
                 .findFirst()
                 .orElse(null);

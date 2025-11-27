@@ -97,6 +97,9 @@ public class VNPAYService {
             queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
             String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl;
 
+            log.info("ip: {} ", ip);
+
+
             return VNPAYResponse.builder()
                     .code("ok")
                     .message("success")
