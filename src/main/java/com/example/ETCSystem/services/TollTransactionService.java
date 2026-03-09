@@ -61,7 +61,7 @@ public class TollTransactionService {
 
 //    chức năng lịch sử bên admin
     public List<TransactionHistoryAdminResponse> getAllHistory() {
-        List<TollTransactionProjection> tolls = tollTransactionRepository.findAllByOrderByCreatedAtDesc();
+        List<TollTransactionProjection> tolls = tollTransactionRepository.findAllByStatusOrderByCreatedAtDesc(TollStatus.SUCCESS);
 
         return tolls.stream().map(this::toDTO).collect(Collectors.toList());
     }
