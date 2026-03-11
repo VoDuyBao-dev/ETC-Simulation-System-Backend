@@ -61,8 +61,7 @@ public class VNPAYService {
                     user,
                     actualAmount,
                     bankCode,
-                    TopupMethod.VNPAY
-            );
+                    TopupMethod.VNPAY);
 
             // Tạo VNPAY payment URL
             Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
@@ -77,7 +76,7 @@ public class VNPAYService {
             }
             String ip = VNPAYUtil.getIpAddress(request);
 
-    // Tự động thay IP nội bộ → IP công cộng
+            // Tự động thay IP nội bộ → IP công cộng
             if (ip == null ||
                     ip.startsWith("192.168.") ||
                     ip.startsWith("10.") ||
@@ -96,7 +95,12 @@ public class VNPAYService {
             String vnpSecureHash = VNPAYUtil.hmacSHA512(vnPayConfig.getSecretKey(), hashData);
             queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
             String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl;
-
+            log.error("===== VNPAY DEBUG REQUEST =====");
+            log.error("vnpParamsMap = {}", vnpParamsMap);
+            log.error("queryUrl = {}", queryUrl);
+            log.error("secureHash = {}", vnpSecureHash);
+            log.error("paymentUrl = {}", paymentUrl);
+            log.error("================================");
             return VNPAYResponse.builder()
                     .code("ok")
                     .message("success")
@@ -126,7 +130,6 @@ public class VNPAYService {
 
             // Lấy và remove vnp_SecureHash
             String vnpSecureHash = fields.remove("vnp_SecureHash");
-
 
             // Verify signature
             String hashData = VNPAYUtil.getPaymentURL(fields, false);
@@ -198,7 +201,7 @@ public class VNPAYService {
                 // Lấy lại ví đã cập nhật từ DB
                 WalletDTO updatedWallet = walletService.getWalletById(topup.getWallet().getId());
 
-           // Lưu số dư sau giao dịch
+                // Lưu số dư sau giao dịch
                 topup.setBalanceAfter(updatedWallet.getBalance());
 
                 topupRepository.save(topup);
@@ -207,8 +210,7 @@ public class VNPAYService {
                         .code("00")
                         .message("Confirm success")
                         .build();
-            } else {
-                // Thanh toán thất bại
+            } else {// Thanh toán thất bại
                 topup.setStatus(TopupStatus.FAILED);
                 topup.setDescription(getVNPayErrorMessage(vnpResponseCode));
                 topupRepository.save(topup);
@@ -230,15 +232,20 @@ public class VNPAYService {
 
     private String getVNPayErrorMessage(String responseCode) {
         Map<String, String> errorMessages = new HashMap<>();
-        errorMessages.put("07", "Trừ tiền thành công. Giao dịch bị nghi ngờ (liên quan tới lừa đảo, giao dịch bất thường).");
-        errorMessages.put("09", "Giao dịch không thành công do: Thẻ/Tài khoản của khách hàng chưa đăng ký dịch vụ InternetBanking tại ngân hàng.");
-        errorMessages.put("10", "Giao dịch không thành công do: Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần");
+        errorMessages.put("07",
+                "Trừ tiền thành công. Giao dịch bị nghi ngờ (liên quan tới lừa đảo, giao dịch bất thường).");
+        errorMessages.put("09",
+                "Giao dịch không thành công do: Thẻ/Tài khoản của khách hàng chưa đăng ký dịch vụ InternetBanking tại ngân hàng.");
+        errorMessages.put("10",
+                "Giao dịch không thành công do: Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần");
         errorMessages.put("11", "Giao dịch không thành công do: Đã hết hạn chờ thanh toán.");
         errorMessages.put("12", "Giao dịch không thành công do: Thẻ/Tài khoản của khách hàng bị khóa.");
         errorMessages.put("13", "Giao dịch không thành công do Quý khách nhập sai mật khẩu xác thực giao dịch (OTP).");
         errorMessages.put("24", "Giao dịch không thành công do: Khách hàng hủy giao dịch");
-        errorMessages.put("51", "Giao dịch không thành công do: Tài khoản của quý khách không đủ số dư để thực hiện giao dịch.");
-        errorMessages.put("65", "Giao dịch không thành công do: Tài khoản của Quý khách đã vượt quá hạn mức giao dịch trong ngày.");
+        errorMessages.put("51",
+                "Giao dịch không thành công do: Tài khoản của quý khách không đủ số dư để thực hiện giao dịch.");
+        errorMessages.put("65",
+                "Giao dịch không thành công do: Tài khoản của Quý khách đã vượt quá hạn mức giao dịch trong ngày.");
         errorMessages.put("75", "Ngân hàng thanh toán đang bảo trì.");
         errorMessages.put("79", "Giao dịch không thành công do: KH nhập sai mật khẩu thanh toán quá số lần quy định.");
         return errorMessages.getOrDefault(responseCode, "Giao dịch thất bại");

@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,9 +33,17 @@ public class AdminUserController {
 
     // Cập nhật trạng thái tài khoản
     @PutMapping("/{id}/status")
-    public ResponseEntity<AdminUserResponse> updateUserStatus( 
-            @Valid @PathVariable Long id,
-            @RequestBody AdminUpdateUserRequest request) {
-        return ResponseEntity.ok(adminUserService.updateUserStatus(id, request));
+    public ApiResponse<AdminUserResponse> updateUserStatus(
+            @PathVariable Long id,
+            @Valid @RequestBody AdminUpdateUserRequest request) {
+
+        AdminUserResponse response =
+                adminUserService.updateUserStatus(id, request);
+
+        return ApiResponse.<AdminUserResponse>builder()
+                .code(200)
+                .message("Cập nhật trạng thái tài khoản thành công")
+                .result(response)
+                .build();
     }
 }
