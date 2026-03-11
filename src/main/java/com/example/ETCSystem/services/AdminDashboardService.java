@@ -26,14 +26,14 @@ public class AdminDashboardService {
 			Integer page, Integer size, String stationCode) {
 		// 1. Xác định khoảng thời gian thống kê
 		ZoneId zone = ZoneId.systemDefault();
-		int y = (year != null) ? year : Year.now(zone).getValue();
+		int y = (year != null) ? year : Year.now(zone).getValue() - 1;
 		int mf = (monthFrom != null) ? monthFrom : 1;
 		int mt = (monthTo != null) ? monthTo : 12;
 
 		// LocalDateTime fromLdt = LocalDateTime.of(y, mf, 1, 0, 0);
 		// LocalDateTime toLdt = LocalDateTime.of(y, mt, YearMonth.of(y,
 		// mt).lengthOfMonth(), 23, 59, 59);
-		LocalDateTime from = LocalDateTime.of(y, mf, 1, 0, 0);
+		LocalDateTime from = LocalDateTime.of(y, mf, 10, 0, 0);
 		LocalDateTime to = LocalDateTime.of(y, mt, YearMonth.of(y, mt).lengthOfMonth(), 23, 59, 59);
 
 		// 2. Lấy số lượng tổng hợp
