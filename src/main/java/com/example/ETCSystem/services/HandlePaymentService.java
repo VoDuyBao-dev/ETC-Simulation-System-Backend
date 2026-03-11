@@ -51,14 +51,19 @@ public class HandlePaymentService {
 
         LocalDateTime now = LocalDateTime.now();
         RfidTag rfidTag = rfidTagService.getRfidTag(deviceRequest.getRfidTagCode());
+
+        if(rfidTag==null){
+            throw new AppException(ErrorCode.RFID_TAG_NOT_EXISTED);
+        }
+
         Station station = stationService.getStationByCode(deviceRequest.getStationCode());
         Vehicle vehicle = vehicleService.getVehicleByRfidTag(deviceRequest.getRfidTagCode());
         BigDecimal fee = tollFeeService.getFeeByVehicle(vehicle);
 
 //        kiểm tra nếu có qua trạm thành công trước đó
         if(rfidTag.getLastSuccessfulPassage() != null){
-//            check từ lúc thành công lần cuối đến bây giờ đã hơn 45 giây chưa để tránh trừ trùng
-            long secondsSinceLast = ChronoUnit.SECONDS.between(now, rfidTag.getLastSuccessfulPassage());
+//            check từ lúc thành công lần cuối đến bây giờ đã hơn 10 giây chưa để tránh trừ trùng
+            long secondsSinceLast = ChronoUnit.SECONDS.between(rfidTag.getLastSuccessfulPassage(), now);
 
 //            check có bị trùng cùng 1 trạm k
             boolean sameStation = rfidTag.getLastPassageStationId() != null
@@ -67,6 +72,7 @@ public class HandlePaymentService {
 //            check nếu chưa hết 45s + trùng chạm thì chắc chắn request này bị gửi trùng
             if(secondsSinceLast < antiDuplicateSeconds && sameStation){
 //                vẫn trả về thành công và không trừ tiền do giao dịch bị trùng
+                log.info("chạy hàm thanh toán trùng");
                 return DeviceResponse.builder()
                         .messsage("Thanh toán thành công")
                         .amount(fee.negate())
@@ -91,6 +97,12 @@ public class HandlePaymentService {
         } else if (rfidReader.getIsActive() != true) {
             throw new AppException(ErrorCode.RFID_READER_NOT_ACTIVE);
 
+        }
+
+
+        if (!rfidTag.getStatus().equals(TagStatus.ACTIVE)) {
+            log.info("RfidTag status: {}", rfidTag.getStatus());
+            throw new AppException(ErrorCode.RFID_TAG_NOT_ACTIVE);
         }
 
         if (!rfidTag.getStatus().equals(TagStatus.ACTIVE)) {
@@ -136,6 +148,8 @@ public class HandlePaymentService {
 
 //        Cập nhật tag read process result = SUCCESS
         tagReadService.updateTagReadProcessResult(tagRead, success);
+
+        log.info("chạy hàm thanh toán bình thường");
 
         return DeviceResponse.builder()
                 .messsage("Thanh toán thành công")

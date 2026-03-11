@@ -95,12 +95,10 @@ public class VNPAYService {
             String vnpSecureHash = VNPAYUtil.hmacSHA512(vnPayConfig.getSecretKey(), hashData);
             queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
             String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl;
-            log.error("===== VNPAY DEBUG REQUEST =====");
-            log.error("vnpParamsMap = {}", vnpParamsMap);
-            log.error("queryUrl = {}", queryUrl);
-            log.error("secureHash = {}", vnpSecureHash);
-            log.error("paymentUrl = {}", paymentUrl);
-            log.error("================================");
+
+            log.info("ip: {} ", ip);
+
+
             return VNPAYResponse.builder()
                     .code("ok")
                     .message("success")
