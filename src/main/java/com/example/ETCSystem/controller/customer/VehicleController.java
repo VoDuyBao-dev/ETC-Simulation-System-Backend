@@ -12,7 +12,6 @@ import com.example.ETCSystem.dto.request.UpdateVehicleStatusRequest;
 import java.util.List;
 
 // import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -25,15 +24,30 @@ public class VehicleController {
     private final VehicleService vehicleService;
 
     @PostMapping("/register")
-    public ResponseEntity<VehicleResponse> register(
-            @RequestBody RegisterVehicleRequest request) {
-        return ResponseEntity.ok(vehicleService.registerVehicle(request));
+    public ApiResponse<VehicleResponse> register(
+            @Valid @RequestBody RegisterVehicleRequest request) {
+
+        VehicleResponse response = vehicleService.registerVehicle(request);
+
+        return ApiResponse.<VehicleResponse>builder()
+                .code(200)
+                .message("Đăng ký xe thành công")
+                .result(response)
+                .build();
     }
 
     // Cập nhật trạng thái của rfidTag
-    @PutMapping("/{id}/status-rfidTtag")
-    public ResponseEntity<VehicleResponse> updateStatusRfidTag(@PathVariable Long id) {
-        return ResponseEntity.ok(vehicleService.updateRfidTagStatus(id));
+    @PutMapping("/{id}/status-rfidTag")
+    public ApiResponse<VehicleResponse> updateStatusRfidTag(
+            @PathVariable Long id) {
+
+        VehicleResponse response = vehicleService.updateRfidTagStatus(id);
+
+        return ApiResponse.<VehicleResponse>builder()
+                .code(200)
+                .message("Cập nhật trạng thái RFID thành công")
+                .result(response)
+                .build();
     }
 
     // @PutMapping("/{id}/reissue-tag")
@@ -43,28 +57,41 @@ public class VehicleController {
     // }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<VehicleResponse> updateStatus(
-            @Valid @PathVariable Long id, @RequestBody UpdateVehicleStatusRequest request) {
-        return ResponseEntity.ok(vehicleService.updateVehicleStatus(id, request));
+    public ApiResponse<VehicleResponse> updateStatus(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateVehicleStatusRequest request) {
+
+        VehicleResponse response = vehicleService.updateVehicleStatus(id, request);
+
+        return ApiResponse.<VehicleResponse>builder()
+                .code(200)
+                .message("Cập nhật trạng thái xe thành công")
+                .result(response)
+                .build();
     }
 
     @GetMapping
-    public ResponseEntity<List<VehicleResponse>> getUserVehicles() {
-        return ResponseEntity.ok(vehicleService.getUserVehicles());
+    public ApiResponse<List<VehicleResponse>> getUserVehicles() {
+
+        List<VehicleResponse> vehicles = vehicleService.getUserVehicles();
+
+        return ApiResponse.<List<VehicleResponse>>builder()
+                .code(200)
+                .message("Lấy danh sách xe thành công")
+                .result(vehicles)
+                .build();
     }
 
-@PostMapping("/{vehicleId}/report-lost-tag")
-public ResponseEntity<ApiResponse<RfidTagResponse>> reportLostTag(@PathVariable Long vehicleId) {
+    @PostMapping("/{vehicleId}/report-lost-tag")
+    public ApiResponse<RfidTagResponse> reportLostTag(@PathVariable Long vehicleId) {
 
-    RfidTagResponse newTag = vehicleService.reportLostAndIssueNewTag(vehicleId);
+        RfidTagResponse newTag = vehicleService.reportLostAndIssueNewTag(vehicleId);
 
-    return ResponseEntity.ok(
-            ApiResponse.<RfidTagResponse>builder()
-                    .code(200)
-                    .message("Cấp lại thẻ mới thành công")
-                    .result(newTag)
-                    .build()
-    );
-}
+        return ApiResponse.<RfidTagResponse>builder()
+                .code(200)
+                .message("Cấp lại thẻ mới thành công")
+                .result(newTag)
+                .build();
+    }
 
 }

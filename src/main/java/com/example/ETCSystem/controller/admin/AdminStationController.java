@@ -32,38 +32,78 @@ public class AdminStationController {
     }
 
     @GetMapping("/statistics")
-    public ResponseEntity<Map<String, Long>> getStationStatistics() {
-        Map<String, Long> stats = adminStationService.getStationStatistics();
-        return ResponseEntity.ok(stats);
+    public ApiResponse<Map<String, Long>> getStationStatistics() {
+
+        Map<String, Long> stats =
+                adminStationService.getStationStatistics();
+
+        return ApiResponse.<Map<String, Long>>builder()
+                .code(200)
+                .message("Lấy thống kê trạm thành công")
+                .result(stats)
+                .build();
     }
 
     // Thêm trạm mới
     @PostMapping
-    public ResponseEntity<AdminStationResponse> createStation(
+    public ApiResponse<AdminStationResponse> createStation(
             @Valid @RequestBody AdminCreateStationRequest request) {
-        return ResponseEntity.ok(adminStationService.createStation(request));
+
+        AdminStationResponse response =
+                adminStationService.createStation(request);
+
+        return ApiResponse.<AdminStationResponse>builder()
+                .code(200)
+                .message("Tạo trạm thành công")
+                .result(response)
+                .build();
     }
+
 
     // Sửa thông tin
     @PutMapping("/{id}")
-    public ResponseEntity<AdminStationResponse> updateStation(
-            @Valid @PathVariable Long id,
-            @RequestBody AdminUpdateStationRequest request) {
-        return ResponseEntity.ok(adminStationService.updateStation(id, request));
+    public ApiResponse<AdminStationResponse> updateStation(
+            @PathVariable Long id,
+            @Valid @RequestBody AdminUpdateStationRequest request) {
+
+        AdminStationResponse response =
+                adminStationService.updateStation(id, request);
+
+        return ApiResponse.<AdminStationResponse>builder()
+                .code(200)
+                .message("Cập nhật thông tin trạm thành công")
+                .result(response)
+                .build();
     }
 
     // Sửa trạng thái trạm
     @PutMapping("/{id}/status")
-    public ResponseEntity<AdminStationResponse> updateStationStatus(
-            @Valid @PathVariable Long id,
-            @RequestBody AdminUpdateStationRequest request) {
-        return ResponseEntity.ok(adminStationService.updateStationStatus(id, request));
+    public ApiResponse<AdminStationResponse> updateStationStatus(
+            @PathVariable Long id,
+            @Valid @RequestBody AdminUpdateStationRequest request) {
+
+        AdminStationResponse response =
+                adminStationService.updateStationStatus(id, request);
+
+        return ApiResponse.<AdminStationResponse>builder()
+                .code(200)
+                .message("Cập nhật trạng thái trạm thành công")
+                .result(response)
+                .build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<AdminStationResponse> deleteStation(@PathVariable Long id) {
-        AdminStationResponse response = adminStationService.deleteStation(id);
-        return ResponseEntity.ok(response);
+    public ApiResponse<AdminStationResponse> deleteStation(
+            @PathVariable Long id) {
+
+        AdminStationResponse response =
+                adminStationService.deleteStation(id);
+
+        return ApiResponse.<AdminStationResponse>builder()
+                .code(200)
+                .message("Xóa trạm thành công")
+                .result(response)
+                .build();
     }
 
 }

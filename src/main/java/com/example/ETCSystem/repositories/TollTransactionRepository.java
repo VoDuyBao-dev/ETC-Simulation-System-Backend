@@ -41,21 +41,21 @@ public interface TollTransactionRepository extends JpaRepository<TollTransaction
       @Param("to") LocalDateTime to,
       Pageable pageable);
 
-  @Query("""
-          select t.id, s.name, v.plateNumber, t.createdAt, cast(t.status as string), t.note
-          from TollTransaction t
-          join t.vehicle v
-          join t.station s
-          where t.status in (com.example.ETCSystem.enums.TollStatus.ERROR, com.example.ETCSystem.enums.TollStatus.FAILED_BALANCE)
-            and (:stationName is null or s.name = :stationName)
-            and t.createdAt between :from and :to
-          order by t.createdAt desc
-      """)
-  Page<Object[]> findFailedRows(
-      @Param("stationName") String stationName,
-      @Param("from") LocalDateTime from,
-      @Param("to") LocalDateTime to,
-      Pageable pageable);
+//   @Query("""
+//           select t.id, s.name, v.plateNumber, t.createdAt, cast(t.status as string), t.note
+//           from TollTransaction t
+//           join t.vehicle v
+//           join t.station s
+//           where t.status in (com.example.ETCSystem.enums.TollStatus.ERROR, com.example.ETCSystem.enums.TollStatus.FAILED_BALANCE)
+//             and (:stationName is null or s.code = :stationName)
+//             and t.createdAt between :from and :to
+//           order by t.createdAt desc
+//       """)
+//   Page<Object[]> findFailedRows(
+//       @Param("stationName") String stationName,
+//       @Param("from") LocalDateTime from,
+//       @Param("to") LocalDateTime to,
+//       Pageable pageable);
 
   @Query("""
           select t.id, s.name, v.plateNumber, t.createdAt, cast(t.status as string), t.note
@@ -63,12 +63,12 @@ public interface TollTransactionRepository extends JpaRepository<TollTransaction
           join t.vehicle v
           join t.station s
           where t.status in (com.example.ETCSystem.enums.TollStatus.ERROR, com.example.ETCSystem.enums.TollStatus.FAILED_BALANCE)
-            and (:stationName is null or s.name = :stationName)
+            and (:stationCode is null or s.code = :stationCode)
             and t.createdAt between :from and :to
           order by t.createdAt desc
       """)
   List<Object[]> findFailedRows(
-      @Param("stationName") String stationName,
+      @Param("stationCode") String stationCode,
       @Param("from") LocalDateTime from,
       @Param("to") LocalDateTime to);
 
