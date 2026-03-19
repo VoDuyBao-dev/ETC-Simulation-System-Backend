@@ -77,7 +77,6 @@ public class TopupService {
         Topup topup = topupRepository.findByReferenceCode(referenceCode).orElseThrow(() -> new AppException(ErrorCode.TOPUP_NOT_EXISTED));
         return  topupMapper.toTopupDTO(topup);
 
-
     }
 
 

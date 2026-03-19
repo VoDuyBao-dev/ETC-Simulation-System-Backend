@@ -15,4 +15,5 @@ public class VNPAYResponse {
     private String code;
     private String message;
     private String paymentUrl;
+    private String referenceCode;
 }
