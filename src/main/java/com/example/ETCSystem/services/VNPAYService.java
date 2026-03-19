@@ -103,6 +103,7 @@ public class VNPAYService {
                     .code("ok")
                     .message("success")
                     .paymentUrl(paymentUrl)
+                    .referenceCode(topup.getReferenceCode())
                     .build();
 
         } catch (Exception e) {
