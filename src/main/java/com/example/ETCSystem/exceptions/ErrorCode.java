@@ -96,6 +96,9 @@ public enum ErrorCode {
     STATION_ID_REQUIRED(1223, "Station ID cannot be null", HttpStatus.BAD_REQUEST),
     PLATE_NUMBER_REQUIRED(3002, "Plate number is required", HttpStatus.BAD_REQUEST),
     VEHICLE_TYPE_REQUIRED(3003, "Vehicle type is required", HttpStatus.BAD_REQUEST),
+
+//    lỗi không có permission
+FORBIDDEN(4000, "You do not have permission to access this topup", HttpStatus.FORBIDDEN),
     ;
 
     private int code;

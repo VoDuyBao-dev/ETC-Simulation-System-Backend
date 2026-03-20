@@ -2,6 +2,7 @@ package com.example.ETCSystem.controller.payment;
 
 import com.example.ETCSystem.dto.ApiResponse;
 import com.example.ETCSystem.dto.common.TopupDTO;
+import com.example.ETCSystem.dto.response.TopupStatusResponse;
 import com.example.ETCSystem.dto.response.UserResponse;
 import com.example.ETCSystem.dto.response.VNPAYResponse;
 import com.example.ETCSystem.services.TopupService;
@@ -64,12 +65,12 @@ public class VNPAYController {
 
 //     Frontend check trạng thái topup
     @GetMapping("/topup/status/{referenceCode}")
-    public ApiResponse<TopupDTO> getTopupStatus(@PathVariable String referenceCode) {
+    public ApiResponse<TopupStatusResponse> getTopupStatus(@PathVariable String referenceCode) {
         log.info("Checking topup status for reference: {}", referenceCode);
 
-        TopupDTO topup = topupService.getTopupByReferenceCode(referenceCode);
+        TopupStatusResponse topup = topupService.getTopupByReferenceCode(referenceCode);
 
-        return ApiResponse.<TopupDTO>builder()
+        return ApiResponse.<TopupStatusResponse>builder()
                 .code(200)
                 .message("Lấy trạng thái topup thành công")
                 .result(topup)
