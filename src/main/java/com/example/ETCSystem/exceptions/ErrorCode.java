@@ -99,6 +99,8 @@ public enum ErrorCode {
 
 //    lỗi không có permission
 FORBIDDEN(4000, "You do not have permission to access this topup", HttpStatus.FORBIDDEN),
+    INVALID_AMOUNT(4001, "Amount must be between 5000 and less than 1000000000", HttpStatus.BAD_REQUEST),
+
     ;
 
     private int code;
