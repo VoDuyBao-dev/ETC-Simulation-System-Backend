@@ -1,6 +1,7 @@
 package com.example.ETCSystem.services;
 
 import com.example.ETCSystem.dto.common.TopupDTO;
+import com.example.ETCSystem.dto.response.TopupStatusResponse;
 import com.example.ETCSystem.entities.Topup;
 import com.example.ETCSystem.entities.User;
 import com.example.ETCSystem.entities.Wallet;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 public class TopupService {
     TopupRepository topupRepository;
     TopupMapper topupMapper;
+    UserService userService;
 
     public TopupDTO createTopup(User user, BigDecimal amount, String bankCode,TopupMethod method) {
 
@@ -73,9 +75,19 @@ public class TopupService {
 
     }
 
-    public TopupDTO getTopupByReferenceCode(String referenceCode){
+    public TopupStatusResponse getTopupByReferenceCode(String referenceCode){
+        User user = userService.getCurrentUser();
         Topup topup = topupRepository.findByReferenceCode(referenceCode).orElseThrow(() -> new AppException(ErrorCode.TOPUP_NOT_EXISTED));
-        return  topupMapper.toTopupDTO(topup);
+
+        if(!topup.getUser().getUserId().equals(user.getUserId())){
+            throw new AppException(ErrorCode.FORBIDDEN);
+        }
+
+        return  TopupStatusResponse.builder()
+                .id(topup.getId())
+                .amount(topup.getAmount())
+                .status(topup.getStatus())
+                .build();
 
     }
 
