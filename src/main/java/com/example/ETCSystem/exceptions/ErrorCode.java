@@ -14,8 +14,10 @@ public enum ErrorCode {
     USER_NOT_EXISTED(1005, "user not existed", HttpStatus.NOT_FOUND),
     SAVE_USER_FAILED(1014, "save user failed", HttpStatus.INTERNAL_SERVER_ERROR),
     UPDATE_USER_FAILED(1015, "update user failed", HttpStatus.INTERNAL_SERVER_ERROR),
+    PHONE_EXISTED(1016, "phone existed", HttpStatus.BAD_REQUEST),
+
     // lỗi invalid password
-    // PASSWORD_INVALID(1003, "password must at least 8 charaters"),
+
     // USERNAME_INVALID(1004, "username must at least 2 charaters"),
     // Xử lí nhập vào sai key Enum
     INVALID_KEY(1001, "invalid message key", HttpStatus.BAD_REQUEST),
@@ -101,6 +103,9 @@ public enum ErrorCode {
 FORBIDDEN(4000, "You do not have permission to access this topup", HttpStatus.FORBIDDEN),
     INVALID_AMOUNT(4001, "Amount must be between 5000 and less than 1000000000", HttpStatus.BAD_REQUEST),
     UNAUTHORIZED_ADMIN(4002, "You are not allowed to access admin", HttpStatus.FORBIDDEN),
+    PHONE_INVALID(4003, "Phone number invalid", HttpStatus.BAD_REQUEST),
+    PASSWORD_INVALID(2011, "Password must be at least 6 characters", HttpStatus.BAD_REQUEST),
+
     ;
 
     private int code;
