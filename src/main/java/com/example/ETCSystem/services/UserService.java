@@ -38,9 +38,15 @@ public class UserService {
         if (!userRequest.getPassword().equals(userRequest.getConfirmPassword())) {
             throw new AppException(ErrorCode.PASSWORDS_DO_NOT_MATCH);
         }
+
         if (userRepository.existsByUsername(userRequest.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
+
+        if (userRepository.existsByPhone(userRequest.getPhone())) {
+            throw new AppException(ErrorCode.PHONE_EXISTED);
+        }
+
         User user = userMapper.toUser(userRequest);
         user.setEmail(userRequest.getUsername());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
@@ -92,9 +98,16 @@ public class UserService {
     }
 
     public UserResponse updateUserInfo(UserRequest userRequest) {
+
+        if (userRepository.existsByPhone(userRequest.getPhone())) {
+            throw new AppException(ErrorCode.PHONE_EXISTED);
+        }
+
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+
 
         // update user info
         userMapper.updateUserFromRequest(userRequest, user);
