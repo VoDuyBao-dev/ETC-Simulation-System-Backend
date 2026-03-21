@@ -97,7 +97,7 @@ public class AuthController {
     }
 
     @PatchMapping("/updateInfo")
-    public ApiResponse<UserResponse> updateUserInfo(@RequestBody UserRequest userRequest) {
+    public ApiResponse<UserResponse> updateUserInfo(@Valid @RequestBody  UserRequest userRequest) {
         log.info("userRequest {}:", userRequest.toString());
         UserResponse userResponse = userService.updateUserInfo(userRequest);
         return ApiResponse.<UserResponse>builder()

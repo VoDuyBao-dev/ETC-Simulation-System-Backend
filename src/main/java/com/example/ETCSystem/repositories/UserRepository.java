@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByEnabledFalseAndActivationExpiryTimeBefore(LocalDateTime expiryTime);
     boolean existsByUsername(String username);
+    boolean existsByPhone(String phone);
     List<User> findAllByOrderByCreatedAtDesc();
     boolean existsByEmail(String email);
     Optional<User> findByUsername(String username);
