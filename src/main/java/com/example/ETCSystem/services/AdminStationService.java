@@ -94,6 +94,32 @@ public class AdminStationService {
         Station station = stationRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.STATION_NOT_FOUND));
 
+        // Xử lý logic Tọa độ: Ghép dữ liệu mới (nếu có) với dữ liệu cũ
+        Double finalLat = (req.getLatitude() != null) ? req.getLatitude() : station.getLatitude();
+        Double finalLng = (req.getLongitude() != null) ? req.getLongitude() : station.getLongitude();
+
+        // Kiểm tra xem cặp tọa độ "chuẩn bị lưu" này có trùng với trạm KHÁC không
+        // (Chỉ check nếu người dùng thực sự có gửi lên ít nhất 1 trong 2 trường tọa độ)
+        if (req.getLatitude() != null || req.getLongitude() != null) {
+            if (stationRepository.existsByLatitudeAndLongitudeAndIdNot(finalLat, finalLng, id)) {
+                throw new AppException(ErrorCode.STATION_LOCATION_EXISTS);
+            }
+        }
+
+        // Kiểm tra trùng lặp Tên trạm (với một trạm KHÁC)
+        if (req.getName() != null) {
+            if (stationRepository.existsByNameAndIdNot(req.getName(), id)) {
+                throw new AppException(ErrorCode.STATION_NAME_EXISTS);
+            }
+        }
+
+        // Kiểm tra trùng lặp Địa chỉ (với một trạm KHÁC)
+        if (req.getAddress() != null) {
+            if (stationRepository.existsByAddressAndIdNot(req.getAddress(), id)) {
+                throw new AppException(ErrorCode.STATION_ADDRESS_EXISTS);
+            }
+        }
+
         if (req.getName() != null)
             station.setName(req.getName());
         if (req.getAddress() != null)
