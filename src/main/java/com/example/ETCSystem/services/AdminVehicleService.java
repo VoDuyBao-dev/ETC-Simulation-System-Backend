@@ -68,20 +68,20 @@ public class AdminVehicleService {
         return adminVehicleMapper.toAdminVehicleResponse(vehicle);
     }
 
-    public AdminVehicleResponse deleteVehicle(Long id) {
+    // public AdminVehicleResponse deleteVehicle(Long id) {
 
-        Vehicle vehicle = adminVehicleRepository.findByIdAndIsDelete(id, 0);
+    // Vehicle vehicle = adminVehicleRepository.findByIdAndIsDelete(id, 0);
 
-        if (vehicle == null) {
-            throw new AppException(ErrorCode.VEHICLE_NOT_FOUND);
-        }
+    // if (vehicle == null) {
+    // throw new AppException(ErrorCode.VEHICLE_NOT_FOUND);
+    // }
 
-        // Soft delete
-        vehicle.setIsDelete(1);
-        vehicle.setStatus(VehicleStatus.INACTIVE);
-        Vehicle saved = adminVehicleRepository.save(vehicle);
+    // // Soft delete
+    // vehicle.setIsDelete(1);
+    // vehicle.setStatus(VehicleStatus.INACTIVE);
+    // Vehicle saved = adminVehicleRepository.save(vehicle);
 
-        return adminVehicleMapper.toAdminVehicleResponse(saved);
-    }
+    // return adminVehicleMapper.toAdminVehicleResponse(saved);
+    // }
 
 }

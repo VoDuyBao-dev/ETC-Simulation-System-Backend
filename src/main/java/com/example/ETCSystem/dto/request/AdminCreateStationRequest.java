@@ -21,7 +21,7 @@ public class AdminCreateStationRequest {
     @NotBlank(message = "ADDRESS_REQUIRED")
     private String address;
 
-    @NotNull(message = "LATITUDE_REQUIRED")
+    @NotNull(message = "LATITUDE_REQUIRED") 
     private Double latitude;
 
     @NotNull(message = "LONGITUDE_REQUIRED")

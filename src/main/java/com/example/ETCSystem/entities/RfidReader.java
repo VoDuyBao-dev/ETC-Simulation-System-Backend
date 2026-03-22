@@ -29,7 +29,7 @@ public class RfidReader {
     private String readerUid;
 
     private String description;
-    private LocalDateTime lastHeartbeat;
+    private LocalDateTime lastHeartbeat;    
     private Boolean isActive = true;
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
