@@ -14,6 +14,16 @@ import java.util.Optional;
 public interface StationRepository extends JpaRepository<Station, Long> {
     boolean existsByCode(String code);
 
+    boolean existsByName(String name);
+
+    boolean existsByAddress(String address);
+
+    boolean existsByLatitudeAndLongitudeAndIdNot(Double latitude, Double longitude, Long id);
+
+    boolean existsByNameAndIdNot(String name, Long id);
+
+    boolean existsByAddressAndIdNot(String address, Long id);
+
     long countByStatus(StationStatus status);
 
     Optional<Station> findByCode(String stationCode);

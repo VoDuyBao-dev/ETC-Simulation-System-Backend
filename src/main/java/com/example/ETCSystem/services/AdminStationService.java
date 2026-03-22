@@ -43,19 +43,19 @@ public class AdminStationService {
     // Thống kê tổng quan trạm thu phí
     public Map<String, Long> getStationStatistics() {
 
-    long total = stationRepository.countByIsDelete(0);
-    long active = stationRepository.countByStatusAndIsDelete(StationStatus.ACTIVE, 0);
-    long maintenance = stationRepository.countByStatusAndIsDelete(StationStatus.MAINTENANCE, 0);
-    long inactive = stationRepository.countByStatusAndIsDelete(StationStatus.INACTIVE, 0);
+        long total = stationRepository.countByIsDelete(0);
+        long active = stationRepository.countByStatusAndIsDelete(StationStatus.ACTIVE, 0);
+        long maintenance = stationRepository.countByStatusAndIsDelete(StationStatus.MAINTENANCE, 0);
+        long inactive = stationRepository.countByStatusAndIsDelete(StationStatus.INACTIVE, 0);
 
-    Map<String, Long> stats = new HashMap<>();
-    stats.put("totalStations", total);
-    stats.put("activeStations", active);
-    stats.put("maintenanceStations", maintenance);
-    stats.put("inactiveStations", inactive);
+        Map<String, Long> stats = new HashMap<>();
+        stats.put("totalStations", total);
+        stats.put("activeStations", active);
+        stats.put("maintenanceStations", maintenance);
+        stats.put("inactiveStations", inactive);
 
-    return stats;
-}
+        return stats;
+    }
 
     // Thêm trạm
     public AdminStationResponse createStation(AdminCreateStationRequest req) {
@@ -64,6 +64,13 @@ public class AdminStationService {
             code = generateStationCode();
         }
 
+        if (stationRepository.existsByName(req.getName())) {
+            throw new AppException(ErrorCode.STATION_NAME_EXISTS);
+        }
+
+        if (stationRepository.existsByAddress(req.getAddress())) {
+            throw new AppException(ErrorCode.STATION_ADDRESS_EXISTS);
+        }
         if (stationRepository.existsByLatitudeAndLongitude(req.getLatitude(), req.getLongitude())) {
             throw new AppException(ErrorCode.STATION_LOCATION_EXISTS);
         }
@@ -103,7 +110,7 @@ public class AdminStationService {
     // Sửa trạng thái
     public AdminStationResponse updateStationStatus(Long id, AdminUpdateStationRequest request) {
         Station station = stationRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.STATION_NOT_FOUND));
 
         try {
             StationStatus newStatus = StationStatus.valueOf(request.getStatus().toUpperCase());

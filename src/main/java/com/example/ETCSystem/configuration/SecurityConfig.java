@@ -47,7 +47,6 @@ public class SecurityConfig {
             "/device/toll-payment",
             "/payment/vn-pay-callback",
 
-
     };
 
     private final String[] PRIVATE_URLS = {
@@ -60,8 +59,6 @@ public class SecurityConfig {
             "/auth/myInfo/**"
 
     };
-
-
 
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
@@ -81,18 +78,15 @@ public class SecurityConfig {
                         .requestMatchers("/payment/vn-pay").hasAuthority("SCOPE_CUSTOMER")
                         .requestMatchers("/payment/topup/status/**").hasAuthority("SCOPE_CUSTOMER")
                         .requestMatchers(COMMON_URLS).hasAnyAuthority("SCOPE_ADMIN", "SCOPE_CUSTOMER")
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
 
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.decoder(customJwtDecoder))
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                )
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint))
 
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                        .accessDeniedHandler(customAccessDeniedHandler)
-                )
+                        .accessDeniedHandler(customAccessDeniedHandler))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable());
 
@@ -108,7 +102,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        config.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
 

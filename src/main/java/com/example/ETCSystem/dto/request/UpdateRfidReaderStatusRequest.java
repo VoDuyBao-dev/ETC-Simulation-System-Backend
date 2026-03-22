@@ -9,3 +9,4 @@ public class UpdateRfidReaderStatusRequest {
     @NotNull(message = "IS_ACTIVATE_REQUIRED")
     private Boolean isActive;
 }
+    

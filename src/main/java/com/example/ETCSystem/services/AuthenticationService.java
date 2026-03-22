@@ -183,8 +183,6 @@ public class AuthenticationService {
             log.error("Lỗi khi tạo token JWT: ", e);
             throw new RuntimeException(e);
         }
-
-
     }
 
     private String buildScopeClaim(User user) {
