@@ -113,6 +113,10 @@ public enum ErrorCode {
     INVALID_PLATE_FORMAT(3005, "Invalid plate number format", HttpStatus.BAD_REQUEST),
     VEHICLE_ALREADY_EXISTS(3006, "Vehicle with the same plate number already exists", HttpStatus.CONFLICT),
 
+    INVALID_MONTH_RANGE(400, "Tháng bắt đầu không được lớn hơn tháng kết thúc", HttpStatus.BAD_REQUEST),
+    INVALID_MONTH_VALUE(400, "Tháng phải nằm trong khoảng từ 1 đến 12", HttpStatus.BAD_REQUEST),
+    INVALID_YEAR(400, "Năm không hợp lệ", HttpStatus.BAD_REQUEST),
+
     // lỗi không có permission
     FORBIDDEN(4000, "You do not have permission to access this topup", HttpStatus.FORBIDDEN),
     INVALID_AMOUNT(4001, "Amount must be between 5000 and less than 1000000000", HttpStatus.BAD_REQUEST),
