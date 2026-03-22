@@ -42,6 +42,11 @@ public class VNPAYService {
 
     public VNPAYResponse createVNPAYPayment(HttpServletRequest request) {
         try {
+            long amount = Integer.parseInt(request.getParameter("amount"));
+            if(amount < 5000 || amount >= 100000000) {
+                throw new AppException(ErrorCode.INVALID_AMOUNT);
+            }
+
             // Lấy thông tin user hiện tại
             var context = SecurityContextHolder.getContext();
             String username = context.getAuthentication().getName();
@@ -51,7 +56,7 @@ public class VNPAYService {
                     .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
             // Parse parameters
-            long amount = Integer.parseInt(request.getParameter("amount")) * 100L;
+            amount = amount * 100L;
             BigDecimal actualAmount = new BigDecimal(amount).divide(new BigDecimal(100));
 
             String bankCode = request.getParameter("bankCode");
@@ -100,15 +105,23 @@ public class VNPAYService {
 
 
             return VNPAYResponse.builder()
-                    .code("ok")
+                    .code(00)
                     .message("success")
                     .paymentUrl(paymentUrl)
+                    .referenceCode(topup.getReferenceCode())
                     .build();
 
-        } catch (Exception e) {
+        } catch (AppException e) {
+            log.error("AppException creating VNPAY payment: {}", e.getMessage());
+            return VNPAYResponse.builder()
+                    .code(e.getErrorCode().getCode())
+                    .message("Failed to create payment: " + e.getMessage())
+                    .build();
+        }
+        catch (Exception e) {
             log.error("Error creating VNPAY payment", e);
             return VNPAYResponse.builder()
-                    .code("error")
+                    .code(99)
                     .message("Failed to create payment: " + e.getMessage())
                     .build();
         }
@@ -136,7 +149,7 @@ public class VNPAYService {
             if (!signValue.equals(vnpSecureHash)) {
                 log.error("Invalid signature");
                 return VNPAYResponse.builder()
-                        .code("97")
+                        .code(97)
                         .message("Invalid signature")
                         .build();
             }
@@ -157,7 +170,7 @@ public class VNPAYService {
             if (topup.getStatus() != TopupStatus.PENDING) {
                 log.warn("Topup already processed: {}", vnpTxnRef);
                 return VNPAYResponse.builder()
-                        .code("02")
+                        .code(02)
                         .message("Order already confirmed")
                         .build();
             }
@@ -171,7 +184,7 @@ public class VNPAYService {
                 topupRepository.save(topup);
 
                 return VNPAYResponse.builder()
-                        .code("04")
+                        .code(04)
                         .message("Invalid amount")
                         .build();
             }
@@ -205,7 +218,7 @@ public class VNPAYService {
                 topupRepository.save(topup);
 
                 return VNPAYResponse.builder()
-                        .code("00")
+                        .code(00)
                         .message("Confirm success")
                         .build();
             } else {// Thanh toán thất bại
@@ -214,7 +227,7 @@ public class VNPAYService {
                 topupRepository.save(topup);
 
                 return VNPAYResponse.builder()
-                        .code(vnpResponseCode)
+                        .code(Integer.parseInt(vnpResponseCode))
                         .message("Payment failed")
                         .build();
             }
@@ -222,7 +235,7 @@ public class VNPAYService {
         } catch (Exception e) {
             log.error("Error handling VNPAY callback", e);
             return VNPAYResponse.builder()
-                    .code("99")
+                    .code(99)
                     .message("Unknown error")
                     .build();
         }

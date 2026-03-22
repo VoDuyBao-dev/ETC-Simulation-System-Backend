@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class VNPAYResponse {
-    private String code;
+    private Integer code;
     private String message;
     private String paymentUrl;
+    private String referenceCode;
 }

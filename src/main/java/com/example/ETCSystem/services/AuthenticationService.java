@@ -79,6 +79,11 @@ public class AuthenticationService {
     public AuthenticationResponse authenticateAdmin(AdminLoginRequest adminLoginRequest) {
         User user = userRepository.findByUsername(adminLoginRequest.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        if(!user.getRoles().contains("ADMIN")){
+            throw new AppException(ErrorCode.UNAUTHORIZED_ADMIN);
+        }
+
         boolean authenticated = passwordEncoder.matches(adminLoginRequest.getPassword(), user.getPassword());
         if(!authenticated) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
