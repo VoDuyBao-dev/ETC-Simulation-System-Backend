@@ -65,6 +65,18 @@ public class VehicleService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
+        // CHẶN BIỂN SỐ TRÙNG: Kiểm tra biển số đã đăng ký trong hệ thống chưa
+        if (vehicleRepository.existsByPlateNumber(request.getPlateNumber())) {
+            throw new AppException(ErrorCode.VEHICLE_ALREADY_EXISTS);
+        }
+
+        // KIỂM TRA XE CÔNG VỤ / CSGT (Ví dụ: biển xanh đầu 80)
+        // Bạn có thể tạo một bảng riêng trong DB để lưu danh sách biển cấm hoặc Check
+        // thủ công
+        if (isGovernmentRestricted(request.getPlateNumber())) {
+            throw new AppException(ErrorCode.GOVERNMENT_VEHICLE_RESTRICTED);
+        }
+
         // 1. Tạo xe mới
         Vehicle vehicle = new Vehicle();
         vehicle.setUser(user);
@@ -87,11 +99,18 @@ public class VehicleService {
 
         rfidTagRepository.save(tag);
         vehicleRepository.save(vehicle);
-        // 3. LOAD LẠI VEHICLE SAU KHI LƯU TAG
+        // LOAD LẠI VEHICLE SAU KHI LƯU TAG
         Vehicle fullVehicle = vehicleRepository.findById(vehicle.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
 
         return vehicleMapper.toVehicleResponse(fullVehicle);
+    }
+
+    // Hàm hỗ trợ kiểm tra biển số đặc biệt
+    private boolean isGovernmentRestricted(String plateNumber) {
+        // Ví dụ: Biển số 80 (Trung ương), hoặc biển xanh/đỏ theo quy định cục CSGT
+        // Thực tế có thể check trong một bảng 'black_list' hoặc 'priority_list'
+        return plateNumber.startsWith("80");
     }
 
     // đổi trạng thái của thẻ xe
