@@ -1,4 +1,5 @@
 package com.example.ETCSystem.exceptions;
+
 import com.example.ETCSystem.dto.ApiResponse;
 import jakarta.servlet.ServletException;
 import org.springframework.http.ResponseEntity;
@@ -9,10 +10,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    //    Nếu có exception nào ngoài cái chúng ta đã bắt thì xử lí như sau:
+    // Nếu có exception nào ngoài cái chúng ta đã bắt thì xử lí như sau:
     @ExceptionHandler(value = Exception.class)
-//    Chuẩn hóa
-    ResponseEntity<ApiResponse> handlingException(Exception exception){
+    // Chuẩn hóa
+    ResponseEntity<ApiResponse> handlingException(Exception exception) {
         ApiResponse response = new ApiResponse();
         response.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
         String detailedMessage = exception.getClass().getSimpleName() + ": " + exception.getMessage();
@@ -23,8 +24,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = AppException.class)
-        //    xử lí Chuẩn hóa exception mình tự định nghĩa
-    ResponseEntity<ApiResponse> handlingAppException(AppException exception){
+    // xử lí Chuẩn hóa exception mình tự định nghĩa
+    ResponseEntity<ApiResponse> handlingAppException(AppException exception) {
         ErrorCode errorCode = exception.getErrorCode();
         ApiResponse response = new ApiResponse();
         response.setCode(errorCode.getCode());
@@ -44,45 +45,42 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = AccessDeniedException.class)
-    ResponseEntity<ApiResponse> handlingAccessDeniedException(AccessDeniedException exception){
-        ErrorCode error = ErrorCode. UNAUTHORIZED;
+    ResponseEntity<ApiResponse> handlingAccessDeniedException(AccessDeniedException exception) {
+        ErrorCode error = ErrorCode.UNAUTHORIZED;
         return ResponseEntity.status(error.getHttpStatusCode()).body(
                 ApiResponse.builder()
                         .code(error.getCode())
                         .message(error.getMessage())
-                        .build()
-        );
+                        .build());
 
     }
 
     @ExceptionHandler(value = ServletException.class)
-    ResponseEntity<ApiResponse> handlingServletException(ServletException exception){
-        ErrorCode error = ErrorCode. STACK_OVERFLOW;
+    ResponseEntity<ApiResponse> handlingServletException(ServletException exception) {
+        ErrorCode error = ErrorCode.STACK_OVERFLOW;
         exception.printStackTrace();
         return ResponseEntity.status(error.getHttpStatusCode()).body(
                 ApiResponse.builder()
                         .code(error.getCode())
                         .message(error.getMessage())
-                        .build()
-        );
+                        .build());
 
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    ResponseEntity<ApiResponse> handlingMethodArgumentNotValidException(MethodArgumentNotValidException exception){
+    ResponseEntity<ApiResponse> handlingMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         // String enumKey = exception.getFieldError().getDefaultMessage();
-        String enumKey = exception.getFieldError() != null 
-                    ? exception.getFieldError().getDefaultMessage()
+        String enumKey = exception.getFieldError() != null
+                ? exception.getFieldError().getDefaultMessage()
                 : "INVALID_KEY";
 
-
-//        Xử lí nhập sai key Enum
+        // Xử lí nhập sai key Enum
 
         ErrorCode errorCode = ErrorCode.INVALID_KEY;
-//        bắt ex do nhập sai chính tả của key Enum
-        try{
+        // bắt ex do nhập sai chính tả của key Enum
+        try {
             errorCode = ErrorCode.valueOf(enumKey);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
 
         }
 
@@ -91,5 +89,5 @@ public class GlobalExceptionHandler {
         response.setMessage(errorCode.getMessage());
         return ResponseEntity.badRequest().body(response);
     }
-}
 
+}

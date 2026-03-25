@@ -7,7 +7,6 @@ import com.example.ETCSystem.dto.response.AdminStationResponse;
 import com.example.ETCSystem.services.AdminStationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,8 +33,7 @@ public class AdminStationController {
     @GetMapping("/statistics")
     public ApiResponse<Map<String, Long>> getStationStatistics() {
 
-        Map<String, Long> stats =
-                adminStationService.getStationStatistics();
+        Map<String, Long> stats = adminStationService.getStationStatistics();
 
         return ApiResponse.<Map<String, Long>>builder()
                 .code(200)
@@ -49,8 +47,7 @@ public class AdminStationController {
     public ApiResponse<AdminStationResponse> createStation(
             @Valid @RequestBody AdminCreateStationRequest request) {
 
-        AdminStationResponse response =
-                adminStationService.createStation(request);
+        AdminStationResponse response = adminStationService.createStation(request);
 
         return ApiResponse.<AdminStationResponse>builder()
                 .code(200)
@@ -59,15 +56,13 @@ public class AdminStationController {
                 .build();
     }
 
-
-    // Sửa thông tin
+    // Sửa thông tin trạm
     @PutMapping("/{id}")
     public ApiResponse<AdminStationResponse> updateStation(
             @PathVariable Long id,
             @Valid @RequestBody AdminUpdateStationRequest request) {
 
-        AdminStationResponse response =
-                adminStationService.updateStation(id, request);
+        AdminStationResponse response = adminStationService.updateStation(id, request);
 
         return ApiResponse.<AdminStationResponse>builder()
                 .code(200)
@@ -82,8 +77,7 @@ public class AdminStationController {
             @PathVariable Long id,
             @Valid @RequestBody AdminUpdateStationRequest request) {
 
-        AdminStationResponse response =
-                adminStationService.updateStationStatus(id, request);
+        AdminStationResponse response = adminStationService.updateStationStatus(id, request);
 
         return ApiResponse.<AdminStationResponse>builder()
                 .code(200)
@@ -92,18 +86,18 @@ public class AdminStationController {
                 .build();
     }
 
-    @DeleteMapping("/{id}")
-    public ApiResponse<AdminStationResponse> deleteStation(
-            @PathVariable Long id) {
+    // @DeleteMapping("/{id}")
+    // public ApiResponse<AdminStationResponse> deleteStation(
+    // @PathVariable Long id) {
 
-        AdminStationResponse response =
-                adminStationService.deleteStation(id);
+    // AdminStationResponse response =
+    // adminStationService.deleteStation(id);
 
-        return ApiResponse.<AdminStationResponse>builder()
-                .code(200)
-                .message("Xóa trạm thành công")
-                .result(response)
-                .build();
-    }
+    // return ApiResponse.<AdminStationResponse>builder()
+    // .code(200)
+    // .message("Xóa trạm thành công")
+    // .result(response)
+    // .build();
+    // }
 
 }

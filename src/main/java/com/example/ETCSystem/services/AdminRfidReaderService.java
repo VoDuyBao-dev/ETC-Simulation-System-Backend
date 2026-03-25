@@ -71,12 +71,18 @@ public class AdminRfidReaderService {
         RfidReader reader = rfidReaderRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.READER_NOT_FOUND));
 
-        reader.setDescription(req.getDescription());
+        if (req.getDescription() != null) {
+            reader.setDescription(req.getDescription());
+        }
 
         if (req.getStationId() != null) {
             Station station = stationRepository.findById(req.getStationId())
                     .orElseThrow(() -> new AppException(ErrorCode.STATION_NOT_FOUND));
             reader.setStation(station);
+        }
+
+        if (req.getStationId() == null && req.getDescription().isBlank()) {
+            throw new AppException(ErrorCode.NO_UPDATE_FIELDS);
         }
 
         rfidReaderRepository.save(reader);

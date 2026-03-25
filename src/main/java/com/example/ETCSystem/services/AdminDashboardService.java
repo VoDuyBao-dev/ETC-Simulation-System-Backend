@@ -2,6 +2,8 @@ package com.example.ETCSystem.services;
 
 import com.example.ETCSystem.dto.response.*;
 import com.example.ETCSystem.enums.TollStatus;
+import com.example.ETCSystem.exceptions.AppException;
+import com.example.ETCSystem.exceptions.ErrorCode;
 import com.example.ETCSystem.mapper.AdminDashboardMapper;
 import com.example.ETCSystem.repositories.*;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +26,30 @@ public class AdminDashboardService {
 	public AdminDashboardResponse getDashboard(
 			Integer year, Integer monthFrom, Integer monthTo,
 			Integer page, Integer size, String stationCode) {
-		// 1. Xác định khoảng thời gian thống kê
+
 		ZoneId zone = ZoneId.systemDefault();
-		int y = (year != null) ? year : Year.now(zone).getValue() - 1;
+		int currentYear = Year.now(zone).getValue();
+
+		// Xác định khoảng thời gian thống kê
+		int y = (year != null) ? year : currentYear - 1;
 		int mf = (monthFrom != null) ? monthFrom : 1;
 		int mt = (monthTo != null) ? monthTo : 12;
+
+		// Kiểm tra năm (Ví dụ: không cho phép xem năm tương lai hoặc quá khứ quá xa)
+		if (year != null && (year < 2000 || year > currentYear)) {
+			throw new AppException(ErrorCode.INVALID_YEAR);
+		}
+
+		// Kiểm tra giá trị tháng hợp lệ (1-12)
+		if (mf < 1 || mf > 12 || mt < 1 || mt > 12) {
+			throw new AppException(ErrorCode.INVALID_MONTH_VALUE);
+		}
+
+		// KIỂM TRA LỖI LỌC NGƯỢC: monthFrom > monthTo
+		if (mf > mt) {
+			// Ném ra lỗi 400 hoặc 422 tùy bạn định nghĩa trong ErrorCode
+			throw new AppException(ErrorCode.INVALID_MONTH_RANGE);
+		}
 
 		// LocalDateTime fromLdt = LocalDateTime.of(y, mf, 1, 0, 0);
 		// LocalDateTime toLdt = LocalDateTime.of(y, mt, YearMonth.of(y,
