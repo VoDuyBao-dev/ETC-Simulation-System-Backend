@@ -21,4 +21,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     @EntityGraph(attributePaths = "rfidTags")
     Optional<Vehicle> findById(Long id);
 
+    Boolean existsByPlateNumber(String plateNumber);
+
 }
