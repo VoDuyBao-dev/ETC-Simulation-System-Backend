@@ -76,7 +76,6 @@ public class AdminStationService {
         }
 
         Station station = new Station();
-        // station.setCode(req.getCode());
         station.setCode(code);
         station.setName(req.getName());
         station.setAddress(req.getAddress());
@@ -120,9 +119,9 @@ public class AdminStationService {
             }
         }
 
-        if (req.getName() != null)
+        if (req.getName() != null && !req.getName().trim().isEmpty())
             station.setName(req.getName());
-        if (req.getAddress() != null)
+        if (req.getAddress() != null && !req.getAddress().trim().isEmpty()) 
             station.setAddress(req.getAddress());
         if (req.getLatitude() != null)
             station.setLatitude(req.getLatitude());
