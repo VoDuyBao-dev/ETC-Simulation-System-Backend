@@ -2,6 +2,7 @@ package com.example.ETCSystem.services;
 
 import com.example.ETCSystem.dto.common.WalletDTO;
 import com.example.ETCSystem.dto.request.UserRequest;
+import com.example.ETCSystem.dto.request.UserUpdateRequest;
 import com.example.ETCSystem.dto.response.UserResponse;
 import com.example.ETCSystem.entities.User;
 import com.example.ETCSystem.enums.AccountStatus;
@@ -97,7 +98,7 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
-    public UserResponse updateUserInfo(UserRequest userRequest) {
+    public UserResponse updateUserInfo(UserUpdateRequest userRequest) {
 
         if (userRepository.existsByPhone(userRequest.getPhone())) {
             throw new AppException(ErrorCode.PHONE_EXISTED);

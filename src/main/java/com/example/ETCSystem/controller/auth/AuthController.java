@@ -58,7 +58,7 @@ public class AuthController {
     }
 
     @PostMapping("/loginAdmin")
-    public  ApiResponse<AuthenticationResponse> loginAdmin(@RequestBody AdminLoginRequest request) {
+    public  ApiResponse<AuthenticationResponse> loginAdmin(@Valid @RequestBody AdminLoginRequest request) {
         AuthenticationResponse authenticationResponse = authenticationService.authenticateAdmin(request);
         return ApiResponse.<AuthenticationResponse>builder()
                 .code(200)
@@ -97,9 +97,9 @@ public class AuthController {
     }
 
     @PatchMapping("/updateInfo")
-    public ApiResponse<UserResponse> updateUserInfo(@Valid @RequestBody  UserRequest userRequest) {
-        log.info("userRequest {}:", userRequest.toString());
-        UserResponse userResponse = userService.updateUserInfo(userRequest);
+    public ApiResponse<UserResponse> updateUserInfo(@Valid @RequestBody  UserUpdateRequest userUpdateRequest) {
+        log.info("userRequest {}:", userUpdateRequest.toString());
+        UserResponse userResponse = userService.updateUserInfo(userUpdateRequest);
         return ApiResponse.<UserResponse>builder()
                 .code(200)
                 .message("Cập nhật thông tin người dùng thành công")
