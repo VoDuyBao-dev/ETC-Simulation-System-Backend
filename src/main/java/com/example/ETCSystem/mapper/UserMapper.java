@@ -1,6 +1,7 @@
 package com.example.ETCSystem.mapper;
 
 import com.example.ETCSystem.dto.request.UserRequest;
+import com.example.ETCSystem.dto.request.UserUpdateRequest;
 import com.example.ETCSystem.dto.response.UserResponse;
 import com.example.ETCSystem.entities.User;
 import org.mapstruct.BeanMapping;
@@ -17,6 +18,6 @@ public interface UserMapper {
     List<UserResponse> toUserResponseList(List<User> users);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateUserFromRequest(UserRequest dto, @MappingTarget User entity);
+    void updateUserFromRequest(UserUpdateRequest dto, @MappingTarget User entity);
 
 }

@@ -26,6 +26,8 @@ public class UserRequest {
     @Pattern(regexp = "^.{6,}$", message = "PASSWORD_INVALID")
     private String password;
     private String confirmPassword;
+    @NotBlank(message = "FULLNAME_REQUIRED")
+    @Size(max = 50, min = 2, message = "FULLNAME_LENGTH_INVALID")
     private String fullname;
     @Pattern(
             regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
