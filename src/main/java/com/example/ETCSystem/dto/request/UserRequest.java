@@ -2,6 +2,7 @@ package com.example.ETCSystem.dto.request;
 
 import com.example.ETCSystem.enums.Role;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,8 @@ public class UserRequest {
             message = "EMAIL_INVALID"
     )
     private String username;
+
+    @NotBlank(message = "PASSWORD_REQUIRED")
     @Pattern(regexp = "^.{6,}$", message = "PASSWORD_INVALID")
     private String password;
     private String confirmPassword;

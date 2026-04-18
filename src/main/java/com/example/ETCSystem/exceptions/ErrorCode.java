@@ -123,6 +123,7 @@ public enum ErrorCode {
     UNAUTHORIZED_ADMIN(4002, "You are not allowed to access admin", HttpStatus.FORBIDDEN),
     PHONE_INVALID(4003, "Phone number invalid", HttpStatus.BAD_REQUEST),
     PASSWORD_INVALID(2011, "Password must be at least 6 characters", HttpStatus.BAD_REQUEST),
+    PASSWORD_REQUIRED(2012, "Password requirement", HttpStatus.BAD_REQUEST),
 
     ;
 
