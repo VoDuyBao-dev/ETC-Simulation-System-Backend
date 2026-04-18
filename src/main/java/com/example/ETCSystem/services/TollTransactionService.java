@@ -1,29 +1,24 @@
 package com.example.ETCSystem.services;
 
 import com.example.ETCSystem.dto.response.TransactionHistoryAdminResponse;
-import com.example.ETCSystem.dto.response.TransactionHistoryResponse;
 import com.example.ETCSystem.entities.*;
 import com.example.ETCSystem.enums.TagStatus;
 import com.example.ETCSystem.enums.TollStatus;
-import com.example.ETCSystem.enums.TransactionType;
 import com.example.ETCSystem.exceptions.AppException;
 import com.example.ETCSystem.exceptions.ErrorCode;
 import com.example.ETCSystem.projections.TollTransactionProjection;
-import com.example.ETCSystem.projections.WalletTransactionProjection;
 import com.example.ETCSystem.repositories.TollTransactionRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,7 +28,8 @@ public class TollTransactionService {
 
     TollTransactionRepository tollTransactionRepository;
 
-    public TollTransaction saveTollTransaction(Vehicle vehicle, Station station, RfidReader rfidReader, BigDecimal fee, TollStatus TollStatus, String note) {
+    public TollTransaction saveTollTransaction(Vehicle vehicle, Station station, RfidReader rfidReader, BigDecimal fee,
+            TollStatus TollStatus, String note) {
         // Lấy thẻ active hiện tại
         RfidTag activeTag = vehicle.getRfidTags().stream()
                 .filter(tag -> tag.getStatus() == TagStatus.ACTIVE)
@@ -51,19 +47,26 @@ public class TollTransactionService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        try{
+        try {
             return tollTransactionRepository.save(tollTransaction);
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new AppException(ErrorCode.SAVE_TOLL_TRANSACTION_FAILED);
         }
 
     }
 
-//    chức năng lịch sử bên admin
-    public List<TransactionHistoryAdminResponse> getAllHistory() {
-        List<TollTransactionProjection> tolls = tollTransactionRepository.findAllByStatusOrderByCreatedAtDesc(TollStatus.SUCCESS);
+    // chức năng lịch sử bên admin
+    public Page<TransactionHistoryAdminResponse> getAllHistory(
+            int page,
+            int size) {
+        Pageable pageable = PageRequest.of(page, size);
 
-        return tolls.stream().map(this::toDTO).collect(Collectors.toList());
+        Page<TollTransactionProjection> tolls = tollTransactionRepository
+                .findAllByStatusOrderByCreatedAtDesc(
+                        TollStatus.SUCCESS,
+                        pageable);
+
+        return tolls.map(this::toDTO);
     }
 
     private TransactionHistoryAdminResponse toDTO(TollTransactionProjection proj) {
@@ -85,8 +88,7 @@ public class TollTransactionService {
                 station.getName(),
                 vehicle.getPlateNumber(),
                 proj.getFee(),
-                proj.getCreatedAt()
-        );
+                proj.getCreatedAt());
 
     }
 }

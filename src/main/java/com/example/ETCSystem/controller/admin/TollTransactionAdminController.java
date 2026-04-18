@@ -8,14 +8,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/admin/toll-transactions")
@@ -25,13 +23,15 @@ import java.util.List;
 public class TollTransactionAdminController {
     TollTransactionService tollTransactionService;
 
-
-//    trả về list
     @GetMapping("/transactions")
-    public ApiResponse<List<TransactionHistoryAdminResponse>> getAllHistory() {
+    public ApiResponse<Page<TransactionHistoryAdminResponse>> getAllHistory(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-                List<TransactionHistoryAdminResponse> result = tollTransactionService.getAllHistory();
-        return ApiResponse.<List<TransactionHistoryAdminResponse>>builder()
+        Page<TransactionHistoryAdminResponse> result = tollTransactionService.getAllHistory(page, size);
+
+        return ApiResponse
+                .<Page<TransactionHistoryAdminResponse>>builder()
                 .code(200)
                 .message("Lấy toàn bộ lịch sử giao dịch qua trạm thành công")
                 .result(result)
