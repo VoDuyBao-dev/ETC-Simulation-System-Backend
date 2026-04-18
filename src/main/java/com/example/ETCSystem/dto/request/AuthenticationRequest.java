@@ -17,5 +17,7 @@ public class AuthenticationRequest {
             message = "EMAIL_INVALID"
     )
     private String username;
+    @NotBlank(message = "PASSWORD_REQUIRED")
+    @Pattern(regexp = "^.{6,}$", message = "PASSWORD_INVALID")
     private String password;
 }
