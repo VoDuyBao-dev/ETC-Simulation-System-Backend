@@ -43,7 +43,7 @@ public class VNPAYService {
     public VNPAYResponse createVNPAYPayment(HttpServletRequest request) {
         try {
             long amount = Integer.parseInt(request.getParameter("amount"));
-            if(amount < 5000 || amount >= 100000000) {
+            if(amount < 5000 || amount >= 1000000000) {
                 throw new AppException(ErrorCode.INVALID_AMOUNT);
             }
 
