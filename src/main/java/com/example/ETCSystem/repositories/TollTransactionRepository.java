@@ -12,9 +12,11 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 
 import java.util.List;
+
 @Repository
 public interface TollTransactionRepository extends JpaRepository<TollTransaction, Long> {
-    List<TollTransactionProjection> findAllByStatusOrderByCreatedAtDesc(TollStatus status);
+  Page<TollTransactionProjection> findAllByStatusOrderByCreatedAtDesc(TollStatus status, Pageable pageable);
+
   long countByStatus(TollStatus status);
 
   long countByStationId(Long stationId);
@@ -41,21 +43,23 @@ public interface TollTransactionRepository extends JpaRepository<TollTransaction
       @Param("to") LocalDateTime to,
       Pageable pageable);
 
-//   @Query("""
-//           select t.id, s.name, v.plateNumber, t.createdAt, cast(t.status as string), t.note
-//           from TollTransaction t
-//           join t.vehicle v
-//           join t.station s
-//           where t.status in (com.example.ETCSystem.enums.TollStatus.ERROR, com.example.ETCSystem.enums.TollStatus.FAILED_BALANCE)
-//             and (:stationName is null or s.code = :stationName)
-//             and t.createdAt between :from and :to
-//           order by t.createdAt desc
-//       """)
-//   Page<Object[]> findFailedRows(
-//       @Param("stationName") String stationName,
-//       @Param("from") LocalDateTime from,
-//       @Param("to") LocalDateTime to,
-//       Pageable pageable);
+  // @Query("""
+  // select t.id, s.name, v.plateNumber, t.createdAt, cast(t.status as string),
+  // t.note
+  // from TollTransaction t
+  // join t.vehicle v
+  // join t.station s
+  // where t.status in (com.example.ETCSystem.enums.TollStatus.ERROR,
+  // com.example.ETCSystem.enums.TollStatus.FAILED_BALANCE)
+  // and (:stationName is null or s.code = :stationName)
+  // and t.createdAt between :from and :to
+  // order by t.createdAt desc
+  // """)
+  // Page<Object[]> findFailedRows(
+  // @Param("stationName") String stationName,
+  // @Param("from") LocalDateTime from,
+  // @Param("to") LocalDateTime to,
+  // Pageable pageable);
 
   @Query("""
           select t.id, s.name, v.plateNumber, t.createdAt, cast(t.status as string), t.note

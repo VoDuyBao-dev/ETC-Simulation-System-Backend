@@ -1,8 +1,8 @@
 package com.example.ETCSystem.dto.request;
 
-import com.example.ETCSystem.enums.StationStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
@@ -16,10 +16,11 @@ public class AdminCreateStationRequest {
     // private String code;
 
     @NotBlank(message = "NAME_REQUIRED")
+    @Size(min = 6, max = 255, message = "NAME_LENGTH_INVALID")
     private String name;
 
     @NotBlank(message = "ADDRESS_REQUIRED")
-    private String address;
+    private String address; 
 
     @NotNull(message = "LATITUDE_REQUIRED") 
     private Double latitude;

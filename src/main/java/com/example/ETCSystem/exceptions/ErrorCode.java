@@ -48,6 +48,7 @@ public enum ErrorCode {
     STATION_CODE_EXISTS(1301, "Station code already exists", HttpStatus.CONFLICT),
     SAVE_INVALIDATED_TOKEN_FAILED(1018, "save invalidated token failed", HttpStatus.INTERNAL_SERVER_ERROR),
     STATION_LOCATION_EXISTS(1302, "Trùng khinh độ và vĩ độ", HttpStatus.CONFLICT),
+    NAME_LENGTH_INVALID(2000, "Số lượng kí tự tối thiểu là 6 và tối đa là 255", HttpStatus.BAD_REQUEST),
 
     // ===== VALIDATION ERRORS =====
     NAME_REQUIRED(1001, "Name is required", HttpStatus.BAD_REQUEST),
