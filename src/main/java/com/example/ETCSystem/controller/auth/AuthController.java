@@ -58,7 +58,7 @@ public class AuthController {
     }
 
     @PostMapping("/loginAdmin")
-    public  ApiResponse<AuthenticationResponse> loginAdmin(@RequestBody AdminLoginRequest request) {
+    public  ApiResponse<AuthenticationResponse> loginAdmin(@Valid @RequestBody AdminLoginRequest request) {
         AuthenticationResponse authenticationResponse = authenticationService.authenticateAdmin(request);
         return ApiResponse.<AuthenticationResponse>builder()
                 .code(200)

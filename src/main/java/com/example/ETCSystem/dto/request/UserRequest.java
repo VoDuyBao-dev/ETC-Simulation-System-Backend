@@ -4,6 +4,7 @@ import com.example.ETCSystem.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class UserRequest {
     private String username;
 
     @NotBlank(message = "PASSWORD_REQUIRED")
+    @Size(min = 6, max = 20, message = "PASSWORD_LENGTH_INVALID")
     @Pattern(regexp = "^.{6,}$", message = "PASSWORD_INVALID")
     private String password;
     private String confirmPassword;

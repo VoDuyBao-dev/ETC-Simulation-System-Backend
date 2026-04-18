@@ -124,6 +124,8 @@ public enum ErrorCode {
     PHONE_INVALID(4003, "Phone number invalid", HttpStatus.BAD_REQUEST),
     PASSWORD_INVALID(2011, "Password must be at least 6 characters", HttpStatus.BAD_REQUEST),
     PASSWORD_REQUIRED(2012, "Password requirement", HttpStatus.BAD_REQUEST),
+    PASSWORD_LENGTH_INVALID(2013, "Password must be between 5 and less than 20 chars", HttpStatus.BAD_REQUEST),
+
 
     ;
 
