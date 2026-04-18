@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 @RestController
 @RequestMapping("/admin/vehicles")
@@ -19,11 +19,13 @@ public class AdminVehicleController {
 
     // Lấy danh sách phương tiện
     @GetMapping
-    public ApiResponse<List<AdminVehicleResponse>> getAllVehicles() {
+    public ApiResponse<Page<AdminVehicleResponse>> getAllVehicles(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        List<AdminVehicleResponse> vehicles = adminVehicleService.getAllVehicles();
+        Page<AdminVehicleResponse> vehicles = adminVehicleService.getAllVehicles(page, size);
 
-        return ApiResponse.<List<AdminVehicleResponse>>builder()
+        return ApiResponse.<Page<AdminVehicleResponse>>builder()
                 .code(200)
                 .message("Lấy danh sách xe thành công")
                 .result(vehicles)

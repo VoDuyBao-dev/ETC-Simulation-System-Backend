@@ -14,7 +14,12 @@ import com.example.ETCSystem.repositories.RfidTagRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -26,12 +31,12 @@ public class AdminVehicleService {
     private final AdminVehicleMapper adminVehicleMapper;
     private final RfidTagRepository rfidTagRepository;
 
-    public List<AdminVehicleResponse> getAllVehicles() {
-        List<Vehicle> vehicle = adminVehicleRepository.findAllByIsDelete(0);
+    public Page<AdminVehicleResponse> getAllVehicles(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
-        return vehicle.stream()
-                .map(adminVehicleMapper::toAdminVehicleResponse)
-                .toList();
+        Page<Vehicle> vehicles = adminVehicleRepository.findAllByIsDelete(0, pageable);
+
+        return vehicles.map(adminVehicleMapper::toAdminVehicleResponse);
     }
 
     public AdminVehicleResponse updateVehicleStatus(Long id, AdminUpdateVehicleRequest request) {
